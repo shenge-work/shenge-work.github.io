@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="print">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>陈培胜 · 求职简历（打印版）</title>
+  <meta name="description" content="陈培胜 · AI 全栈工程师 · 打印版简历（可另存为 PDF）" />
+  <link rel="icon" type="image/png" href="favicon-64.png" />
+  <!-- 打印版固定主题，不参与每日轮换 -->
+  <link rel="stylesheet" href="base.css" />
+  <link rel="stylesheet" href="themes/print/style.css" />
+</head>
+<body>
+  <div class="print-toolbar">
+    <button onclick="window.print()">打印 / 存为 PDF</button>
+    <a href="index.html">← 返回在线简历</a>
+  </div>
+  <main id="resume"></main>
+
+  <!-- 与在线简历共用同一份数据源 -->
+  <script src="js/render.js"></script>
+</body>
+</html>

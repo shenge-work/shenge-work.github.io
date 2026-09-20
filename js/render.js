@@ -241,6 +241,8 @@
         '<div class="contact-value">' + esc(c.base) +
         (c.baseNote ? ' <span class="contact-note">' + esc(c.baseNote) + "</span>" : "") +
         "</div></div>" +
+      '<div class="contact-item contact-resume-link"><div class="contact-label">RESUME / 简历下载</div>' +
+        '<a class="contact-value" href="resume.html">打印版简历（可存 PDF）</a></div>' +
       "</div>"
     ].join("");
   }

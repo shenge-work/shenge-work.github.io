@@ -1,0 +1,157 @@
+/* 主题：打印版 —— A4 优化、纯黑白、省墨、单栏紧凑
+ * 仅用于 resume.html（打印/存 PDF），不参与每日轮换
+ * 部分规则同时作用于屏幕预览与 @media print
+ */
+
+html[data-theme="print"] body {
+  background: #fff;
+  color: #1a1a1a;
+  font-family: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+  line-height: 1.45;
+}
+
+html[data-theme="print"] #resume {
+  max-width: 800px;
+  padding: 32px 24px 40px;
+}
+
+/* Hero：紧凑头部，黑白 */
+html[data-theme="print"] .hero {
+  border-bottom: 2.5px solid #1a1a1a;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+html[data-theme="print"] .hero-badge { display: none; }
+html[data-theme="print"] .hero-portrait { display: none; }
+html[data-theme="print"] .hero-name { font-size: 30px; letter-spacing: 3px; }
+html[data-theme="print"] .hero-name-en { letter-spacing: 5px; margin-top: 2px; }
+html[data-theme="print"] .hero-title { font-size: 15px; margin-top: 8px; font-weight: 700; }
+html[data-theme="print"] .hero-title-en { font-weight: 400; }
+html[data-theme="print"] .hero-subtitle { display: none; }
+html[data-theme="print"] .hero-tagline { font-size: 12px; margin-top: 6px; }
+html[data-theme="print"] .hero-meta { font-size: 12px; margin-top: 3px; }
+html[data-theme="print"] .hero-principles { font-size: 12px; margin-top: 3px; font-weight: 700; }
+/* 数字亮点横排紧凑 */
+html[data-theme="print"] .hero-highlights {
+  gap: 6px 28px;
+  margin-top: 10px;
+  flex-direction: row;
+  align-items: baseline;
+}
+html[data-theme="print"] .hl-item { flex-direction: row; gap: 6px; align-items: baseline; }
+html[data-theme="print"] .hl-value { font-size: 16px; }
+html[data-theme="print"] .hl-label { font-size: 11px; margin-top: 0; }
+
+/* Section：紧凑 */
+html[data-theme="print"] .section { margin-bottom: 12px; }
+html[data-theme="print"] .section-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  border-bottom: 1.5px solid #1a1a1a;
+  margin-bottom: 9px;
+  padding-bottom: 4px;
+}
+
+/* 求职意向：2 列网格压缩 */
+html[data-theme="print"] #target .section-body {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px 16px;
+}
+html[data-theme="print"] .target-item { margin-bottom: 0; }
+html[data-theme="print"] .target-label { font-size: 10.5px; margin-bottom: 1px; }
+html[data-theme="print"] .target-primary,
+html[data-theme="print"] .target-backup,
+html[data-theme="print"] .target-loc,
+html[data-theme="print"] .target-start { font-size: 13px; }
+html[data-theme="print"] .target-note { display: none; }
+
+html[data-theme="print"] .entry { margin-bottom: 8px; }
+html[data-theme="print"] .entry-title { font-size: 13.5px; }
+html[data-theme="print"] .entry-period { font-size: 11.5px; }
+html[data-theme="print"] .entry-company-full { font-size: 10.5px; }
+html[data-theme="print"] .entry-sub { font-size: 12px; margin-top: 1px; }
+html[data-theme="print"] .entry-awards,
+html[data-theme="print"] .entry-courses { font-size: 11px; margin-top: 2px; }
+html[data-theme="print"] .entry ul { margin: 4px 0 0 16px; }
+html[data-theme="print"] .entry li { font-size: 11.5px; margin-bottom: 1px; line-height: 1.5; }
+html[data-theme="print"] .entry-tech { margin-top: 5px; gap: 4px; }
+
+/* 技能：细条、灰度 */
+html[data-theme="print"] .skill { margin-bottom: 5px; }
+html[data-theme="print"] .skill-head { font-size: 11.5px; margin-bottom: 1px; }
+html[data-theme="print"] .skill-bar { height: 3px; background: #e8e8e8; }
+html[data-theme="print"] .skill-fill { background: #555; }
+html[data-theme="print"] .skills-note { font-size: 10.5px; margin-top: 5px; }
+html[data-theme="print"] .toolbox-title { font-size: 10.5px; margin-top: 8px; margin-bottom: 4px; }
+html[data-theme="print"] .toolbox { gap: 4px 6px; }
+html[data-theme="print"] .tag {
+  font-size: 10.5px;
+  border-color: #c8c8c8;
+  color: #333;
+  padding: 1px 8px;
+}
+
+/* 项目：2 列紧凑卡（无图） */
+html[data-theme="print"] .projects { grid-template-columns: 1fr 1fr; gap: 10px; }
+html[data-theme="print"] .project-card { border-color: #ccc; border-radius: 4px; padding: 9px 12px; }
+html[data-theme="print"] .project-cover { display: none; }
+html[data-theme="print"] .project-meta { font-size: 10px; gap: 6px; }
+html[data-theme="print"] .project-name { font-size: 12.5px; margin-top: 2px; }
+html[data-theme="print"] .project-desc { font-size: 11px; margin-top: 3px; }
+html[data-theme="print"] .project-tech { margin-top: 5px; gap: 4px; }
+html[data-theme="print"] .award-img { display: none; }
+html[data-theme="print"] .award { margin-bottom: 4px; font-size: 12px; }
+html[data-theme="print"] .award-note { font-size: 11px; }
+
+/* 联系方式：2x2 紧凑 */
+html[data-theme="print"] .contact-grid { grid-template-columns: 1fr 1fr; gap: 6px 24px; }
+html[data-theme="print"] .contact-label { font-size: 10px; margin-bottom: 0; }
+html[data-theme="print"] .contact-value { font-size: 11.5px; }
+html[data-theme="print"] .contact-value[href] { color: #1a1a1a; text-decoration: none; }
+/* 打印页里「简历下载」指向自己，隐藏 */
+html[data-theme="print"] .contact-resume-link { display: none; }
+
+html[data-theme="print"] .footer { display: none; }
+
+/* 打印工具条（仅屏幕显示） */
+html[data-theme="print"] .print-toolbar {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 14px 24px 0;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+html[data-theme="print"] .print-toolbar button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 18px;
+  border: 1.5px solid #1a1a1a;
+  background: #1a1a1a;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+html[data-theme="print"] .print-toolbar button:hover { background: #333; }
+html[data-theme="print"] .print-toolbar a { font-size: 13px; color: #555; }
+
+/* ===== @media print：真实打印/A4 导出 ===== */
+@media print {
+  html[data-theme="print"] body { background: #fff; }
+  html[data-theme="print"] #resume { max-width: none; padding: 0; }
+  html[data-theme="print"] .print-toolbar { display: none; }
+  html[data-theme="print"] .hero { margin-bottom: 18px; }
+  html[data-theme="print"] .entry,
+  html[data-theme="print"] .project-card,
+  html[data-theme="print"] .skill { page-break-inside: avoid; }
+  html[data-theme="print"] .section { page-break-inside: auto; }
+  html[data-theme="print"] a { text-decoration: none; color: inherit; }
+}
+
+@page {
+  size: A4;
+  margin: 10mm 12mm;
+}
