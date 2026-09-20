@@ -1,0 +1,58 @@
+/* 主题：学术论文 —— 类 LaTeX 排版：衬线、编号、黑白灰、无装饰 */
+html[data-theme="academic"] body {
+  background: #ffffff;
+  color: #222;
+  font-family: "Times New Roman", "Songti SC", "SimSun", serif;
+  line-height: 1.85;
+}
+
+html[data-theme="academic"] {
+  --ink: #222;
+  --dim: #666;
+  --line: #ccc;
+  --blue: #1a4d8f; /* 超链接学术蓝 */
+}
+
+html[data-theme="academic"] #resume { max-width: 780px; }
+
+html[data-theme="academic"] .hero { text-align: center; padding: 24px 0; }
+html[data-theme="academic"] .hero-badge { display: none; }
+html[data-theme="academic"] .hero-portrait { display: none; }
+html[data-theme="academic"] .hero-name { font-size: 30px; font-weight: 400; letter-spacing: 4px; }
+html[data-theme="academic"] .hero-name-en { letter-spacing: 2px; }
+html[data-theme="academic"] .hero-title { color: var(--ink); }
+html[data-theme="academic"] .hero-tagline { color: var(--dim); margin: 12px auto 0; max-width: 600px; }
+
+/* 章节标题：1. / 2. 编号 + 下方细线 */
+html[data-theme="academic"] .section { counter-increment: sec; }
+html[data-theme="academic"] .section-title {
+  font-size: 17px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--line);
+  letter-spacing: 0;
+}
+html[data-theme="academic"] .section-title::before {
+  content: counter(sec) ". ";
+  font-family: "Times New Roman", serif;
+}
+
+html[data-theme="academic"] .summary { text-indent: 2em; }
+html[data-theme="academic"] .entry li { margin-bottom: 6px; }
+
+html[data-theme="academic"] .project-cover { display: none; } /* 论文不放插画 */
+html[data-theme="academic"] .project-card {
+  border: none;
+  border-left: 3px solid var(--line);
+  border-radius: 0;
+  padding: 4px 0 4px 16px;
+}
+html[data-theme="academic"] .project-name { font-weight: 700; }
+html[data-theme="academic"] .project-id::after { content: "."; }
+
+html[data-theme="academic"] .skill-bar { height: 3px; background: #eee; }
+html[data-theme="academic"] .skill-fill { background: var(--ink); }
+html[data-theme="academic"] .tag { border-radius: 0; border-color: var(--line); color: var(--dim); font-style: italic; }
+
+html[data-theme="academic"] .award-img { display: none; }
+html[data-theme="academic"] .contact-value[href] { color: var(--blue); text-decoration: underline; }
+html[data-theme="academic"] .footer { border-top-color: var(--line); }

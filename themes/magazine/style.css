@@ -1,0 +1,89 @@
+/* 主题：杂志编辑 —— 衬线大标题、杂志红强调、双线边框、报纸排版感 */
+html[data-theme="magazine"] body {
+  background: #fdfcf9;
+  color: #1c1c1c;
+  font-family: "Georgia", "Songti SC", "SimSun", serif;
+}
+
+html[data-theme="magazine"] {
+  --red: #c0392b;
+  --line: #d8d4cc;
+  --dim: #6e6a62;
+}
+
+/* 页眉横幅：报头感 */
+html[data-theme="magazine"] .hero {
+  border-top: 3px double #1c1c1c;
+  border-bottom: 3px double #1c1c1c;
+  padding: 36px 8px;
+  text-align: center;
+  position: relative;
+}
+
+html[data-theme="magazine"] .hero-badge {
+  background: var(--red);
+  color: #fdfcf9;
+  border-radius: 0;
+  letter-spacing: 3px;
+  font-size: 11px;
+}
+
+/* 头像：杂志风开启，方形黑白感 */
+html[data-theme="magazine"] .hero-portrait {
+  display: block;
+  margin: 0 auto 16px;
+}
+html[data-theme="magazine"] .hero-portrait img {
+  width: 96px; height: 96px;
+  border-radius: 0;
+  border: 1px solid #1c1c1c;
+  filter: grayscale(20%);
+  padding: 3px;
+}
+
+html[data-theme="magazine"] .hero-name { font-size: 52px; letter-spacing: 8px; }
+html[data-theme="magazine"] .hero-name-en { color: var(--dim); letter-spacing: 6px; }
+html[data-theme="magazine"] .hero-title { color: var(--red); font-style: italic; }
+html[data-theme="magazine"] .hero-tagline { color: #3a3a3a; max-width: 620px; margin: 14px auto 0; }
+html[data-theme="magazine"] .hero-meta { color: var(--dim); }
+html[data-theme="magazine"] .hero-principles { color: var(--red); letter-spacing: 2px; }
+
+html[data-theme="magazine"] .hero-highlights { justify-content: center; }
+html[data-theme="magazine"] .hl-value { font-size: 34px; }
+
+/* 章节标题：左红线 + 大写字距 */
+html[data-theme="magazine"] .section-title {
+  border-bottom-color: var(--line);
+  font-size: 20px;
+  letter-spacing: 3px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+html[data-theme="magazine"] .section-title::before {
+  content: "";
+  width: 8px; height: 22px;
+  background: var(--red);
+  display: inline-block;
+}
+
+html[data-theme="magazine"] .entry-sub { font-style: italic; }
+html[data-theme="magazine"] .entry li::marker { color: var(--red); }
+
+html[data-theme="magazine"] .project-card {
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: #fff;
+}
+html[data-theme="magazine"] .project-cover { border-radius: 0; background: #f0ede6; }
+html[data-theme="magazine"] .project-cover-text { color: var(--dim); font-style: italic; }
+html[data-theme="magazine"] .project-id { color: var(--red); }
+html[data-theme="magazine"] .project-name { font-size: 17px; }
+
+html[data-theme="magazine"] .skill-fill { background: #1c1c1c; }
+html[data-theme="magazine"] .skill-score { color: var(--red); }
+html[data-theme="magazine"] .tag { border-radius: 0; border-color: #bbb5aa; color: #3a3a3a; }
+
+html[data-theme="magazine"] .award-id { color: var(--red); }
+html[data-theme="magazine"] .contact-value[href] { color: var(--red); }
+html[data-theme="magazine"] .footer { border-top: 3px double #1c1c1c; }

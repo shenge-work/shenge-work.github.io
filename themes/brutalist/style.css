@@ -1,0 +1,92 @@
+/* 主题：粗野主义 —— 硬边框、硬阴影、无圆角、高饱和色块 */
+html[data-theme="brutalist"] body {
+  background: #f5f2ea;
+  color: #111;
+  font-family: "Arial Black", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+html[data-theme="brutalist"] {
+  --black: #111;
+  --yellow: #ffd400;
+  --red: #e63329;
+  --blue: #2b50e0;
+}
+
+html[data-theme="brutalist"] .hero {
+  border: 3px solid var(--black);
+  box-shadow: 8px 8px 0 var(--black);
+  background: #fff;
+  padding: 32px;
+}
+
+html[data-theme="brutalist"] .hero-badge {
+  background: var(--yellow);
+  color: var(--black);
+  border: 2px solid var(--black);
+  border-radius: 0;
+  font-weight: 900;
+}
+
+html[data-theme="brutalist"] .hero-name { font-weight: 900; }
+html[data-theme="brutalist"] .hero-title { font-weight: 900; color: var(--blue); }
+html[data-theme="brutalist"] .hero-principles {
+  background: var(--yellow);
+  display: inline-block;
+  padding: 2px 10px;
+  border: 2px solid var(--black);
+  font-weight: 900;
+}
+
+html[data-theme="brutalist"] .hl-value { font-weight: 900; }
+html[data-theme="brutalist"] .hl-item { border-bottom: 3px solid var(--black); padding-bottom: 4px; }
+
+/* 章节标题：黄色色块 + 粗黑边 */
+html[data-theme="brutalist"] .section-title {
+  background: var(--yellow);
+  border: 3px solid var(--black);
+  box-shadow: 5px 5px 0 var(--black);
+  display: inline-block;
+  padding: 4px 16px;
+  margin-bottom: 22px;
+  font-weight: 900;
+  border-bottom: 3px solid var(--black); /* 覆盖 base 的浅色底线 */
+}
+
+html[data-theme="brutalist"] .entry-title { font-weight: 900; }
+html[data-theme="brutalist"] .entry li::marker { color: var(--red); }
+
+html[data-theme="brutalist"] .project-card {
+  border: 3px solid var(--black);
+  border-radius: 0;
+  box-shadow: 6px 6px 0 var(--black);
+  background: #fff;
+}
+html[data-theme="brutalist"] .project-card:nth-child(even) { box-shadow: -6px 6px 0 var(--black); }
+html[data-theme="brutalist"] .project-cover {
+  border: 2px solid var(--black);
+  border-radius: 0;
+  background: var(--yellow);
+}
+html[data-theme="brutalist"] .project-cover-text { color: var(--black); font-weight: 900; }
+html[data-theme="brutalist"] .project-id { background: var(--red); color: #fff; padding: 0 6px; font-weight: 900; }
+html[data-theme="brutalist"] .project-name { font-weight: 900; }
+
+html[data-theme="brutalist"] .skill-bar {
+  height: 14px;
+  border: 2px solid var(--black);
+  border-radius: 0;
+  background: #fff;
+}
+html[data-theme="brutalist"] .skill-fill { background: var(--blue); border-radius: 0; }
+html[data-theme="brutalist"] .skill-score { font-weight: 900; }
+html[data-theme="brutalist"] .tag {
+  border: 2px solid var(--black);
+  border-radius: 0;
+  background: #fff;
+  font-weight: 700;
+  box-shadow: 3px 3px 0 var(--black);
+}
+
+html[data-theme="brutalist"] .award-id { background: var(--yellow); padding: 0 6px; border: 2px solid var(--black); }
+html[data-theme="brutalist"] .contact-value[href] { color: var(--blue); font-weight: 900; }
+html[data-theme="brutalist"] .footer { border-top: 3px solid var(--black); }

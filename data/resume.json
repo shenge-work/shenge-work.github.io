@@ -1,0 +1,168 @@
+{
+  "name": "陈培胜",
+  "nameEn": "CHEN PEISHENG",
+  "title": "AI 全栈工程师",
+  "titleEn": "AI FULL-STACK ENGINEER",
+  "subtitle": "2026 求职作品集",
+  "location": "深圳 / 广州 / 远程",
+  "coordinates": "N22.54° / E114.06°",
+  "availability": "随时到岗",
+  "status": "OPEN TO WORK",
+  "principles": "不停机 · 可回滚 · 最小改动",
+
+  "tagline": "5 年 Java 后端 + 2 年 AI 全栈工程，主导 6 套系统从 0 到 1：潜客 CRM、品牌官网、AI 搜索引擎、海外营销平台与投研工作台。技术决策三原则：不停机、可回滚、最小改动。",
+
+  "summary": "工程路从港企周生生起步：近两年 Java 后端深耕，独立负责多渠道潜客 CRM 与香港帝舵官网核心模块；后来到红杉投资的 AI 创业公司担任创始团队研发，主导 lessie.cn 人脉搜索引擎与 hicreator.ai 营销平台从零跑通到商业闭环。现在专注 AI 工程化：垂直领域 Agent 编排、二开通用 Agent 基座（QwenPaw / OpenCode）、Tool / MCP / Skill 统一扩展体系、多租户云沙箱，再用 Flink 搭起 AI 网关实时计费链路。",
+
+  "highlights": [
+    { "label": "工程经验", "value": "5 年" },
+    { "label": "企业经历", "value": "3 段" },
+    { "label": "0→1 系统", "value": "6 套" },
+    { "label": "月均邮件触达", "value": "50 万+" }
+  ],
+
+  "target": {
+    "primary": "AI 全栈工程师",
+    "primaryNote": "AI FULL-STACK ENGINEER · AGENT 方向 — Agent 开发与 AI 工程化：企业 AI 基建、Harness 架构、评测体系，也写前后端与数据链路，让模型真正跑进业务。",
+    "backup": ["Agent 工程师", "AI 应用开发"],
+    "backupNote": "Multi-Agent 编排、RAG 检索增强、LLM 评测平台与 Tool 生态建设。",
+    "location": "深圳 · 广州 · 远程",
+    "locationNote": "坐标深圳，接受远程 / 混合办公，跨城面试随时安排。",
+    "start": "随时到岗",
+    "startNote": "当前处于开放期，流程顺利即可入职，交接零负担。"
+  },
+
+  "education": [
+    {
+      "school": "中山大学新华学院",
+      "major": "软件工程",
+      "majorEn": "SOFTWARE ENGINEERING",
+      "degree": "本科 · 全日制统招",
+      "period": "2017.09 — 2021.06",
+      "awards": ["国家励志奖学金（国家级）", "校级奖学金"],
+      "courses": "主修：数据结构 · 数据库原理 · 计算机网络 · 软件工程 · 操作系统"
+    }
+  ],
+
+  "experience": [
+    {
+      "company": "进门财经",
+      "companyFull": "深圳进门财经科技股份有限公司",
+      "role": "AI 全栈工程师",
+      "roleNote": "AI 团队主力研发（金融投研头部）",
+      "period": "2026.01 — 2026.07",
+      "points": [
+        "搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现多租户云沙箱隔离环境，完成发布依赖管理、日志上报与 Agent / Skill 全生命周期管控。",
+        "设计 MCP / Skill 统一能力扩展体系：能力注册、发现、调用、权限与版本全流程标准化，兼容 MCP 协议与外部 API，支持多模态能力接入。",
+        "设计多租户 AI 资源精细化计费链路（费率转换 / 实时预扣 / 离线扣费 / 账单校准 / 补偿机制），模型调用成本实时计量、全程可追溯。",
+        "自研消息频道中心对接飞书 / 企微 / 钉钉 / 微信 / QQ，实现 Agent 投研结果多 IM 实时触达；自研 Skill-Hub 沉淀复用投研能力，缩短业务交付周期。"
+      ],
+      "tech": ["Python", "AgentScope", "QwenPaw / OpenCode", "Flink", "MCP / Skill", "云沙箱"]
+    },
+    {
+      "company": "Lessie 指数引力",
+      "companyFull": "深圳指数引力科技有限公司",
+      "role": "AI 全栈工程师",
+      "roleNote": "创始团队成员（红杉投资 AI 初创）",
+      "period": "2024.03 — 2025.11",
+      "points": [
+        "主导 lessie.cn AI 人脉搜索引擎：Multi-Agent + Agentic RAG，搜索精准度提升 30%、单次找人成本降低 80%、目标定位时间缩短 60%。",
+        "0→1 自建海外邮件群发系统，集成 AWS / SendGrid / 自建 SMTP，支撑月均 50 万+ 有效触达，送达率稳定在 95% 以上。",
+        "设计 dataworks 数仓同步链路，完成 300+ 万网红画像与视频数据日更；借助 Dify 实现聊天上下文管理与 AI 智能议价。",
+        "研发群控 RPA 机器人，实现自动注册 / 养号、风险检测、群发私信等自动化流程。"
+      ],
+      "tech": ["LangChain", "LangGraph", "Multi-Agent", "RAG", "Milvus", "Spring Boot"]
+    },
+    {
+      "company": "周生生",
+      "companyFull": "周生生（中国）商业有限公司",
+      "role": "Java 开发工程师",
+      "roleNote": "获评「高级程序员」职称（港企 · 电商零售）",
+      "period": "2021.09 — 2023.06",
+      "points": [
+        "负责多渠道潜客线索跟踪 CRM 平台研发：整合大陆、港澳台线索数据，打通线上线下零售，支撑潜客分配、跟进记录与转化漏斗分析。",
+        "参与香港帝舵官网研发：会员体系与支付链路核心模块（会员等级、权益、订单支付、对账）。",
+        "负责商品上下架与库存同步模块，支撑品牌官网日常运营与活动迭代。",
+        "沉淀 Spring 全家桶与高可用工程实战基础，在职期间获评「高级程序员」职称。"
+      ],
+      "tech": ["Java", "Spring Boot / Cloud", "MySQL", "Redis", "RocketMQ"]
+    }
+  ],
+
+  "projects": [
+    {
+      "id": "P-01",
+      "name": "comein.cn AI 投研工作台",
+      "category": "企业 AI 基建 · 金融投研",
+      "period": "2026.01 — 2026.07",
+      "desc": "合规 Agent 投研闭环平台：Agent 基座、多租户云沙箱、工具生态、模型计费与 Skill 治理。",
+      "tech": ["Python", "AgentScope", "QwenPaw / OpenCode", "Flink"],
+      "cover": "机器人 + K 线图盾牌",
+      "coverImg": "images/project-1.jpg"
+    },
+    {
+      "id": "P-02",
+      "name": "lessie.cn AI 人脉搜索引擎",
+      "category": "Multi-Agent · Agentic RAG",
+      "period": "2024.03 — 2025.11",
+      "desc": "智能代理搜索引擎：用 Agent 即时「找人」，快速定位全球目标人物并完成初步联络。",
+      "tech": ["LangChain", "LangGraph", "LlamaIndex", "Milvus"],
+      "cover": "地球仪 + 放大镜",
+      "coverImg": "images/project-2.jpg"
+    },
+    {
+      "id": "P-03",
+      "name": "hicreator.ai 海外红人营销平台",
+      "category": "FDE 式业务落地",
+      "period": "2024.03 — 2025.11",
+      "desc": "一站式 AI 网红营销自动化系统：大模型与多模态数据实现品牌与创作者全链路闭环。",
+      "tech": ["Spring Boot / Cloud", "LLM", "MCP", "WebDriver"],
+      "cover": "摄像机 + 爱心火箭",
+      "coverImg": "images/project-3.jpg"
+    },
+    {
+      "id": "P-04",
+      "name": "邮件营销群发系统 MAIL ENGINE",
+      "category": "0→1 自建触达基建",
+      "period": "2024 — 2025",
+      "desc": "替代第三方 SaaS 的自建邮件触达平台：海量群发、多渠道投递、域名信誉全链路自持。",
+      "tech": ["Kafka", "Docker / K8s", "SMTP / IMAP", "AWS SES"],
+      "cover": "信封 + 纸飞机",
+      "coverImg": "images/project-4.jpg"
+    }
+  ],
+
+  "skills": [
+    { "name": "Agent 编排（LangChain · LangGraph · LlamaIndex）", "score": 86 },
+    { "name": "Java / Spring 生态（JVM 调优 · 并发）", "score": 88 },
+    { "name": "RAG 检索增强 / LLM 评测体系", "score": 84 },
+    { "name": "数据与中间件（MySQL · Redis · ES · MQ）", "score": 86 },
+    { "name": "Python / Golang（FastAPI · Gin）", "score": 84 },
+    { "name": "前端（Vue · UniApp · Electron）", "score": 80 }
+  ],
+
+  "skillsNote": "技能值代表「能独立交付的熟练度」，不做装饰性满格。持续探索中：A2A 协议、Coding Agent 底层架构。",
+
+  "toolbox": [
+    "Dify", "Coze", "n8n", "MCP / Skill 生态", "Milvus", "Flink",
+    "ElasticSearch", "RocketMQ / Kafka", "Docker / K8s",
+    "QwenPaw / OpenCode", "AgentScope", "Claude Code / Cursor",
+    "Jenkins / Git", "AWS SES / SendGrid", "Stripe / Paypal"
+  ],
+
+  "awards": [
+    { "id": "CERT-01", "name": "国家励志奖学金", "note": "国家级 · 2021", "img": "images/cert-1.jpg" },
+    { "id": "CERT-02", "name": "校级奖学金", "note": "中山大学新华学院 · 2021", "img": "images/cert-2.jpg" },
+    { "id": "CERT-03", "name": "「高级程序员」职称", "note": "周生生 · 在职获评 2022", "img": "images/cert-3.jpg" }
+  ],
+
+  "contact": {
+    "email": "shenge.work@gmail.com",
+    "phone": "+86 180 2283 4605",
+    "github": "https://github.com/shenge-work",
+    "base": "广东省深圳市",
+    "baseNote": "N22.54° · E114.06°"
+  },
+
+  "portraitImg": "images/portrait.jpg"
+}

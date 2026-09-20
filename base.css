@@ -1,0 +1,187 @@
+/* 基础骨架样式：只负责布局结构，颜色/字体等视觉交由各主题 CSS 覆盖 */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+#resume {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* Hero */
+.hero { margin-bottom: 48px; }
+.hero-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+/* 头像：默认隐藏，主题可开启（如彩绘风、杂志风） */
+.hero-portrait { display: none; }
+.hero-portrait img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; }
+
+.hero-name { font-size: 44px; font-weight: 800; letter-spacing: 2px; }
+.hero-name-en { font-size: 14px; letter-spacing: 4px; opacity: 0.6; margin-top: 4px; }
+.hero-title { font-size: 18px; margin-top: 12px; }
+.hero-title-en { opacity: 0.55; font-size: 14px; }
+.hero-subtitle { font-size: 13px; opacity: 0.55; margin-top: 2px; }
+.hero-tagline { font-size: 14px; opacity: 0.8; margin-top: 14px; max-width: 640px; }
+.hero-meta { font-size: 13px; opacity: 0.6; margin-top: 10px; }
+.hero-principles { font-size: 13px; margin-top: 8px; opacity: 0.75; }
+.hero-highlights {
+  display: flex;
+  gap: 32px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+.hl-item { display: flex; flex-direction: column; }
+.hl-value { font-size: 30px; font-weight: 800; }
+.hl-label { font-size: 12px; opacity: 0.6; margin-top: 2px; }
+
+/* Section */
+.section { margin-bottom: 44px; }
+.section-title {
+  font-size: 16px;
+  letter-spacing: 2px;
+  margin-bottom: 18px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+/* Target */
+.target-item { margin-bottom: 16px; }
+.target-label {
+  font-size: 12px;
+  letter-spacing: 1px;
+  opacity: 0.5;
+  margin-bottom: 2px;
+}
+.target-primary { font-size: 16px; }
+.target-note { font-size: 13px; opacity: 0.65; margin-top: 2px; }
+
+/* Entries（教育/工作） */
+.entry { margin-bottom: 24px; }
+.entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.entry-title { font-size: 16px; font-weight: 700; }
+.entry-period { font-size: 13px; opacity: 0.55; }
+.entry-company-full { font-size: 12px; opacity: 0.45; }
+.entry-sub { font-size: 14px; opacity: 0.75; margin-top: 2px; }
+.entry-awards, .entry-courses { font-size: 13px; opacity: 0.7; margin-top: 4px; }
+.entry ul { margin: 8px 0 0 20px; }
+.entry li { margin-bottom: 4px; font-size: 14px; }
+.entry-tech { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+/* Projects */
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 16px;
+}
+.project-card { border: 1px solid rgba(128, 128, 128, 0.2); border-radius: 10px; padding: 16px; }
+.project-cover {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-bottom: 12px;
+  text-align: center;
+  padding: 8px;
+  overflow: hidden;
+  position: relative;
+}
+/* 图片封面：默认显示（若存在），文字作为后备说明叠底 */
+.project-cover img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.project-cover-text { position: relative; z-index: 1; }
+.project-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  opacity: 0.55;
+  letter-spacing: 0.5px;
+}
+.project-name { font-size: 15px; font-weight: 700; margin-top: 4px; }
+.project-desc { font-size: 13px; opacity: 0.7; margin-top: 6px; }
+.project-tech { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+/* Skills */
+.skill { margin-bottom: 14px; }
+.skill-head { display: flex; justify-content: space-between; gap: 16px; font-size: 14px; margin-bottom: 4px; }
+.skill-name { flex: 1; }
+.skill-score { font-weight: 700; }
+.skill-bar { height: 6px; border-radius: 3px; background: rgba(128, 128, 128, 0.15); overflow: hidden; }
+.skill-fill { height: 100%; border-radius: 3px; }
+.skills-note { font-size: 12px; opacity: 0.55; margin-top: 12px; }
+.toolbox-title {
+  font-size: 12px;
+  letter-spacing: 1px;
+  opacity: 0.5;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+.toolbox { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag {
+  font-size: 12px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+/* Awards */
+.award { display: flex; gap: 12px; margin-bottom: 12px; font-size: 14px; align-items: center; }
+.award-img {
+  width: 56px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: none; /* 主题可开启 */
+}
+.award-body { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+.award-id { font-family: ui-monospace, Menlo, monospace; opacity: 0.5; font-size: 12px; }
+.award-name { font-weight: 600; }
+.award-note { opacity: 0.55; font-size: 13px; }
+
+/* Contact */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+.contact-item { margin-bottom: 8px; }
+.contact-label { font-size: 12px; letter-spacing: 1px; opacity: 0.5; margin-bottom: 2px; }
+.contact-value { font-size: 14px; word-break: break-all; }
+.contact-note { opacity: 0.5; font-size: 12px; }
+
+.footer {
+  margin-top: 56px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(128, 128, 128, 0.2);
+  font-size: 12px;
+  opacity: 0.45;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.error { color: red; }

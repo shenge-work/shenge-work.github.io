@@ -1,0 +1,74 @@
+/* 主题：复古终端 —— 绿字黑底 CRT 终端，延续极客档案美学
+ * 辉光是 CRT 的叙事一部分，保留但收敛强度
+ */
+html[data-theme="retro-terminal"] body {
+  background: #0a0f0a;
+  color: #33ff66;
+  font-family: "Menlo", "Consolas", "SF Mono", "Courier New", monospace;
+  min-height: 100vh;
+}
+
+html[data-theme="retro-terminal"] #resume {
+  text-shadow: 0 0 2px rgba(51, 255, 102, 0.4);
+}
+
+html[data-theme="retro-terminal"] .hero {
+  border: 1px solid #1f5c2e;
+  border-radius: 6px;
+  padding: 28px;
+  background: rgba(0, 20, 0, 0.4);
+}
+
+html[data-theme="retro-terminal"] .hero-badge {
+  background: #33ff66;
+  color: #0a0f0a;
+  font-weight: 700;
+  border-radius: 2px;
+}
+
+html[data-theme="retro-terminal"] .hero-name { color: #33ff66; }
+html[data-theme="retro-terminal"] .hero-name-en { color: #1f8f3f; }
+html[data-theme="retro-terminal"] .hero-title,
+html[data-theme="retro-terminal"] .hero-subtitle { color: #66ff99; }
+html[data-theme="retro-terminal"] .hero-tagline,
+html[data-theme="retro-terminal"] .hero-meta { color: #1f8f3f; }
+html[data-theme="retro-terminal"] .hero-principles { color: #66ff99; }
+
+html[data-theme="retro-terminal"] .hl-value { color: #33ff66; }
+html[data-theme="retro-terminal"] .hl-label { color: #1f8f3f; }
+
+html[data-theme="retro-terminal"] .section-title {
+  color: #33ff66;
+  border-bottom-color: #1f5c2e;
+}
+html[data-theme="retro-terminal"] .section-title::before { content: "> "; }
+
+html[data-theme="retro-terminal"] .entry-title,
+html[data-theme="retro-terminal"] .entry-company-full { color: #33ff66; }
+html[data-theme="retro-terminal"] .entry-period,
+html[data-theme="retro-terminal"] .entry-sub { color: #1f8f3f; }
+html[data-theme="retro-terminal"] .entry li::marker { color: #1f8f3f; }
+
+html[data-theme="retro-terminal"] .project-card {
+  border-color: #1f5c2e;
+  background: rgba(0, 15, 0, 0.5);
+  border-radius: 4px;
+}
+html[data-theme="retro-terminal"] .project-cover {
+  background: rgba(51, 255, 102, 0.06);
+  border: 1px dashed #1f5c2e;
+}
+html[data-theme="retro-terminal"] .project-cover-text { color: #66ff99; }
+html[data-theme="retro-terminal"] .project-id { color: #1f8f3f; }
+html[data-theme="retro-terminal"] .project-name { color: #33ff66; }
+html[data-theme="retro-terminal"] .project-desc { color: #66cc88; }
+
+html[data-theme="retro-terminal"] .skill-bar { background: rgba(51, 255, 102, 0.1); }
+html[data-theme="retro-terminal"] .skill-fill { background: #33ff66; }
+html[data-theme="retro-terminal"] .skill-score { color: #33ff66; }
+html[data-theme="retro-terminal"] .tag { border-color: #1f8f3f; color: #66ff99; border-radius: 2px; }
+html[data-theme="retro-terminal"] .toolbox-title { color: #1f8f3f; }
+
+html[data-theme="retro-terminal"] .award-id { color: #1f8f3f; }
+html[data-theme="retro-terminal"] .contact-value { color: #66ff99; }
+html[data-theme="retro-terminal"] .footer { border-top-color: #1f5c2e; color: #1f8f3f; }

@@ -1,0 +1,76 @@
+/* 主题：玻璃拟态（克制版）—— 浅色柔和底 + 毛玻璃卡片 + 单一强调色
+ * 不用彩虹渐变、不用深色底，保持专业感
+ */
+html[data-theme="glassmorphism"] body {
+  background: linear-gradient(160deg, #eef3f8 0%, #f7f0ea 55%, #eef3f8 100%);
+  color: #2a3440;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  min-height: 100vh;
+}
+
+html[data-theme="glassmorphism"] {
+  --accent: #3573b9;
+  --card: rgba(255, 255, 255, 0.72);
+  --line: rgba(53, 115, 185, 0.18);
+}
+
+html[data-theme="glassmorphism"] .hero {
+  background: var(--card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 8px 28px rgba(53, 115, 185, 0.10);
+}
+
+html[data-theme="glassmorphism"] .hero-badge {
+  background: var(--accent);
+  color: #fff;
+}
+
+html[data-theme="glassmorphism"] .hero-name { color: #1d2733; }
+html[data-theme="glassmorphism"] .hero-name-en { color: #7d8894; }
+html[data-theme="glassmorphism"] .hero-title { color: var(--accent); }
+html[data-theme="glassmorphism"] .hero-tagline { color: #55616e; }
+html[data-theme="glassmorphism"] .hero-principles { color: var(--accent); }
+
+html[data-theme="glassmorphism"] .hl-value { color: var(--accent); }
+
+html[data-theme="glassmorphism"] .section-title {
+  color: #1d2733;
+  border-bottom-color: var(--line);
+}
+
+html[data-theme="glassmorphism"] .entry-title { color: #1d2733; }
+html[data-theme="glassmorphism"] .entry-period,
+html[data-theme="glassmorphism"] .entry-sub { color: #7d8894; }
+
+html[data-theme="glassmorphism"] .project-card {
+  background: var(--card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(53, 115, 185, 0.08);
+}
+html[data-theme="glassmorphism"] .project-cover {
+  background: rgba(53, 115, 185, 0.06);
+  border-radius: 12px;
+}
+html[data-theme="glassmorphism"] .project-cover-text { color: #7d8894; }
+html[data-theme="glassmorphism"] .project-name { color: #1d2733; }
+html[data-theme="glassmorphism"] .project-desc { color: #55616e; }
+
+html[data-theme="glassmorphism"] .skill-bar { background: rgba(53, 115, 185, 0.12); }
+html[data-theme="glassmorphism"] .skill-fill { background: var(--accent); }
+html[data-theme="glassmorphism"] .skill-score { color: var(--accent); }
+html[data-theme="glassmorphism"] .tag {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.6);
+  color: #3d4a58;
+}
+
+html[data-theme="glassmorphism"] .award-id { color: var(--accent); }
+html[data-theme="glassmorphism"] .contact-value[href] { color: var(--accent); }
+html[data-theme="glassmorphism"] .footer { border-top-color: var(--line); }

@@ -1,0 +1,86 @@
+/* 主题：暗夜科技（原赛博霓虹 重制版）
+ * 设计语言对齐 Vercel / Linear 式专业深色站：
+ * 单一强调色、细边框、无渐变文字、无发光、无玻璃拟态 —— 去除「AI 味」装饰
+ */
+html[data-theme="neon-cyberpunk"] body {
+  background: #0b0d10;
+  color: #d7dce2;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  min-height: 100vh;
+}
+
+/* 强调色：电光青，全站只用这一种彩色 */
+html[data-theme="neon-cyberpunk"] {
+  --accent: #4cc9f0;
+  --line: #23282e;
+  --dim: #8b939e;
+}
+
+html[data-theme="neon-cyberpunk"] .hero {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 32px;
+  background: #101317;
+}
+
+html[data-theme="neon-cyberpunk"] .hero-badge {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-weight: 500;
+  letter-spacing: 2px;
+  border-radius: 4px;
+}
+
+html[data-theme="neon-cyberpunk"] .hero-name { color: #f2f5f8; }
+html[data-theme="neon-cyberpunk"] .hero-name-en { color: var(--dim); }
+html[data-theme="neon-cyberpunk"] .hero-title { color: #e4e9ee; }
+html[data-theme="neon-cyberpunk"] .hero-tagline { color: var(--dim); }
+html[data-theme="neon-cyberpunk"] .hero-meta { color: var(--dim); }
+html[data-theme="neon-cyberpunk"] .hero-principles { color: var(--accent); }
+
+html[data-theme="neon-cyberpunk"] .hl-value { color: #f2f5f8; }
+html[data-theme="neon-cyberpunk"] .hl-label { color: var(--dim); }
+
+html[data-theme="neon-cyberpunk"] .section-title {
+  color: #f2f5f8;
+  border-bottom-color: var(--line);
+}
+/* 章节编号感：标题前的短横线点缀 */
+html[data-theme="neon-cyberpunk"] .section-title::before {
+  content: "//";
+  color: var(--accent);
+  margin-right: 8px;
+  font-family: ui-monospace, Menlo, monospace;
+  font-weight: 400;
+}
+
+html[data-theme="neon-cyberpunk"] .entry-title { color: #e4e9ee; }
+html[data-theme="neon-cyberpunk"] .entry-period,
+html[data-theme="neon-cyberpunk"] .entry-sub { color: var(--dim); }
+
+html[data-theme="neon-cyberpunk"] .project-card {
+  border-color: var(--line);
+  background: #101317;
+  transition: border-color 0.2s ease;
+}
+html[data-theme="neon-cyberpunk"] .project-card:hover { border-color: var(--accent); }
+html[data-theme="neon-cyberpunk"] .project-cover { background: #0d1013; }
+html[data-theme="neon-cyberpunk"] .project-id { color: var(--accent); }
+html[data-theme="neon-cyberpunk"] .project-name { color: #e4e9ee; }
+html[data-theme="neon-cyberpunk"] .project-desc { color: var(--dim); }
+
+html[data-theme="neon-cyberpunk"] .skill-bar { background: #1c2127; }
+html[data-theme="neon-cyberpunk"] .skill-fill { background: var(--accent); }
+html[data-theme="neon-cyberpunk"] .skill-score { color: var(--accent); }
+html[data-theme="neon-cyberpunk"] .tag {
+  border-color: var(--line);
+  color: #aab3bd;
+  border-radius: 4px;
+}
+html[data-theme="neon-cyberpunk"] .toolbox-title { color: var(--dim); }
+
+html[data-theme="neon-cyberpunk"] .award-id { color: var(--accent); }
+html[data-theme="neon-cyberpunk"] .contact-value { color: #e4e9ee; }
+html[data-theme="neon-cyberpunk"] .contact-value[href] { color: var(--accent); }
+html[data-theme="neon-cyberpunk"] .footer { border-top-color: var(--line); }

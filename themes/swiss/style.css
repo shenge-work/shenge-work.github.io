@@ -1,0 +1,81 @@
+/* 主题：瑞士国际主义 —— 网格、Helvetica、红色色块、大编号、强留白 */
+html[data-theme="swiss"] body {
+  background: #ffffff;
+  color: #111;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+html[data-theme="swiss"] {
+  --red: #e30613;
+  --black: #111;
+  --line: #e2e2e2;
+  --dim: #888;
+}
+
+html[data-theme="swiss"] #resume { max-width: 880px; }
+
+/* Hero：左侧红色竖条 + 顶部黑线，报头网格感 */
+html[data-theme="swiss"] .hero {
+  border-top: 4px solid var(--black);
+  padding-top: 28px;
+  position: relative;
+}
+html[data-theme="swiss"] .hero::before {
+  content: "";
+  position: absolute;
+  left: -24px; top: 28px;
+  width: 8px; height: 84px;
+  background: var(--red);
+}
+
+html[data-theme="swiss"] .hero-badge {
+  background: var(--red);
+  color: #fff;
+  border-radius: 0;
+  font-weight: 700;
+}
+
+html[data-theme="swiss"] .hero-name { font-size: 56px; font-weight: 700; letter-spacing: 0; line-height: 1.1; }
+html[data-theme="swiss"] .hero-title { font-size: 20px; font-weight: 700; }
+html[data-theme="swiss"] .hero-title-en { color: var(--dim); }
+html[data-theme="swiss"] .hero-principles { color: var(--red); font-weight: 700; }
+
+/* 章节标题：超大灰色编号 + 黑色标题，瑞士网格经典元素 */
+html[data-theme="swiss"] .section { counter-increment: sec; position: relative; padding-top: 8px; }
+html[data-theme="swiss"] .section-title {
+  font-size: 20px;
+  font-weight: 700;
+  border-bottom: 2px solid var(--black);
+  letter-spacing: 1px;
+  padding-left: 64px;
+  position: relative;
+}
+html[data-theme="swiss"] .section-title::before {
+  content: "0" counter(sec);
+  position: absolute;
+  left: 0; top: -6px;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--line);
+  -webkit-text-stroke: 1px var(--black);
+}
+
+html[data-theme="swiss"] .entry-title { font-weight: 700; }
+html[data-theme="swiss"] .entry-head { border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+
+html[data-theme="swiss"] .project-card {
+  border: 1px solid var(--black);
+  border-radius: 0;
+}
+html[data-theme="swiss"] .project-cover { border-radius: 0; background: #f2f2f2; }
+html[data-theme="swiss"] .project-id { color: var(--red); font-weight: 800; }
+html[data-theme="swiss"] .project-name { font-weight: 700; }
+
+html[data-theme="swiss"] .skill-fill { background: var(--red); }
+html[data-theme="swiss"] .skill-bar { border-radius: 0; }
+html[data-theme="swiss"] .skill-score { color: var(--red); font-weight: 800; }
+html[data-theme="swiss"] .tag { border-radius: 0; border-color: var(--black); }
+
+html[data-theme="swiss"] .award-id { color: var(--red); font-weight: 800; }
+html[data-theme="swiss"] .contact-value[href] { color: var(--red); }
+html[data-theme="swiss"] .footer { border-top: 4px solid var(--black); }

@@ -1,0 +1,125 @@
+/* 主题：彩绘手绘 —— 暖纸底、楷体、手绘边框、贴纸感
+ * 使用原简历的扁平插画封面与手绘头像，配色为蜡笔色系
+ */
+html[data-theme="illustrated"] body {
+  background: #faf6ee;
+  background-image: radial-gradient(#e8e0d0 1px, transparent 1px);
+  background-size: 22px 22px; /* 细点纹理，像素描纸 */
+  color: #4a4238;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", "PingFang SC", serif;
+}
+
+html[data-theme="illustrated"] {
+  --ink: #4a4238;        /* 墨色 */
+  --crayon-red: #e8654a; /* 蜡笔橘红 */
+  --crayon-blue: #5b9bd5;
+  --crayon-green: #7cb342;
+  --paper-line: #d9cfbc;
+}
+
+/* 手绘感不规则边框（经典 border-radius 技巧） */
+html[data-theme="illustrated"] .hero {
+  border: 2px solid var(--ink);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  padding: 32px 36px;
+  background: #fffdf7;
+}
+
+/* 头像：彩绘风开启，加手绘圆框 */
+html[data-theme="illustrated"] .hero-portrait { display: block; float: right; margin-left: 20px; }
+html[data-theme="illustrated"] .hero-portrait img {
+  width: 110px; height: 110px;
+  border: 2px solid var(--ink);
+  border-radius: 50% 45% 52% 48% / 48% 52% 45% 55%;
+  background: #fff;
+}
+html[data-theme="illustrated"] .hero::after { content: ""; display: block; clear: both; }
+
+html[data-theme="illustrated"] .hero-badge {
+  background: var(--crayon-red);
+  color: #fffdf7;
+  border-radius: 999px 12px 999px 12px;
+  font-weight: 700;
+  transform: rotate(-1.5deg);
+  display: inline-block;
+}
+
+html[data-theme="illustrated"] .hero-name { color: var(--ink); }
+html[data-theme="illustrated"] .hero-name-en { color: #a3937c; }
+html[data-theme="illustrated"] .hero-title { color: var(--crayon-blue); font-weight: 700; }
+html[data-theme="illustrated"] .hero-tagline { color: #6b5f50; }
+html[data-theme="illustrated"] .hero-principles {
+  color: var(--crayon-red);
+  border-bottom: 2px dashed var(--crayon-red);
+  display: inline-block;
+  padding-bottom: 2px;
+}
+
+html[data-theme="illustrated"] .hl-value { color: var(--crayon-blue); }
+html[data-theme="illustrated"] .hl-label { color: #a3937c; }
+
+/* 章节标题：手绘波浪线用虚线模拟 + 蜡笔色小圆点 */
+html[data-theme="illustrated"] .section-title {
+  color: var(--ink);
+  border-bottom: 2px dashed var(--paper-line);
+  font-weight: 700;
+  font-size: 18px;
+}
+html[data-theme="illustrated"] .section-title::before {
+  content: "✦";
+  color: var(--crayon-green);
+  margin-right: 8px;
+}
+
+html[data-theme="illustrated"] .entry-title { color: var(--ink); }
+html[data-theme="illustrated"] .entry-period { color: #a3937c; }
+html[data-theme="illustrated"] .entry-sub { color: #6b5f50; }
+html[data-theme="illustrated"] .entry li::marker { color: var(--crayon-red); }
+
+/* 项目卡：贴纸感 —— 轻微旋转交替 */
+html[data-theme="illustrated"] .project-card {
+  border: 2px solid var(--ink);
+  border-radius: 15px 255px 15px 225px / 225px 15px 255px 15px;
+  background: #fffdf7;
+  padding: 14px;
+}
+html[data-theme="illustrated"] .project-card:nth-child(odd) { transform: rotate(-0.6deg); }
+html[data-theme="illustrated"] .project-card:nth-child(even) { transform: rotate(0.5deg); }
+html[data-theme="illustrated"] .project-cover {
+  background: #f3ecdd;
+  border: 1.5px dashed var(--paper-line);
+  border-radius: 10px;
+}
+html[data-theme="illustrated"] .project-cover-text { color: #a3937c; }
+html[data-theme="illustrated"] .project-id { color: var(--crayon-red); font-weight: 700; }
+html[data-theme="illustrated"] .project-name { color: var(--ink); }
+html[data-theme="illustrated"] .project-desc { color: #6b5f50; }
+
+/* 技能条：蜡笔质感 */
+html[data-theme="illustrated"] .skill-bar {
+  background: #eee5d2;
+  border: 1px solid var(--paper-line);
+  height: 10px;
+  border-radius: 999px 6px 999px 6px;
+}
+html[data-theme="illustrated"] .skill:nth-child(odd) .skill-fill { background: var(--crayon-blue); }
+html[data-theme="illustrated"] .skill:nth-child(even) .skill-fill { background: var(--crayon-green); }
+html[data-theme="illustrated"] .skill:nth-child(3n) .skill-fill { background: var(--crayon-red); }
+html[data-theme="illustrated"] .skill-score { color: var(--ink); }
+
+html[data-theme="illustrated"] .tag {
+  border: 1.5px solid var(--ink);
+  background: #fffdf7;
+  color: var(--ink);
+  border-radius: 999px 8px 999px 8px;
+  transform: rotate(-0.5deg);
+}
+html[data-theme="illustrated"] .toolbox-title { color: #a3937c; }
+
+/* 获奖证书：开启证书缩略图，像贴在纸上的照片 */
+html[data-theme="illustrated"] .award-img { display: block; border: 2px solid var(--ink); }
+html[data-theme="illustrated"] .award-id { color: var(--crayon-red); }
+
+html[data-theme="illustrated"] .contact-value { color: var(--ink); }
+html[data-theme="illustrated"] .contact-value[href] { color: var(--crayon-blue); }
+html[data-theme="illustrated"] .footer { border-top-color: var(--paper-line); color: #a3937c; }

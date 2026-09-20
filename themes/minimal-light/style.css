@@ -1,0 +1,50 @@
+/* 主题：极简留白 —— 黑白灰、细线、大量留白，像印刷品 */
+html[data-theme="minimal-light"] body {
+  background: #fafaf8;
+  color: #1a1a1a;
+  font-family: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+html[data-theme="minimal-light"] .hero {
+  border-left: 4px solid #1a1a1a;
+  padding-left: 24px;
+}
+
+html[data-theme="minimal-light"] .hero-badge {
+  background: #1a1a1a;
+  color: #fafaf8;
+  letter-spacing: 2px;
+  border-radius: 2px;
+}
+
+html[data-theme="minimal-light"] .hero-name { color: #1a1a1a; }
+html[data-theme="minimal-light"] .hero-name-en { color: #888; }
+html[data-theme="minimal-light"] .hero-title { color: #444; }
+html[data-theme="minimal-light"] .hero-tagline { color: #555; }
+html[data-theme="minimal-light"] .hero-principles { color: #1a1a1a; font-weight: 600; }
+
+html[data-theme="minimal-light"] .hl-value { color: #1a1a1a; }
+
+html[data-theme="minimal-light"] .section-title {
+  color: #1a1a1a;
+  border-bottom-color: #e5e5e0;
+  font-weight: 700;
+}
+
+html[data-theme="minimal-light"] .entry-title { color: #1a1a1a; }
+html[data-theme="minimal-light"] .entry-period,
+html[data-theme="minimal-light"] .entry-sub { color: #777; }
+
+html[data-theme="minimal-light"] .project-card {
+  border-color: #e5e5e0;
+  background: #fff;
+}
+html[data-theme="minimal-light"] .project-cover { background: #f2f2ee; }
+html[data-theme="minimal-light"] .project-cover-text { color: #555; }
+html[data-theme="minimal-light"] .project-name { color: #1a1a1a; }
+
+html[data-theme="minimal-light"] .skill-fill { background: #1a1a1a; }
+html[data-theme="minimal-light"] .tag { border-color: #ccc; color: #444; border-radius: 2px; }
+
+html[data-theme="minimal-light"] .contact-value[href] { color: #1a1a1a; text-decoration: underline; }
+html[data-theme="minimal-light"] .footer { border-top-color: #e5e5e0; }
