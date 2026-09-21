@@ -881,6 +881,12 @@ button { font-family: inherit; cursor: pointer; }
   grid-template-columns: repeat(2, 1fr);
   gap: 40px 32px;
 }
+/* 5 卡布局：最后一张单卡限宽居中，避免孤卡靠左 */
+.proj-grid > .proj-card:nth-child(5):nth-last-child(1) {
+  grid-column: 1 / -1;
+  max-width: calc(50% - 16px);
+  justify-self: center;
+}
 .proj-card {
   border: var(--border-thick);
   background: var(--card);
@@ -1451,6 +1457,7 @@ button { font-family: inherit; cursor: pointer; }
 
   /* ── 项目作品 ── */
   .proj-grid { grid-template-columns: 1fr; gap: 28px; }
+  .proj-grid > .proj-card:nth-child(5):nth-last-child(1) { max-width: none; justify-self: stretch; }
   .proj-card:nth-child(even) { transform: rotate(0.6deg) translateY(0); }
   .proj-body { padding: 18px 20px 22px; }
   .proj-title { font-size: clamp(20px, 5.5vw, 26px); }
