@@ -287,7 +287,7 @@
         <li>搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现<strong>多租户云沙箱</strong>隔离环境，完成发布依赖管理、日志上报与 Agent / Skill 全生命周期管控。</li>
         <li>设计 <strong>MCP / Skill 统一能力扩展体系</strong>：能力注册、发现、调用、权限与版本全流程标准化，兼容 MCP 协议与外部 API，支持多模态能力接入。</li>
         <li>设计多租户 AI 资源<strong>精细化计费链路</strong>（费率转换 / 实时预扣 / 离线扣费 / 账单校准 / 补偿机制），模型调用成本实时计量、全程可追溯。</li>
-        <li>自研消息频道中心对接<strong>飞书 / 企微 / 钉钉 / 微信 / QQ</strong>，实现 Agent 投研结果多 IM 实时触达；自研 Skill-Hub 沉淀复用投研能力，缩短业务交付周期。</li>
+        <li>自研<strong>分布式 IM 网关</strong>：一套接入层统一承接飞书 / 企微 / 钉钉 / 微信 / QQ 五端消息，支撑多副本扩缩容与滚动发布不丢消息。</li>
       </ul>
       <div class="exp-tags">
         <span class="tag">Python</span><span class="tag">AgentScope</span><span class="tag">QwenPaw / OpenCode</span><span class="tag">Flink</span><span class="tag">MCP / Skill</span><span class="tag tag-blue">云沙箱</span>
@@ -302,7 +302,7 @@
         <span class="exp-time">2024.03 — 2025.11</span>
       </div>
       <ul class="exp-points">
-        <li>主导 lessie.cn AI 人脉搜索引擎：Multi-Agent + Agentic RAG，搜索精准度提升 <strong>30%</strong>、单次找人成本降低 <strong>80%</strong>、目标定位时间缩短 <strong>60%</strong>。</li>
+        <li>主导 lessie.cn AI 人脉搜索引擎：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构 + RAG 策略注入，搜索精准度提升 <strong>30%</strong>、单次找人成本降低 <strong>80%</strong>、目标定位时间缩短 <strong>60%</strong>。</li>
         <li>0→1 自建海外邮件群发系统，集成 AWS / SendGrid / 自建 SMTP，支撑月均 <strong>50 万+</strong> 有效触达，送达率稳定在 <strong>95%</strong> 以上。</li>
         <li>设计 dataworks 数仓同步链路，完成 <strong>300+ 万</strong>网红画像与视频数据日更；借助 Dify 实现聊天上下文管理与 AI 智能议价。</li>
         <li>研发群控 RPA 机器人，实现自动注册 / 养号、风险检测、群发私信等自动化流程。</li>
@@ -374,14 +374,14 @@
           <span class="proj-year">2024.03 — 2025.11</span>
         </div>
         <h3 class="proj-title">lessie.cn <span class="proj-title-en">AI 人脉搜索引擎</span></h3>
-        <p class="proj-desc">智能代理搜索引擎：用 Agent 即时「找人」，快速定位全球目标人物并完成初步联络。</p>
-        <div class="proj-stack"><span>LangChain</span><span>LangGraph</span><span>LlamaIndex</span><span>Milvus</span></div>
+        <p class="proj-desc">企业级人才搜索平台：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构，将传统「找人」流程标准化、自动化。</p>
+        <div class="proj-stack"><span>LangChain · LangGraph</span><span>ReAct</span><span>LlamaIndex</span><span>Milvus</span></div>
       </div>
     </article>
 
-    <article class="proj-card reveal" data-proj="2" tabindex="0" role="button" aria-label="查看项目 海外红人营销平台 的详情">
+    <article class="proj-card reveal" data-proj="2" tabindex="0" role="button" aria-label="查看项目 海外红人营销一体化 SaaS 平台 的详情">
       <div class="proj-media">
-        <img src="images/project-3.jpg" alt="海外红人营销平台项目封面——摄像机爱心与火箭插画" width="640" height="360">
+        <img src="images/project-3.jpg" alt="海外红人营销一体化 SaaS 平台项目封面——摄像机爱心与火箭插画" width="640" height="360">
         <span class="proj-no" aria-hidden="true">P-03</span>
         <span class="proj-hover-ui" aria-hidden="true">
           <span class="proj-hover-btn">查看详情 <i>▶</i></span>
@@ -392,7 +392,7 @@
           <span class="tag tag-orange">FDE 式业务落地</span>
           <span class="proj-year">2024.03 — 2025.11</span>
         </div>
-        <h3 class="proj-title">hicreator.ai <span class="proj-title-en">海外红人营销平台</span></h3>
+        <h3 class="proj-title">hicreator.ai <span class="proj-title-en">海外红人营销一体化 SaaS 平台</span></h3>
         <p class="proj-desc">一站式 AI 网红营销自动化系统：大模型与多模态数据实现品牌与创作者全链路闭环。</p>
         <div class="proj-stack"><span>Spring Boot / Cloud</span><span>LLM</span><span>MCP</span><span>WebDriver</span></div>
       </div>

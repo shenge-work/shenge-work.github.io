@@ -123,7 +123,7 @@
         '搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现多租户云沙箱隔离环境，完成发布依赖管理、日志上报、数据预处理与 Agent / Skill 全生命周期管控；',
         '设计 MCP / Skill 统一能力扩展体系，标准化能力注册、发现、调用、权限与版本流程，兼容 MCP 协议与外部 API，支持多模态能力接入，降低工具接入成本；',
         '设计多租户 AI 资源精细化计费：费率转换、实时预扣、离线扣费、账单校准与补偿机制，实现模型调用成本实时计量、链路追溯；',
-        '自研消息频道中心对接飞书 / 企微 / 钉钉 / 微信 / QQ，实现 Agent 投研结果多 IM 实时触达；自研 Skill-Hub 实现 Skill 发布、审核、版本、权限、灰度全流程管理。'
+        '自研分布式 IM 网关：一套接入层统一承接飞书 / 企微 / 钉钉 / 微信 / QQ 五端消息，支撑多副本扩缩容与滚动发布不丢消息。'
       ],
       stack: 'Python · AgentScope · QwenPaw / OpenCode · SandBox · OAuth2 · Flink · MCP · Skill · Tool Calling',
       stats: [
@@ -138,14 +138,15 @@
       badge: 'Multi-Agent · Agentic RAG',
       year: '2024.03 — 2025.11 · Lessie · 创始团队核心研发',
       title: 'lessie.cn — AI 人脉搜索引擎',
-      desc: '一款智能代理搜索引擎：运用 Agent 技术实现即时「找人」，快速定位全球目标人物并完成初步联络。搜索精准度提升 30%、成本降低 80%、目标人物定位时间缩短 60%。',
+      desc: '面向「找人」场景的企业级人才搜索平台：LangChain + LangGraph 编排 Supervisor / Search / Review 多层级 ReAct 协作的 Multi-Agent 架构，将依赖人脉与手动检索的找人流程标准化、自动化，全球范围精准定位目标人物并完成初步联络。搜索精准度提升 30%、成本降低 80%、目标人物定位时间缩短 60%。',
       points: [
-        '开发 Search Agent，封装多平台搜索 Tools，设计多级降级检索策略，完成多源数据源的统一调用与结果融合；',
-        '搭建 RAG 增强的 Few-Shot 学习框架，实现样本自动化录入与相似性召回，持续提升大模型决策准确性；',
-        '构建 LLM 性能评估系统，支持多模型并行测试与核心指标自动化统计；解耦 SSE 流式推送，保障「逐字输出」体验与断点续传；',
-        '设计分布式任务队列（状态自动流转 / 优先级调度 / 并发控制）与支付中台（Stripe / Paypal 全链路闭环），落地 T+1 增长裂变机制与 posthog 全链路追踪。'
+        '开发 Search Agent：调研 Apollo / LinkedIn / Upfluence / Modash 等 10+ 数据源 API，抽象统一搜索接口，实现多平台调用封装、搜索参数生成与工具智能路由；通过 Standardizer 将各源异构字段收敛为统一人物 Schema，支撑多源结果融合与排序；',
+        '构建 Review Agent 质量评审系统：基于 ReAct 架构从内容相关性、数据指标匹配度、Web Search 事实校验等维度对候选人评分排序；以 analyzer / result_manager 分层基类 + 策略模式落地，多轮 Prompt Engineering 校准评分口径，支撑 B2B 与 KOL 两套垂类评审逻辑快速扩展；',
+        '搭建 RAG 增强的 Few-Shot 学习系统：多类型样本自动化录入（含从 LangSmith 回流历史成功案例），LlamaIndex 完成文档切片与索引构建、Milvus 承接向量化存储与相似性召回，将历史最优搜索策略动态注入当前 Agent 决策，实现高质量搜索策略的知识固化；',
+        '攻克多 Agent 协作与上下文瓶颈：在 Supervisor / Search / Review 多层级 ReAct 架构中以状态机与共享上下文约定消除任务重复与决策冲突，通过上下文压缩、分层缓存与增量更新等 Context Engineering 手段平衡信息完整性与响应稳定性；',
+        '工程化落地：LLM / 工具 / 业务三级埋点经 Kafka 落数仓，按模型维度统计评审通过率与任务耗时，支撑模型选型与参数调优；解耦 SSE 流式推送实现「逐字输出」，基于图状态持久化与 interrupt / resume 机制实现人机中断应答与长任务恢复；任务按订阅套餐优先级分级抢占，配合全局与用户级双层并发控制。'
       ],
-      stack: 'LangChain · LangGraph · LangSmith · LlamaIndex · Multi-Agent · Agentic RAG · Milvus',
+      stack: 'LangChain · LangGraph · ReAct · Multi-Agent · Apollo · LinkedIn API · Upfluence / Modash · Prompt / Context Engineering · LangSmith · LlamaIndex · Milvus · Kafka · SSE',
       stats: [
         { v: '+30%', s: '搜索精准度' },
         { v: '-80%', s: '单次找人成本' },
@@ -157,7 +158,7 @@
       img: 'images/project-3.jpg',
       badge: 'FDE 式业务落地',
       year: '2024.03 — 2025.11 · Lessie · 端到端交付',
-      title: 'hicreator.ai — 海外红人营销一体化平台',
+      title: 'hicreator.ai — 海外红人营销一体化 SaaS 平台',
       desc: '一站式 AI 网红营销自动化系统：通过大模型与多模态数据分析，实现品牌与创作者全链路闭环管理，运营效率提升 40%、履约率高达 80%。',
       points: [
         'FDE 式端到端落地：深入红人营销业务，把模糊诉求拆解为可执行流程，用 Grok LLM + Agent 工作流将「客户→项目→合同→审批→付款→结算」串联成自动化闭环；',

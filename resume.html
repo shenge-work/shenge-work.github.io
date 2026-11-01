@@ -74,6 +74,21 @@ body {
   color: var(--ink-soft);
 }
 .head-meta b { color: var(--ink); }
+/* 头部链接：悬停高亮 + 点击跳转（打印时呈现纯文本样式） */
+.head-meta .link {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1.5px solid transparent;
+  transition: color .15s ease, border-color .15s ease;
+  cursor: pointer;
+}
+.head-meta .link:hover {
+  color: var(--blue) !important;
+  border-bottom-color: var(--blue);
+}
+@media print {
+  .head-meta .link { color: inherit; border-bottom: none; text-decoration: none; }
+}
 .file-no {
   font-family: var(--font-mono);
   font-size: 10.5px;
@@ -130,6 +145,28 @@ body {
 }
 .pts li::before { content: '▪'; position: absolute; left: 2px; color: var(--orange); }
 .pts strong { color: var(--ink); }
+
+/* ── 学信网学历验证码区块 ── */
+.edu-verify {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 2px dashed var(--ink);
+  background: var(--paper);
+}
+.edu-verify-text { flex: 1; min-width: 0; }
+.edu-verify-label { font-size: 11px; font-weight: 700; color: var(--ink-soft); }
+.edu-verify-code { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; letter-spacing: .04em; }
+.edu-verify-tip { font-family: var(--font-mono); font-size: 10px; color: var(--ink-soft); }
+.edu-verify-qr {
+  width: 72px; height: 72px;
+  flex-shrink: 0;
+  border: 2px solid var(--ink);
+  background: #fff;
+  image-rendering: pixelated;
+}
 .kv { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 24px; }
 .kv li { list-style: none; font-size: 14px; }
 .kv b { color: var(--blue); font-family: var(--font-mono); font-size: 12px; margin-right: 6px; }
@@ -144,6 +181,50 @@ body {
 }
 .tags .t-o { background: var(--orange); color: #fff; }
 .tags .t-b { background: var(--blue); color: #fff; }
+
+/* ── 专业技能：分类 + 掌握层级两行式（ATS 友好） ── */
+.skill-cats { display: flex; flex-direction: column; }
+.skill-cat {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 4px 18px;
+  padding: 10px 0;
+  border-bottom: 1.5px dashed rgba(20, 19, 17, .3);
+}
+.skill-cat:last-child { border-bottom: none; padding-bottom: 2px; }
+.skill-cat:first-child { padding-top: 4px; }
+.skill-cat-name {
+  font-weight: 900;
+  font-size: 13.5px;
+  line-height: 1.5;
+  align-self: start;
+  padding-top: 1px;
+}
+.skill-row-main { font-size: 13px; line-height: 1.9; font-weight: 700; }
+.skill-row-main b { font-weight: 700; }
+.skill-row-main em {
+  font-style: normal;
+  font-weight: 700;
+  border: 1.5px solid var(--ink);
+  padding: 0 5px;
+  margin: 0 1px;
+  color: #fff;
+}
+/* 高亮块交替使用主题橙 / 蓝（与页面强调色体系一致）；.em-b 强制蓝色 */
+.skill-row-main em:nth-of-type(odd) { background: var(--orange); }
+.skill-row-main em:nth-of-type(even) { background: var(--blue); }
+.skill-row-main em.em-b { background: var(--blue); }
+.skill-row-main small {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+.skill-row-sub {
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: #7d786e;
+  margin-top: 1px;
+}
 
 .actions {
   max-width: 860px;
@@ -171,19 +252,64 @@ body {
 }
 .btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
 .btn-solid { background: var(--orange); color: #fff; }
+.btn-blue { background: var(--blue); color: #fff; }
 
+/* ── 打印样式：与屏幕显示保持一致（米白底 + 粗边框 + 偏移阴影） ── */
+@page { size: A4; margin: 0; }
 @media print {
-  body { padding: 0; background: #fff; font-size: 12.5px; }
-  .sheet { border: 2.5px solid #141311; box-shadow: none; max-width: 100%; }
+  /* 强制输出背景色 / 边框 / 阴影 / 文字阴影（浏览器打印时无需勾选「背景图形」） */
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  html, body { background: var(--paper) !important; }
+  body { padding: 14px 14px; font-size: 12.8px; }
+  /* 头部信息行与网页端一致：保持原字号、禁止换行，避免邮箱被挤到下一行 */
+  .head-meta { font-size: 11.5px; }
+  .head-meta p { white-space: nowrap; }
+  .sheet {
+    border: 4px solid var(--ink);
+    box-shadow: 10px 10px 0 var(--ink);
+    max-width: 860px;
+    margin: 0 auto;
+    background: var(--card);
+  }
   .actions { display: none; }
-  .sec { padding: 14px 22px; }
-  .sheet-head { padding: 18px 22px; }
+  .sec { padding: 9px 22px; }
+  .item { break-inside: avoid; margin-bottom: 8px; }
+  .pts { margin-top: 3px; }
+  .pts li { margin-bottom: 1px; }
+  .sheet-head { padding: 13px 22px; }
+  /* 要点行字距微收约 3%（肉眼不可辨），避免个别长行出现孤字换行 */
+  .pts li { letter-spacing: -0.03em; }
+  /* 技能分类区块紧凑化，保证两页收束 */
+  .skill-cat { padding: 4px 0; }
+  .skill-row-main { line-height: 1.6; font-size: 12.3px; }
+  .skill-row-main small { font-size: 9.5px; }
+  .skill-row-sub { line-height: 1.45; font-size: 10.8px; margin-top: 0; }
+  .edu-verify { padding: 4px 10px; gap: 10px; }
+  .edu-verify-qr { width: 60px; height: 60px; }
+
+  /* ── 黑白打印模式：布局样式不变，仅保留黑白两色（纸质打印省墨兼容） ── */
+  body.bw-print {
+    --paper: #ffffff;
+    --card: #ffffff;
+    --ink: #000000;
+    --ink-soft: #000000;
+    --orange: #000000;
+    --blue: #000000;
+  }
+  body.bw-print .head-name { text-shadow: 3px 3px 0 #000; }
+  body.bw-print img { filter: grayscale(1); }
+  body.bw-print .edu-verify { background: #ffffff; }
+}
 }
 @media (max-width: 620px) {
   .head-name { font-size: 32px; }
   .kv { grid-template-columns: 1fr; }
   .sheet-head { padding: 20px; }
   .sec { padding: 18px 20px; }
+  .skill-cat { grid-template-columns: 1fr; gap: 2px; }
+  .skill-cat-name { padding-top: 0; }
+  .edu-verify { flex-direction: column; align-items: flex-start; }
 }
 </style>
 </head>
@@ -195,29 +321,22 @@ body {
     <div class="avatar"><img src="images/portrait.jpg" alt="陈培胜的个人形象照"></div>
     <div class="head-main">
       <h1 class="head-name">陈培胜</h1>
-      <p class="head-role">AI 全栈工程师 / <em>AI FULL-STACK ENGINEER</em> · 5 年经验</p>
+      <p class="head-role">AI Agent 工程师 / AI 全栈工程师 / 后端开发工程师 / Java 开发工程师</p>
       <div class="head-meta">
-        <p><b>电话</b> +86 180 2283 4605　<b>邮箱</b> shenge.work@gmail.com</p>
-        <p><b>坐标</b> 广东深圳　<b>GitHub</b> github.com/shenge-work　<b>到岗</b> 随时</p>
+        <p><b>经验</b> 5 年　<b>坐标</b> 广东深圳　<b>到岗</b> 随时 · 已离职　<b>电话</b> +86 180 2283 4605　<b>邮箱</b> <a class="link" href="mailto:shenge.work@gmail.com">shenge.work@gmail.com</a></p>
+        <p><b>作品集</b> <a class="link" href="https://shenge-work.github.io" target="_blank" rel="noopener noreferrer">shenge-work.github.io</a>　<b>GitHub</b> <a class="link" href="https://github.com/shenge-work" target="_blank" rel="noopener noreferrer">github.com/shenge-work</a></p>
       </div>
     </div>
-    <span class="file-no">FILE CPS-2021-0919</span>
   </header>
 
-  <!-- 教育经历 -->
+  <!-- 个人优势 -->
   <section class="sec">
-    <div class="sec-title"><span class="sec-no">01</span><h2>教育经历</h2><span class="sec-line"></span></div>
-    <div class="item">
-      <div class="item-head">
-        <p class="item-title">中山大学新华学院 <span>软件工程 · 全日制统招本科</span></p>
-        <span class="item-time">2017.09 — 2021.06</span>
-      </div>
-      <ul class="pts">
-        <li>在校获<strong>国家励志奖学金（国家级）</strong>与校级奖学金</li>
-        <li>主修软件工程核心课程体系：数据结构 · 数据库原理 · 计算机网络 · 软件工程</li>
-        <li>毕业后从 Java 后端起步，跨栈至 Python / TypeScript 与 AI 全栈工程</li>
-      </ul>
-    </div>
+    <div class="sec-title"><span class="sec-no">01</span><h2>个人优势</h2><span class="sec-line"></span></div>
+    <ul class="pts">
+      <li><strong>全栈复合背景</strong>：5 年从企业级 Java 后端（周生生）跨栈至 AI 全栈 / Agent 工程（Lessie · 进门财经），Java → Python / TypeScript 无障碍切换，兼具工程纪律与 AI 敏锐度</li>
+      <li><strong>0→1 系统建设能力</strong>：实战密度高——主导 6 套系统从零到一——潜客 CRM、品牌官网、AI 搜索引擎、海外营销 SaaS、邮件群发平台、投研工作台，覆盖架构设计、技术选型到商业闭环全流程</li>
+      <li><strong>Agent 工程化专精</strong>：Supervisor / Search / Review 多层级 ReAct Multi-Agent、Agentic RAG、MCP / Skill 生态、Context Engineering、LLM 评测体系全链路实战</li>
+    </ul>
   </section>
 
   <!-- 工作经历 -->
@@ -229,10 +348,7 @@ body {
         <span class="item-time">2026.01 — 2026.07</span>
       </div>
       <ul class="pts">
-        <li>搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现<strong>多租户云沙箱</strong>隔离与 Agent / Skill 全生命周期管控</li>
-        <li>设计 <strong>MCP / Skill 统一能力扩展体系</strong>：注册、发现、调用、权限、版本标准化，兼容 MCP 协议与外部 API</li>
-        <li>设计多租户 AI 资源<strong>精细化计费链路</strong>（实时预扣 / 离线扣费 / 账单校准），成本实时计量、链路追溯</li>
-        <li>自研消息频道中心对接飞书 / 企微 / 钉钉 / 微信 / QQ；自研 Skill-Hub 全流程治理，缩短业务交付周期</li>
+        <li>主导 AI 投研工作台（AI 进宝）研发：Agent 基座与多租户云沙箱、MCP / Skill 统一扩展体系、AI 资源精细化计费、分布式 IM 网关五端触达等核心基建</li>
       </ul>
     </div>
     <div class="item">
@@ -241,10 +357,28 @@ body {
         <span class="item-time">2024.03 — 2025.11</span>
       </div>
       <ul class="pts">
-        <li>主导 lessie.cn AI 人脉搜索引擎：Multi-Agent + Agentic RAG，精准度 <strong>+30%</strong>、成本 <strong>-80%</strong>、定位耗时 <strong>-60%</strong></li>
-        <li>0→1 自建海外邮件群发系统（AWS / SendGrid / 自建 SMTP），月均 <strong>50 万+</strong> 有效触达，送达率 <strong>95%+</strong></li>
+        <li>主导 lessie.cn AI 人脉搜索引擎：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构，显著提升搜索精准度、降低找人成本与目标定位耗时</li>
+        <li>0→1 自建海外邮件群发系统（AWS / SendGrid / 自建 SMTP），支撑月均 <strong>50 万+</strong> 有效触达，送达率稳定在行业高位</li>
         <li>设计 dataworks 数仓同步链路，<strong>300+ 万</strong>网红画像与视频数据日更</li>
         <li>研发群控 RPA 机器人：自动注册 / 养号、风险检测、群发私信自动化</li>
+      </ul>
+    </div>
+    <div class="item">
+      <div class="item-head">
+        <p class="item-title">房极客 · 深圳市房极客网络科技有限公司 <span>Java 开发工程师 · 房地产 SaaS</span></p>
+        <span class="item-time">2023.08 — 2024.01</span>
+      </div>
+      <ul class="pts">
+        <li>参与小鹿选房 C 端、看房日记 B 端与经纪人 ERP 中台研发；负责新房报备与上下架、房源跟进、权限控制、余额划转等模块</li>
+      </ul>
+    </div>
+    <div class="item">
+      <div class="item-head">
+        <p class="item-title">丰速易通（苏州）科技有限公司 <span>Java 开发工程师 · 电商 SaaS</span></p>
+        <span class="item-time">2023.07（仅工作两周，因公司搬迁苏州）</span>
+      </div>
+      <ul class="pts">
+        <li>核心产品企得宝 ERP、易打单、速打覆盖电商全链路；短期参与电商 ERP 与订单履约的需求梳理和研发交接</li>
       </ul>
     </div>
     <div class="item">
@@ -253,7 +387,7 @@ body {
         <span class="item-time">2021.09 — 2023.06</span>
       </div>
       <ul class="pts">
-        <li>牵头多渠道潜客跟踪分析 <strong>CRM 平台</strong>研发：整合大陆、港澳台线上线下销售线索，日活 <strong>10W+</strong>，销售转化率提升 <strong>70%</strong></li>
+        <li>负责多渠道潜客跟踪分析 <strong>CRM 平台</strong>研发：整合大陆、港澳台线上线下销售线索，日活 <strong>10W+</strong>，销售转化率提升 <strong>70%</strong></li>
         <li>搭建门店预约体验流程与预约限额体系，设计分地区业务逻辑分层与跨境敏感数据过滤 / 定期清除机制，预约到店率提升 <strong>40%</strong></li>
         <li><strong>ShardingSphere</strong> 分库分表突破单库瓶颈；MQ + 适配器模式离线任务中心支撑 <strong>300W+</strong> 级数据导入导出；基于 JBPM 编排财务差异审批，任务自动分配</li>
         <li>供应商 API 网关鉴权 / 额度消费 / 监控看板；Redash BI 数据埋点与多维度看板；参与香港帝舵官网研发（会员体系、支付对账、库存同步）</li>
@@ -270,8 +404,10 @@ body {
         <span class="item-time">2026.01 — 2026.07</span>
       </div>
       <ul class="pts">
-        <li>通用 Agent 基座 + 多租户云沙箱隔离；MCP / Skill 统一扩展体系标准化注册调用权限版本</li>
-        <li>多租户 AI 资源精细化计费（实时预扣 / 离线扣费 / 账单校准）；消息频道中心触达 <strong>5+ IM 渠道</strong></li>
+        <li>搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现<strong>多租户云沙箱</strong>隔离与 Agent / Skill 全生命周期管控</li>
+        <li>设计 <strong>MCP / Skill 统一能力扩展体系</strong>：注册、发现、调用、权限、版本标准化，兼容 MCP 协议与外部 API</li>
+        <li>设计多租户 AI 资源<strong>精细化计费链路</strong>（实时预扣 / 离线扣费 / 账单校准），成本实时计量、链路追溯</li>
+        <li>自研分布式 IM 网关：一套接入层统一承接飞书 / 企微 / 钉钉 / 微信 / QQ 五端消息，支撑多副本扩缩容与滚动发布不丢消息</li>
       </ul>
     </div>
     <div class="item">
@@ -280,43 +416,22 @@ body {
         <span class="item-time">2024.03 — 2025.11</span>
       </div>
       <ul class="pts">
-        <li>Search Agent + 多级降级检索 + 多源结果融合；RAG 增强 Few-Shot 自学习框架</li>
-        <li>分布式任务队列 + 支付中台（Stripe / Paypal）；LLM 性能评估系统多模型并行测试</li>
-        <li>精准度 <strong>+30%</strong> · 成本 <strong>-80%</strong> · 定位耗时 <strong>-60%</strong></li>
+        <li>Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构：状态机 + 共享上下文消除任务冲突，Context Engineering（压缩 / 分层缓存 / 增量更新）平衡信息完整性与响应稳定性</li>
+        <li>Search Agent 封装 Apollo / LinkedIn / Upfluence / Modash 等 <strong>10+ 数据源</strong>；Standardizer 统一人物 Schema 支撑多源融合排序</li>
+        <li>Review Agent 多维质量评审（相关性 / 指标匹配 / 事实校验），策略模式支撑 B2B / KOL 双垂类；RAG Few-Shot（LangSmith 回流 + LlamaIndex + Milvus）策略动态注入</li>
+        <li>LLM / 工具 / 业务三级埋点经 Kafka 落数仓支撑模型选型；SSE 逐字输出 + interrupt / resume 中断恢复</li>
       </ul>
     </div>
     <div class="item">
       <div class="item-head">
-        <p class="item-title">hicreator.ai <span>海外红人营销一体化平台 · FDE 式落地</span></p>
+        <p class="item-title">hicreator.ai <span>海外红人营销一体化 SaaS 平台 · FDE 式落地</span></p>
         <span class="item-time">2024.03 — 2025.11</span>
       </div>
       <ul class="pts">
-        <li>Grok LLM + Agent 工作流串联「客户→项目→合同→审批→付款→结算」自动化闭环</li>
-        <li>TikTok(RPA) / WhatsApp / 邮件多渠道触达；自建 KOL 达人数据库 + 浏览器插件</li>
-        <li>运营效率 <strong>+40%</strong> · 履约率 <strong>80%</strong> · 失联率降至 <strong>10%</strong> 以内</li>
-      </ul>
-    </div>
-    <div class="item">
-      <div class="item-head">
-        <p class="item-title">海外邮件营销群发系统 <span>0→1 自建触达基建 · 替代第三方 SaaS</span></p>
-        <span class="item-time">2024 — 2025</span>
-      </div>
-      <ul class="pts">
-        <li>多渠道统一驱动层（Resend / AWS SES / SendGrid）+ 队列分片限流；断点续发与失败重试</li>
-        <li>LLM 智能生成营销内容；AI 分析 BadCase 自动调优发送策略；Kafka 全量事件 + BI 看板</li>
-        <li>送达率 <strong>95%+</strong> · 打开率 <strong>45%+</strong> · 垃圾箱率 <strong>&lt;5%</strong></li>
-      </ul>
-    </div>
-    <div class="item">
-      <div class="item-head">
-        <p class="item-title">多渠道潜客跟踪分析 CRM <span>周生生 · 全渠道线索系统 · 日活 10W+</span></p>
-        <span class="item-time">2021.09 — 2023.06</span>
-      </div>
-      <ul class="pts">
-        <li>整合线上线下渠道销售线索，覆盖大陆、港澳台：销售转化率 <strong>+70%</strong>、预约到店率 <strong>+40%</strong></li>
-        <li><strong>ShardingSphere</strong> 分库分表分布式治理；MQ + EasyExcel 离线任务中心解决 <strong>300W+</strong> 级导入导出与 OOM 风险</li>
-        <li>分地区业务分层与跨境敏感数据过滤 / 定期清除；JBPM 财务差异审批编排，超时 / 驳回自动处置</li>
-        <li>供应商 API 网关鉴权 + 额度消费 + 全链路监控看板；Redash BI 多维度数据看板辅助决策</li>
+        <li><strong>FDE 式端到端落地</strong>：与业务各角色对齐诉求、定制标准作业流程，以 Grok LLM + Agent 工作流串联「客户→项目→合同→审批→付款→结算」自动化闭环，替代线下人工流转</li>
+        <li>社群触达体系：搭建 IM 通信平台，打通 TikTok（WebDriver RPA）/ WhatsApp / 邮件发信渠道与风险检测评估；自建海外邮件群发系统（Resend / AWS SES / SendGrid 统一驱动 + 队列分片限流，LLM 生成营销内容自动调优策略）作为最终触达方案</li>
+        <li>自建 KOL 达人数据库 + SEO 引流标准化 Toolkit：达人画像、商品类目、市场规则、合规话术垂直知识库；浏览器插件在 YouTube / IG / TikTok / X / FB 达人主页浮窗展示入库 / 拉黑 / 粉丝与项目信息</li>
+        <li>商业化闭环：自建支付中台集成 Stripe，会员订阅、优惠券、退款对账与风控全链路；用户增长裂变与奖励任务 T+1 结算，PostHog 全链路追踪回溯</li>
       </ul>
     </div>
   </section>
@@ -324,30 +439,78 @@ body {
   <!-- 专业技能 -->
   <section class="sec">
     <div class="sec-title"><span class="sec-no">04</span><h2>专业技能</h2><span class="sec-line"></span></div>
-    <div class="tags">
-      <span class="t-o">LangChain / LangGraph / LlamaIndex</span><span class="t-o">Multi-Agent 编排</span><span class="t-o">RAG / LLM 评测</span>
-      <span class="t-b">Java / Spring 生态</span><span class="t-b">Python / FastAPI · Golang</span>
-      <span>MCP / Skill 生态</span><span>QwenPaw / OpenCode</span><span>AgentScope</span>
-      <span>Milvus / Flink / ElasticSearch</span><span>MySQL / Redis</span><span>RocketMQ / Kafka</span>
-      <span>Docker / K8s / Jenkins</span><span>Vue / UniApp / Electron</span><span>Claude Code / Cursor</span>
+    <div class="skill-cats">
+      <div class="skill-cat">
+        <p class="skill-cat-name">Agent / Harness</p>
+        <div>
+          <p class="skill-row-main"><em>Multi-Agent 协作编排</em><small>（Supervisor / ReAct / 状态机）</small> · <b>Agentic RAG</b><small>（Few-Shot 自学习检索）</small> · <b>Tool Calling</b> · <b>MCP / A2A 协议</b> · <b>LLM 评测体系</b> · <b>Context Engineering</b> · <em>通用 Agent 基座二开</em><small>（QwenPaw / OpenCode）</small> · <b>多租户云沙箱隔离执行</b> · <b>Tool / MCP / Skill 统一扩展体系</b> · <b>Agent / Skill 全生命周期管控</b></p>
+          <p class="skill-row-sub">LangChain / LangGraph / LlamaIndex / Langsmith / Langfuse · 多轮对话任务拆解与角色分配 · SSE 流式会话与 interrupt / resume 长任务恢复 · 发布依赖管理与日志上报 · AI 资源精细化计费与链路追溯 · 多租户权限与资源隔离</p>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <p class="skill-cat-name">AI 驱动编程</p>
+        <div>
+          <p class="skill-row-main"><em class="em-b">Claude Code / Codex / Cursor</em><small>（深度使用）</small> · <b>Vibe Coding 高效开发模式</b></p>
+          <p class="skill-row-sub">熟悉主流 Coding Agent 底层架构 · 从开发到部署全流程工程化落地</p>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <p class="skill-cat-name">数据与中间件</p>
+        <div>
+          <p class="skill-row-main"><b>Milvus</b><small>（向量检索）</small> · <b>Kafka</b> · <b>Flink</b> · <b>Redis</b> · <b>ElasticSearch</b> · <b>MySQL / PostgreSQL</b></p>
+          <p class="skill-row-sub">RAG 检索链路与实时数据管道建设 · 缓存 / 消息队列场景化集成 · 实时采集与离线分析</p>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <p class="skill-cat-name">语言</p>
+        <div>
+          <p class="skill-row-main"><b>Python</b><small>（Agent 主力）</small> · <b>TypeScript / Node</b> · <em>Java</em><small>（主干 5 年）</small> · <b>Golang</b></p>
+          <p class="skill-row-sub">Vue2 / Vue3 · React · 按场景选型：后端 Java、AI 层 Python、高并发微服务工程基本功</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- 获奖与证书 -->
+  <!-- 教育经历 -->
   <section class="sec">
-    <div class="sec-title"><span class="sec-no">05</span><h2>获奖与证书</h2><span class="sec-line"></span></div>
-    <ul class="kv">
-      <li><b>2021</b> 国家励志奖学金（国家级）</li>
-      <li><b>2021</b> 校级奖学金</li>
-      <li><b>2022</b> 「高级程序员」职称 · 周生生在职获评</li>
-    </ul>
+    <div class="sec-title"><span class="sec-no">05</span><h2>教育经历</h2><span class="sec-line"></span></div>
+    <div class="item">
+      <div class="item-head">
+        <p class="item-title">中山大学新华学院 <span>全日制统招本科 · 软件工程 · 国家励志奖学金 · 校级奖学金</span></p>
+        <span class="item-time">2017.09 — 2021.06</span>
+      </div>
+      <ul class="pts">
+        <li>主修 离散数学 · 数据结构与算法 · 数据库原理 · 计算机网络 · 计算机组成原理 · 软件工程导论</li>
+        <li>大四实习前端，毕业后从 Java 后端起步，近两年跨栈至 Python / TypeScript 与 AI 全栈工程</li>
+      </ul>
+      <div class="edu-verify">
+        <div class="edu-verify-text">
+          <p class="edu-verify-label">学历在线验证码（学信网）</p>
+          <p class="edu-verify-code">AH96NG89HCCUWMEA</p>
+          <p class="edu-verify-tip">查验 www.chsi.com.cn/xlcx/bgcx.jsp · 或学信网 App 扫码 · 有效期至 2027-04-29</p>
+        </div>
+        <img class="edu-verify-qr" src="images/qr-chsi.png" alt="学信网学历在线验证二维码">
+      </div>
+    </div>
   </section>
 </div>
 
 <div class="actions">
-  <button class="btn btn-solid" onclick="window.print()">打印 / 保存为 PDF ⎙</button>
+  <button class="btn btn-solid" onclick="window.print()">保存为 PDF ⎙</button>
+  <button class="btn btn-blue" onclick="printBW()">打印 PDF（黑白）⎙</button>
   <a class="btn" href="index.html">← 返回作品集主页</a>
 </div>
+
+<script>
+/* 黑白打印：临时挂上 bw-print 类再触发打印，结束后自动移除 */
+function printBW() {
+  document.body.classList.add('bw-print');
+  setTimeout(function () { window.print(); }, 60);
+}
+window.addEventListener('afterprint', function () {
+  document.body.classList.remove('bw-print');
+});
+</script>
 
 </body>
 </html>
