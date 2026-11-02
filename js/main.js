@@ -287,4 +287,77 @@
     });
   });
 
+  /* ── 9. 访问计数器（页面渲染触发 · localStorage 本机累计）──
+     原理：本脚本随首页渲染执行，每次渲染即累计 +1 并写入
+     localStorage，跨会话保留，间接反映页面历史访问热度。
+     说明：静态站点无后端，localStorage 按设备独立计数；
+     组件由 JS 注入 DOM，无 JS 环境不渲染。 */
+  var hitWidget = document.createElement('div');
+  hitWidget.className = 'hit-counter';
+  hitWidget.id = 'hitCounter';
+  hitWidget.title = '本设备页面渲染累计（localStorage 独立计数）';
+  hitWidget.setAttribute('role', 'status');
+  hitWidget.innerHTML =
+    '<div class="hit-counter-head">' +
+      '<span class="hit-counter-dot" aria-hidden="true"></span>' +
+      '<span>访问计数 · RENDER LOG</span>' +
+    '</div>' +
+    '<div class="hit-counter-digits" id="hitCounterDigits" aria-hidden="true"></div>';
+  document.body.appendChild(hitWidget);
+
+  (function () {
+    var KEY = 'shenge_portfolio_render_count';
+    var store = null;
+    try {
+      localStorage.setItem('__hc_probe', '1');
+      localStorage.removeItem('__hc_probe');
+      store = localStorage;
+    } catch (e) { store = null; } /* 隐私模式等场景：仅本次会话内存计数 */
+    var count = 1;
+    if (store) {
+      count = parseInt(store.getItem(KEY) || '0', 10);
+      if (isNaN(count) || count < 0) count = 0;
+      count += 1;
+      try { store.setItem(KEY, String(count)); } catch (e) {}
+    }
+    hitWidget.setAttribute('aria-label', '本设备累计渲染 ' + count + ' 次');
+
+    var digitsWrap = document.getElementById('hitCounterDigits');
+    function render(n) {
+      var str = String(n);
+      var len = Math.max(6, str.length);
+      while (str.length < len) str = '0' + str;
+      while (digitsWrap.children.length < len) {
+        var cell = document.createElement('span');
+        cell.className = 'hit-digit';
+        digitsWrap.appendChild(cell);
+      }
+      var firstSig = -1;
+      for (var s = 0; s < len; s++) {
+        if (str.charAt(s) !== '0') { firstSig = s; break; }
+      }
+      if (firstSig === -1) firstSig = len - 1; /* 全零时仅亮末位 */
+      for (var i = 0; i < len; i++) {
+        var d = digitsWrap.children[i];
+        d.textContent = str.charAt(i);
+        d.classList.toggle('dim', i < firstSig);
+      }
+    }
+
+    var reduceMotion = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) { render(count); return; }
+    /* 里程表滚动入场：从 count - 24 起滚至 count */
+    var from = Math.max(0, count - 24);
+    var t0 = null, DUR = 900;
+    function tick(ts) {
+      if (t0 === null) t0 = ts;
+      var p = Math.min((ts - t0) / DUR, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      render(Math.round(from + (count - from) * eased));
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+
 })();
