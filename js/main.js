@@ -360,4 +360,96 @@
     requestAnimationFrame(tick);
   })();
 
+  /* ── 10. 风格控制台（私人彩蛋：三连击页脚「FILE END — EOF」唤出） ──
+     手动切换后锁定所选主题（localStorage），恢复自动则按日期轮换。
+     控制台 10 秒无操作自动隐藏；Esc 也可隐藏。 */
+  var NAMES = { archive: 'ARCHIVE', blueprint: 'BLUEPRINT', newsprint: 'NEWSPRINT', noir: 'NOIR' };
+  var THEME_ORDER = ['archive', 'blueprint', 'newsprint', 'noir'];
+  var THEME_STORE = { mode: 'portfolio_theme_mode', manual: 'portfolio_theme_manual' };
+
+  function storeGet(key) {
+    try { return localStorage.getItem(key); } catch (e) { return null; }
+  }
+  function storeSet(key, val) {
+    try { localStorage.setItem(key, val); } catch (e) {}
+  }
+
+  var ctl = document.createElement('div');
+  ctl.className = 'theme-ctl';
+  ctl.innerHTML =
+    '<button class="theme-ctl-btn" id="themeNextBtn" title="切换到下一套风格（手动选择后锁定）">▸ STYLE · <b id="themeNowName"></b></button>' +
+    '<button class="theme-ctl-btn" id="themeAutoBtn" title="暂停 / 恢复每日自动轮换">◌ AUTO · <b id="themeAutoState"></b></button>';
+  document.body.appendChild(ctl);
+
+  var themeNowName = document.getElementById('themeNowName');
+  var themeAutoState = document.getElementById('themeAutoState');
+  var themeAutoBtn = document.getElementById('themeAutoBtn');
+
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    themeNowName.textContent = NAMES[t] || t.toUpperCase();
+  }
+  function renderAutoState() {
+    var manual = storeGet(THEME_STORE.mode) === 'manual';
+    themeAutoState.textContent = manual ? 'OFF' : 'ON';
+    themeAutoBtn.classList.toggle('off', manual);
+  }
+
+  /* ── 彩蛋唤出：2 秒内三连击页脚 EOF ── */
+  var eggTimer = null, eggHits = 0, hideTimer = null;
+  var eofEgg = document.getElementById('eofEgg');
+  if (eofEgg) {
+    eofEgg.style.cursor = 'default';
+    eofEgg.addEventListener('click', function () {
+      eggHits++;
+      if (eggHits === 1) {
+        eggTimer = setTimeout(function () { eggHits = 0; }, 2000); /* 超时清零 */
+      }
+      if (eggHits >= 3) {
+        eggHits = 0;
+        clearTimeout(eggTimer);
+        ctl.classList.toggle('show');
+        if (ctl.classList.contains('show')) {
+          applyTheme(document.documentElement.getAttribute('data-theme'));
+          renderAutoState();
+          scheduleHide();
+        }
+      }
+    });
+  }
+  function scheduleHide() {
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function () { ctl.classList.remove('show'); }, 10000); /* 10 秒无操作自动隐藏 */
+  }
+  ctl.addEventListener('mouseenter', function () { clearTimeout(hideTimer); });
+  ctl.addEventListener('mouseleave', function () { if (ctl.classList.contains('show')) scheduleHide(); });
+  ctl.addEventListener('click', function () { if (ctl.classList.contains('show')) scheduleHide(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { clearTimeout(hideTimer); ctl.classList.remove('show'); }
+  });
+
+  document.getElementById('themeNextBtn').addEventListener('click', function () {
+    var cur = document.documentElement.getAttribute('data-theme');
+    var next = THEME_ORDER[(THEME_ORDER.indexOf(cur) + 1) % THEME_ORDER.length];
+    applyTheme(next);
+    storeSet(THEME_STORE.mode, 'manual');   /* 手动选择 → 锁定 */
+    storeSet(THEME_STORE.manual, next);
+    renderAutoState();
+    try { history.replaceState(null, '', location.pathname); } catch (e) {}
+  });
+
+  themeAutoBtn.addEventListener('click', function () {
+    if (storeGet(THEME_STORE.mode) === 'manual') {
+      storeSet(THEME_STORE.mode, 'auto');
+      var n = new Date();
+      var day = Math.floor((n - new Date(n.getFullYear(), 0, 0)) / 864e5);
+      applyTheme(THEME_ORDER[day % THEME_ORDER.length]);
+    } else {
+      storeSet(THEME_STORE.mode, 'manual');
+      storeSet(THEME_STORE.manual, document.documentElement.getAttribute('data-theme'));
+    }
+    renderAutoState();
+    try { history.replaceState(null, '', location.pathname); } catch (e) {}
+  });
+
 })();

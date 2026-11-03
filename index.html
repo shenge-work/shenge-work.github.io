@@ -12,6 +12,30 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script>
+/* 风格系列：默认按日期每日自动轮换；手动切换后锁定（localStorage），控制台可恢复自动
+   优先级：?theme= 参数 > 手动锁定 > 按日期轮换 */
+(function () {
+  var T = ['archive', 'blueprint', 'newsprint', 'noir'];
+  var qs = new URLSearchParams(location.search).get('theme');
+  var t = T.indexOf(qs) >= 0 ? qs : null;
+  if (!t) {
+    var mode = 'auto', manual = null;
+    try {
+      mode = localStorage.getItem('portfolio_theme_mode') || 'auto';
+      manual = localStorage.getItem('portfolio_theme_manual');
+    } catch (e) {}
+    if (mode === 'manual' && T.indexOf(manual) >= 0) {
+      t = manual;
+    } else {
+      var n = new Date();
+      var day = Math.floor((n - new Date(n.getFullYear(), 0, 0)) / 864e5);
+      t = T[day % T.length];
+    }
+  }
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
 </head>
 <body>
 
@@ -575,9 +599,9 @@
     </div>
     <div class="footer-meta">
       <span>© 2026 CHEN PEISHENG</span>
-      <span>FILE END — EOF</span>
+      <span id="eofEgg" title="EOF">FILE END — EOF</span>
       <span class="footer-coord">N22.54° / E114.06°</span>
-    </div>
+          </div>
     <div class="barcode barcode-sm" aria-hidden="true"></div>
   </div>
 </footer>
