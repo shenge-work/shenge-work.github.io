@@ -86,8 +86,23 @@ body {
   color: var(--blue) !important;
   border-bottom-color: var(--blue);
 }
+/* 项目条目域名链接：与头部链接同款悬停高亮 + 新窗口跳转（打印时纯文本） */
+.item-title a,
+.pts a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1.5px solid transparent;
+  transition: color .15s ease, border-color .15s ease;
+  cursor: pointer;
+}
+.item-title a:hover,
+.pts a:hover {
+  color: var(--blue) !important;
+  border-bottom-color: var(--blue);
+}
 @media print {
   .head-meta .link { color: inherit; border-bottom: none; text-decoration: none; }
+  .item-title a, .pts a { color: inherit; border-bottom: none; text-decoration: none; }
 }
 .file-no {
   font-family: var(--font-mono);
@@ -357,7 +372,7 @@ body {
         <span class="item-time">2024.03 — 2025.11</span>
       </div>
       <ul class="pts">
-        <li>主导 lessie.cn AI 人脉搜索引擎：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构，显著提升搜索精准度、降低找人成本与目标定位耗时</li>
+        <li>主导 <a href="https://lessie.cn" target="_blank" rel="noopener noreferrer">lessie.cn</a> AI 人脉搜索引擎：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构，显著提升搜索精准度、降低找人成本与目标定位耗时</li>
         <li>0→1 自建海外邮件群发系统（AWS / SendGrid / 自建 SMTP），支撑月均 <strong>50 万+</strong> 有效触达，送达率稳定在行业高位</li>
         <li>设计 dataworks 数仓同步链路，<strong>300+ 万</strong>网红画像与视频数据日更</li>
         <li>研发群控 RPA 机器人：自动注册 / 养号、风险检测、群发私信自动化</li>
@@ -400,7 +415,7 @@ body {
     <div class="sec-title"><span class="sec-no">03</span><h2>项目经历</h2><span class="sec-line"></span></div>
     <div class="item">
       <div class="item-head">
-        <p class="item-title">comein.cn <span>AI 投研工作台 · Agent 基座 / 云沙箱 / 计费（金融投研头部）</span></p>
+        <p class="item-title"><a href="https://comein.cn" target="_blank" rel="noopener noreferrer">comein.cn</a> <span>AI 投研工作台 · Agent 基座 / 云沙箱 / 计费（金融投研头部）</span></p>
         <span class="item-time">2026.01 — 07</span>
       </div>
       <ul class="pts">
@@ -412,7 +427,7 @@ body {
     </div>
     <div class="item">
       <div class="item-head">
-        <p class="item-title">lessie.cn <span>AI 人脉搜索引擎 · Multi-Agent / Agentic RAG</span></p>
+        <p class="item-title"><a href="https://lessie.cn" target="_blank" rel="noopener noreferrer">lessie.cn</a> <span>AI 人脉搜索引擎 · Multi-Agent / Agentic RAG</span></p>
         <span class="item-time">2024.03 — 2025.11</span>
       </div>
       <ul class="pts">
@@ -424,7 +439,7 @@ body {
     </div>
     <div class="item">
       <div class="item-head">
-        <p class="item-title">hicreator.ai <span>海外红人营销一体化 SaaS 平台 · FDE 式落地</span></p>
+        <p class="item-title"><a href="https://hicreator.ai" target="_blank" rel="noopener noreferrer">hicreator.ai</a> <span>海外红人营销一体化 SaaS 平台 · FDE 式落地</span></p>
         <span class="item-time">2024.03 — 2025.11</span>
       </div>
       <ul class="pts">
