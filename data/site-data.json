@@ -1,0 +1,670 @@
+{
+  "meta": {
+    "pageTitle": "陈培胜 CHEN PEISHENG · AI 全栈工程师 · 求职作品集 2026",
+    "description": "陈培胜的个人求职作品集——5 年全栈工程师，Agent 开发 / AI 工程化 / 企业 AI 基建方向。",
+    "brandMark": "CP",
+    "brandSub": "CHEN PEISHENG —<br>5年全栈工程师档案",
+    "statusPill": "开放机会 HIRING",
+    "footer": {
+      "tagline": "一份来自 5 年全栈工程师的求职档案 · 感谢翻阅到底",
+      "copyright": "© 2026 CHEN PEISHENG",
+      "coord": "N22.54° / E114.06°"
+    }
+  },
+  "hero": {
+    "corners": [
+      "PORTFOLIO — VOL.2026",
+      "N22.54° / E114.06°",
+      "FILE NO. CPS-2021-0919",
+      "● REC"
+    ],
+    "tags": [
+      {
+        "text": "5 年全栈工程师",
+        "cls": "tag-orange"
+      },
+      {
+        "text": "AGENT × FULL-STACK",
+        "cls": "tag-blue"
+      }
+    ],
+    "nameCn": "陈培胜",
+    "nameEn": "CHEN PEISHENG",
+    "role": "AI 全栈工程师",
+    "roleEn": "AI FULL-STACK ENGINEER",
+    "bio": "5 年 Java 后端 + 2 年 AI 全栈工程，主导 6 套系统从 0 到 1：潜客 CRM、品牌官网、AI 搜索引擎、海外营销平台与投研工作台。技术决策风格三原则：不停机、可回滚、最小改动。",
+    "ctaProjects": "查看作品",
+    "ctaResume": "下载简历",
+    "resumeFile": "resume.html",
+    "resumeDownloadName": "陈培胜-AI全栈工程师-简历.html",
+    "statusMeta": "OPEN TO WORK · 随时到岗 · 深圳 / 广州 / 远程",
+    "idcard": {
+      "photo": "images/portrait.jpg",
+      "titleCn": "人才档案终端",
+      "titleEn": "TALENT ARCHIVE",
+      "no": "NO. CPS-2021-0919",
+      "status": "ACTIVE · 已激活",
+      "footCode": "HR-ARCHIVE·v2.6·ALL SYSTEMS OK",
+      "fields": [
+        {
+          "dt": "姓名 NAME",
+          "dd": "陈培胜 / CHEN PEISHENG"
+        },
+        {
+          "dt": "经验 EXP",
+          "dd": "5 年 · 2021 至今"
+        },
+        {
+          "dt": "坐标 LOC",
+          "dd": "广东 · 深圳 N22.54°"
+        },
+        {
+          "dt": "学历 EDU",
+          "dd": "本科 · 中山大学新华学院"
+        },
+        {
+          "dt": "专业 MAJOR",
+          "dd": "软件工程 · 2021 届"
+        },
+        {
+          "dt": "奖学金 AWARDS",
+          "dd": "国家励志 · 校级",
+          "cls": "field-orange"
+        },
+        {
+          "dt": "方向 ROLE",
+          "dd": "Agent 开发 / AI 工程化",
+          "cls": "field-blue"
+        },
+        {
+          "dt": "状态 STATUS",
+          "dd": "开放新机会"
+        }
+      ]
+    }
+  },
+  "marquee": "OPEN TO WORK ✦ AI 全栈工程师 ✦ MULTI-AGENT ✦ RAG 检索增强 ✦ MCP / SKILL 生态 ✦ JAVA → PYTHON / TS ✦ 企业 AI 基建 ✦ 评测体系 ✦ ",
+  "about": {
+    "photo": "images/portrait.jpg",
+    "photoAlt": "陈培胜——橙色连帽卫衣与黑框眼镜的半身插画肖像",
+    "photoNo": "PHOTO NO.001",
+    "stamp": "已审核<br>VERIFIED",
+    "lead": "你好，我是<strong>陈培胜</strong>。一个把「从 0 到 1，再做到 N」当正事来办的全栈工程师。",
+    "paragraphs": [
+      "工程路从港企周生生起步：近两年 Java 后端深耕，独立负责多渠道潜客 CRM 与香港帝舵官网核心模块；后来到红杉投资的 AI 创业公司担任创始团队研发，主导 lessie.cn 人脉搜索引擎与 hicreator.ai 营销平台从零跑通到商业闭环。",
+      "现在专注 AI 工程化：垂直领域 Agent 编排、二开通用 Agent 基座（QwenPaw / OpenCode）、Tool / MCP / Skill 统一扩展体系、多租户云沙箱，再用 Flink 搭起 AI 网关实时计费链路。写代码之外也立规矩：不停机、可回滚、最小改动。"
+    ],
+    "stats": [
+      {
+        "count": 5,
+        "suffix": "",
+        "label": "年工程经验"
+      },
+      {
+        "count": 3,
+        "suffix": "",
+        "label": "段企业经历"
+      },
+      {
+        "count": 6,
+        "suffix": "",
+        "label": "套 0→1 系统"
+      },
+      {
+        "count": 50,
+        "suffix": "+",
+        "label": "万级月均邮件触达"
+      }
+    ]
+  },
+  "objective": {
+    "cards": [
+      {
+        "tag": "意向岗位 POSITION",
+        "role": "AI 全栈工程师",
+        "roleSub": "AI FULL-STACK ENGINEER · AGENT 方向",
+        "desc": "Agent 开发与 AI 工程化：企业 AI 基建、Harness 架构、评测体系，也写前后端与数据链路，让模型真正跑进业务。",
+        "cls": "obj-main"
+      },
+      {
+        "tag": "备选方向 ALT",
+        "roleSm": "Agent 工程师 / AI 应用开发",
+        "desc": "Multi-Agent 编排、RAG 检索增强、LLM 评测平台与 Tool 生态建设。"
+      },
+      {
+        "tag": "期望城市 CITY",
+        "roleSm": "深圳 · 广州 · 远程",
+        "desc": "坐标深圳，接受远程 / 混合办公，跨城面试随时安排。"
+      },
+      {
+        "tag": "到岗时间 START",
+        "roleSm": "随时到岗",
+        "desc": "当前处于开放期，流程顺利即可入职，交接零负担。",
+        "cls": "obj-blue-card"
+      },
+      {
+        "tag": "其他 OTHER",
+        "roleSm": "不停机 · 可回滚 · 最小改动",
+        "desc": "我的技术决策三原则，也是我对团队交付质量的承诺。",
+        "cls": "obj-orange-card"
+      }
+    ]
+  },
+  "education": {
+    "main": {
+      "time": "2017.09 — 2021.06",
+      "tag": "本科 · 全日制统招",
+      "tagCls": "tag-orange",
+      "school": "中山大学新华学院",
+      "major": "软件工程",
+      "majorEn": "SOFTWARE ENGINEERING",
+      "stats": [
+        {
+          "num": "2021",
+          "unit": "届",
+          "label": "本科毕业",
+          "cls": ""
+        },
+        {
+          "num": "2",
+          "unit": "项",
+          "label": "奖学金（含国家级）",
+          "cls": ""
+        },
+        {
+          "num": "4",
+          "unit": "年",
+          "label": "全日制统招",
+          "cls": "edu-stat-blue"
+        }
+      ],
+      "notes": [
+        "主修：软件工程核心课程体系——数据结构 · 数据库原理 · 计算机网络 · 软件工程 · 操作系统",
+        "在校获国家励志奖学金（国家级）与校级奖学金；毕业后从 Java 后端起步，一路跨栈至 AI 全栈工程。"
+      ]
+    },
+    "sides": [
+      {
+        "no": "NOTE-A",
+        "title": "奖学金",
+        "text": "国家励志奖学金（国家级）+ 校级奖学金——本科期间的两次「外部认证」。"
+      },
+      {
+        "no": "NOTE-B",
+        "title": "跨栈路径",
+        "text": "从 Java 微服务到 Python / TypeScript：语言只是工具，工程方法论可以平移。"
+      },
+      {
+        "no": "NOTE-C",
+        "title": "学习方式",
+        "text": "习惯「读源码 + 二开轮子」：二开 QwenPaw / OpenCode Agent 基座，日常 Vibe Coding（Claude Code / Codex / Cursor）。"
+      }
+    ]
+  },
+  "experience": [
+    {
+      "company": "进门财经 · 深圳进门财经科技股份有限公司",
+      "role": "AI 全栈工程师 · AI 团队主力研发（金融投研头部）",
+      "time": "2026.01 — 2026.07",
+      "points": [
+        "搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现<strong>多租户云沙箱</strong>隔离环境，完成发布依赖管理、日志上报与 Agent / Skill 全生命周期管控。",
+        "设计 <strong>MCP / Skill 统一能力扩展体系</strong>：能力注册、发现、调用、权限与版本全流程标准化，兼容 MCP 协议与外部 API，支持多模态能力接入。",
+        "设计多租户 AI 资源<strong>精细化计费链路</strong>（费率转换 / 实时预扣 / 离线扣费 / 账单校准 / 补偿机制），模型调用成本实时计量、全程可追溯。",
+        "自研<strong>分布式 IM 网关</strong>：一套接入层统一承接飞书 / 企微 / 钉钉 / 微信 / QQ 五端消息，支撑多副本扩缩容与滚动发布不丢消息。"
+      ],
+      "tags": [
+        {
+          "text": "Python"
+        },
+        {
+          "text": "AgentScope"
+        },
+        {
+          "text": "QwenPaw / OpenCode"
+        },
+        {
+          "text": "Flink"
+        },
+        {
+          "text": "MCP / Skill"
+        },
+        {
+          "text": "云沙箱",
+          "cls": "tag-blue"
+        }
+      ]
+    },
+    {
+      "company": "Lessie · 深圳指数引力科技有限公司",
+      "role": "AI 全栈工程师 · 创始团队成员（红杉投资 AI 初创）",
+      "time": "2024.03 — 2025.11",
+      "points": [
+        "主导 lessie.cn AI 人脉搜索引擎：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构 + RAG 策略注入，搜索精准度提升 <strong>30%</strong>、单次找人成本降低 <strong>80%</strong>、目标定位时间缩短 <strong>60%</strong>。",
+        "0→1 自建海外邮件群发系统，集成 AWS / SendGrid / 自建 SMTP，支撑月均 <strong>50 万+</strong> 有效触达，送达率稳定在 <strong>95%</strong> 以上。",
+        "设计 dataworks 数仓同步链路，完成 <strong>300+ 万</strong>网红画像与视频数据日更；借助 Dify 实现聊天上下文管理与 AI 智能议价。",
+        "研发群控 RPA 机器人，实现自动注册 / 养号、风险检测、群发私信等自动化流程。"
+      ],
+      "tags": [
+        {
+          "text": "LangChain"
+        },
+        {
+          "text": "LangGraph"
+        },
+        {
+          "text": "Multi-Agent"
+        },
+        {
+          "text": "RAG"
+        },
+        {
+          "text": "Milvus"
+        },
+        {
+          "text": "Spring Boot",
+          "cls": "tag-blue"
+        }
+      ]
+    },
+    {
+      "company": "周生生（中国）商业有限公司",
+      "role": "Java 开发工程师 · 获评「高级程序员」职称（港企 · 电商零售）",
+      "time": "2021.09 — 2023.06",
+      "points": [
+        "牵头多渠道潜客跟踪分析 <strong>CRM 平台</strong>研发：整合大陆、港澳台线上线下销售线索，日活用户 <strong>10W+</strong>，销售转化率提升 <strong>70%</strong>。",
+        "搭建各地区门店预约体验流程与预约限额体系，设计分地区业务逻辑分层与跨境敏感数据过滤、定期清除机制，保障多地区业务合规，预约到店率提升 <strong>40%</strong>。",
+        "基于 <strong>ShardingSphere</strong> 分库分表突破单库性能瓶颈，MQ + 适配器模式搭建离线任务中心支撑 <strong>300W+</strong> 级数据导入导出；基于 JBPM 编排财务差异审批流程，任务自动分配。",
+        "搭建供应商平台 API 网关鉴权、额度消费机制与监控看板，Redash BI 数据埋点输出多维度看板；参与香港帝舵官网研发（会员体系、订单支付、对账、库存同步），在职期间获评「高级程序员」职称。"
+      ],
+      "tags": [
+        {
+          "text": "Java"
+        },
+        {
+          "text": "Spring Cloud / Boot"
+        },
+        {
+          "text": "Oracle"
+        },
+        {
+          "text": "ShardingSphere"
+        },
+        {
+          "text": "JBPM"
+        },
+        {
+          "text": "Redis",
+          "cls": "tag-blue"
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "no": "P-01",
+      "img": "images/project-1.jpg",
+      "imgAlt": "AI 投研工作台项目封面——机器人与K线图盾牌插画",
+      "badge": "企业 AI 基建 · 金融投研",
+      "badgeCls": "tag-orange",
+      "year": "2026.01 — 2026.07",
+      "yearDetail": "2026.01 — 2026.07 · 进门财经 · AI 团队主力研发",
+      "title": "comein.cn",
+      "titleEn": "AI 投研工作台",
+      "modalTitle": "comein.cn — AI 投研工作台（Agent 基座 · 云沙箱）",
+      "desc": "合规 Agent 投研闭环平台：Agent 基座、多租户云沙箱、工具生态、模型计费与 Skill 治理。",
+      "modalDesc": "面向券商、上市公司及机构投资者构建合规安全的 Agent 投研闭环平台，覆盖 Agent 基座、云沙箱、工具生态、模型计费、多渠道触达和 Skill 治理等核心能力。",
+      "points": [
+        "搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现多租户云沙箱隔离环境，完成发布依赖管理、日志上报、数据预处理与 Agent / Skill 全生命周期管控；",
+        "设计 MCP / Skill 统一能力扩展体系，标准化能力注册、发现、调用、权限与版本流程，兼容 MCP 协议与外部 API，支持多模态能力接入，降低工具接入成本；",
+        "设计多租户 AI 资源精细化计费：费率转换、实时预扣、离线扣费、账单校准与补偿机制，实现模型调用成本实时计量、链路追溯；",
+        "自研分布式 IM 网关：一套接入层统一承接飞书 / 企微 / 钉钉 / 微信 / QQ 五端消息，支撑多副本扩缩容与滚动发布不丢消息。"
+      ],
+      "stackTags": [
+        "Python",
+        "AgentScope",
+        "QwenPaw / OpenCode",
+        "Flink"
+      ],
+      "stack": "Python · AgentScope · QwenPaw / OpenCode · SandBox · OAuth2 · Flink · MCP · Skill · Tool Calling",
+      "stats": [
+        {
+          "v": "多租户",
+          "s": "云沙箱隔离执行"
+        },
+        {
+          "v": "5+ IM",
+          "s": "投研结果实时触达"
+        },
+        {
+          "v": "全链路",
+          "s": "成本计量与追溯"
+        }
+      ]
+    },
+    {
+      "no": "P-02",
+      "img": "images/project-2.jpg",
+      "imgAlt": "AI 人脉搜索引擎项目封面——地球仪与放大镜节点连线插画",
+      "badge": "Multi-Agent · Agentic RAG",
+      "badgeCls": "tag-blue",
+      "year": "2024.03 — 2025.11",
+      "yearDetail": "2024.03 — 2025.11 · Lessie · 创始团队核心研发",
+      "title": "lessie.cn",
+      "titleEn": "AI 人脉搜索引擎",
+      "modalTitle": "lessie.cn — AI 人脉搜索引擎",
+      "desc": "企业级人才搜索平台：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构，将传统「找人」流程标准化、自动化。",
+      "modalDesc": "面向「找人」场景的企业级人才搜索平台：LangChain + LangGraph 编排 Supervisor / Search / Review 多层级 ReAct 协作的 Multi-Agent 架构，将依赖人脉与手动检索的找人流程标准化、自动化，全球范围精准定位目标人物并完成初步联络。搜索精准度提升 30%、成本降低 80%、目标人物定位时间缩短 60%。",
+      "points": [
+        "开发 Search Agent：调研 Apollo / LinkedIn / Upfluence / Modash 等 10+ 数据源 API，抽象统一搜索接口，实现多平台调用封装、搜索参数生成与工具智能路由；通过 Standardizer 将各源异构字段收敛为统一人物 Schema，支撑多源结果融合与排序；",
+        "构建 Review Agent 质量评审系统：基于 ReAct 架构从内容相关性、数据指标匹配度、Web Search 事实校验等维度对候选人评分排序；以 analyzer / result_manager 分层基类 + 策略模式落地，多轮 Prompt Engineering 校准评分口径，支撑 B2B 与 KOL 两套垂类评审逻辑快速扩展；",
+        "搭建 RAG 增强的 Few-Shot 学习系统：多类型样本自动化录入（含从 LangSmith 回流历史成功案例），LlamaIndex 完成文档切片与索引构建、Milvus 承接向量化存储与相似性召回，将历史最优搜索策略动态注入当前 Agent 决策，实现高质量搜索策略的知识固化；",
+        "攻克多 Agent 协作与上下文瓶颈：在 Supervisor / Search / Review 多层级 ReAct 架构中以状态机与共享上下文约定消除任务重复与决策冲突，通过上下文压缩、分层缓存与增量更新等 Context Engineering 手段平衡信息完整性与响应稳定性；",
+        "工程化落地：LLM / 工具 / 业务三级埋点经 Kafka 落数仓，按模型维度统计评审通过率与任务耗时，支撑模型选型与参数调优；解耦 SSE 流式推送实现「逐字输出」，基于图状态持久化与 interrupt / resume 机制实现人机中断应答与长任务恢复；任务按订阅套餐优先级分级抢占，配合全局与用户级双层并发控制。"
+      ],
+      "stackTags": [
+        "LangChain · LangGraph",
+        "ReAct",
+        "LlamaIndex",
+        "Milvus"
+      ],
+      "stack": "LangChain · LangGraph · ReAct · Multi-Agent · Apollo · LinkedIn API · Upfluence / Modash · Prompt / Context Engineering · LangSmith · LlamaIndex · Milvus · Kafka · SSE",
+      "stats": [
+        {
+          "v": "+30%",
+          "s": "搜索精准度"
+        },
+        {
+          "v": "-80%",
+          "s": "单次找人成本"
+        },
+        {
+          "v": "-60%",
+          "s": "目标定位耗时"
+        }
+      ]
+    },
+    {
+      "no": "P-03",
+      "img": "images/project-3.jpg",
+      "imgAlt": "海外红人营销一体化 SaaS 平台项目封面——摄像机爱心与火箭插画",
+      "badge": "FDE 式业务落地",
+      "badgeCls": "tag-orange",
+      "year": "2024.03 — 2025.11",
+      "yearDetail": "2024.03 — 2025.11 · Lessie · 端到端交付",
+      "title": "hicreator.ai",
+      "titleEn": "海外红人营销一体化 SaaS 平台",
+      "modalTitle": "hicreator.ai — 海外红人营销一体化 SaaS 平台",
+      "desc": "一站式 AI 网红营销自动化系统：大模型与多模态数据实现品牌与创作者全链路闭环。",
+      "modalDesc": "一站式 AI 网红营销自动化系统：通过大模型与多模态数据分析，实现品牌与创作者全链路闭环管理，运营效率提升 40%、履约率高达 80%。",
+      "points": [
+        "FDE 式端到端落地：深入红人营销业务，把模糊诉求拆解为可执行流程，用 Grok LLM + Agent 工作流将「客户→项目→合同→审批→付款→结算」串联成自动化闭环；",
+        "搭建 IM 通信平台，打通 TikTok（RPA 机器人）、WhatsApp 及邮件发信渠道与风险检测评估，支撑达人筛选、批量邀约、合同管理、样品履约自动化；",
+        "自建 KOL 达人数据库 + SEO 引流标准化 Toolkit：构建达人画像、商品类目、市场规则、合规话术等垂直领域知识库；",
+        "开发浏览器插件，在 YouTube / IG / TikTok / X / FB 达人主页浮窗展示入库、拉黑、粉丝与项目信息。"
+      ],
+      "stackTags": [
+        "Spring Boot / Cloud",
+        "LLM",
+        "MCP",
+        "WebDriver"
+      ],
+      "stack": "Spring Boot / Cloud · MyBatis · MySQL · Redis · RocketMQ · LLM · MCP · Skill · WebDriver",
+      "stats": [
+        {
+          "v": "+40%",
+          "s": "运营效率提升"
+        },
+        {
+          "v": "80%",
+          "s": "履约率"
+        },
+        {
+          "v": "<10%",
+          "s": "失联率"
+        }
+      ]
+    },
+    {
+      "no": "P-04",
+      "img": "images/project-4.jpg",
+      "imgAlt": "海外邮件群发系统项目封面——信封纸飞机与队列插画",
+      "badge": "0→1 自建触达基建",
+      "badgeCls": "tag-blue",
+      "year": "2024 — 2025",
+      "yearDetail": "2024 — 2025 · Lessie · 独立负责",
+      "title": "邮件营销群发系统",
+      "titleEn": "MAIL ENGINE",
+      "modalTitle": "海外邮件营销群发系统 — MAIL ENGINE",
+      "desc": "替代第三方 SaaS 的自建邮件触达平台：海量群发、多渠道投递、域名信誉全链路自持。",
+      "modalDesc": "0→1 搭建面向海外用户的自建邮件营销触达平台，替代第三方 SaaS 服务：海量邮件群发、多渠道投递，打开率 45% 以上、送达率 95% 以上、垃圾箱率低于 5%。",
+      "points": [
+        "依赖倒置双端架构：一套账号串联生产 / 测试环境并强隔离数据，解决跨境网络及环境差异问题；封装多发送渠道统一驱动层（Resend / AWS SES / SendGrid），渠道动态分配、队列分片限流；",
+        "分布式定时批处理 + DelayQueue + 子任务切片落表，实现群发任务断点续发与失败重试；对接 Webhook 事件幂等消费，Kafka 上报全量邮件事件并搭建 BI 统计看板；",
+        "基于 LLM 推理与上下文记忆实现多业务场景邮件模板智能匹配与营销内容智能生成；构建发送链路自动化告警风控体系，AI 分析 BadCase 自动调优发送策略；",
+        "独立发送 IP 与域名资源隔离、域名校验与发送控频，搭建域名自动化养号链路缩短预热周期；落地黑名单过滤、发件人轮换、内容检测与敏感字段拦截。"
+      ],
+      "stackTags": [
+        "Kafka",
+        "Docker / K8s",
+        "SMTP / IMAP",
+        "AWS SES"
+      ],
+      "stack": "Spring Boot / Cloud · MyBatis · MySQL · Redis · Kafka · Docker / K8s · SMTP / IMAP · AWS · SendGrid · Resend",
+      "stats": [
+        {
+          "v": "95%+",
+          "s": "送达率"
+        },
+        {
+          "v": "50万+",
+          "s": "月均有效触达"
+        },
+        {
+          "v": "45%+",
+          "s": "邮件打开率"
+        }
+      ]
+    },
+    {
+      "no": "P-05",
+      "img": "images/project-5.jpg",
+      "imgAlt": "多渠道潜客 CRM 项目封面——商店门面与转化漏斗插画",
+      "badge": "日活 10W+ · 企业级 CRM",
+      "badgeCls": "tag-blue",
+      "year": "2021.09 — 2023.06",
+      "yearDetail": "2021.09 — 2023.06 · 周生生（中国）商业 · Java 开发工程师",
+      "title": "多渠道潜客 CRM",
+      "titleEn": "OMNI-CRM",
+      "modalTitle": "多渠道潜客 CRM — 周生生全渠道线索跟踪平台",
+      "desc": "整合线上线下渠道销售线索，覆盖大陆与港澳台，支撑潜客分配、跟进与转化全链路漏斗分析。",
+      "modalDesc": "整合线上线下渠道的销售线索系统，覆盖大陆、港澳台地区，日活用户 10W+：打通潜客从分配、跟进到转化的全链路漏斗分析，销售转化率提升 70%、预约到店率提升 40%。",
+      "points": [
+        "搭建各地区门店预约体验流程与预约限额体系，优化预约链路节点；设计分地区业务逻辑分层方案与跨境敏感数据过滤、定期清除机制，确保多地区用户数据传输合规；",
+        "基于 ShardingSphere 实施分库分表分布式数据治理，突破单库单表性能瓶颈；采用 MQ 与适配器模式搭建离线下载任务中心，EasyExcel 高性能批处理与内存阈值控制，解决 300W+ 级大数据导入导出与 JVM OOM 难题；",
+        "搭建供应商平台 API 的网关鉴权与额度消费机制供合作方调用，设置 API 监控看板实时监测接口调用状态，全链路异常及时感知；",
+        "搭建 Redash BI 平台，数据埋点与 SQL 统计各项业务指标，输出多维度数据看板辅助业务决策；基于 JBPM 编排财务差异审批流程，任务自动分配并同步处理审批超时、驳回异常，保障流程闭环。"
+      ],
+      "stackTags": [
+        "Spring Cloud",
+        "Oracle",
+        "ShardingSphere",
+        "JBPM"
+      ],
+      "stack": "Spring Cloud · Spring Boot · Oracle · TK-Mybatis · Redis · JasperReport · JBPM · ShardingSphere · EasyExcel · Redash",
+      "stats": [
+        {
+          "v": "10W+",
+          "s": "日活用户"
+        },
+        {
+          "v": "+70%",
+          "s": "销售转化率提升"
+        },
+        {
+          "v": "300W+",
+          "s": "用户数据管理"
+        }
+      ]
+    }
+  ],
+  "skills": {
+    "bars": [
+      {
+        "label": "Agent 编排（LangChain · LangGraph · LlamaIndex）",
+        "pct": 86
+      },
+      {
+        "label": "Java / Spring 生态（JVM 调优 · 并发）",
+        "pct": 88
+      },
+      {
+        "label": "RAG 检索增强 / LLM 评测体系",
+        "pct": 84
+      },
+      {
+        "label": "数据与中间件（MySQL · Redis · ES · MQ）",
+        "pct": 86
+      },
+      {
+        "label": "Python / Golang（FastAPI · Gin）",
+        "pct": 84
+      },
+      {
+        "label": "前端（Vue · UniApp · Electron）",
+        "pct": 80
+      }
+    ],
+    "toolboxTitle": "工具箱 TOOLBOX",
+    "toolbox": [
+      {
+        "text": "Dify"
+      },
+      {
+        "text": "Coze"
+      },
+      {
+        "text": "n8n"
+      },
+      {
+        "text": "MCP / Skill 生态",
+        "cls": "tag-orange"
+      },
+      {
+        "text": "Milvus"
+      },
+      {
+        "text": "Flink",
+        "cls": "tag-blue"
+      },
+      {
+        "text": "ElasticSearch"
+      },
+      {
+        "text": "RocketMQ / Kafka"
+      },
+      {
+        "text": "Docker / K8s"
+      },
+      {
+        "text": "QwenPaw / OpenCode",
+        "cls": "tag-orange"
+      },
+      {
+        "text": "AgentScope"
+      },
+      {
+        "text": "Claude Code / Cursor",
+        "cls": "tag-blue"
+      },
+      {
+        "text": "Jenkins / Git"
+      },
+      {
+        "text": "AWS SES / SendGrid"
+      },
+      {
+        "text": "Stripe / Paypal"
+      }
+    ],
+    "note": "技能值代表「能独立交付的熟练度」，不做装饰性满格。持续探索中：A2A 协议、Coding Agent 底层架构。"
+  },
+  "awards": {
+    "certs": [
+      {
+        "img": "images/cert-1.jpg",
+        "alt": "国家励志奖学金奖章插画",
+        "stamp": "CERT-01",
+        "stampCls": "",
+        "title": "国家励志奖学金",
+        "sub": "国家级 · 本科期间"
+      },
+      {
+        "img": "images/cert-2.jpg",
+        "alt": "校级奖学金奖章插画",
+        "stamp": "CERT-02",
+        "stampCls": "cert-stamp-blue",
+        "title": "校级奖学金",
+        "sub": "中山大学新华学院 · 本科期间"
+      },
+      {
+        "img": "images/cert-3.jpg",
+        "alt": "高级程序员职称徽章插画",
+        "stamp": "CERT-03",
+        "stampCls": "cert-stamp-orange",
+        "title": "「高级程序员」职称",
+        "sub": "周生生 · 在职获评"
+      }
+    ],
+    "list": [
+      {
+        "year": "2021",
+        "name": "国家励志奖学金",
+        "sub": "国家级 · 在校期间获得"
+      },
+      {
+        "year": "2021",
+        "name": "校级奖学金",
+        "sub": "中山大学新华学院"
+      },
+      {
+        "year": "2022",
+        "name": "「高级程序员」职称",
+        "sub": "周生生在职期间获评"
+      }
+    ]
+  },
+  "contact": {
+    "big": "一起做点<br><em>从 0 到 1</em>的系统？",
+    "cards": [
+      {
+        "label": "EMAIL / 邮箱",
+        "value": "shenge.work@gmail.com",
+        "href": "mailto:shenge.work@gmail.com"
+      },
+      {
+        "label": "TEL / 电话",
+        "value": "+86 180 2283 4605",
+        "href": "tel:+8618022834605"
+      },
+      {
+        "label": "GITHUB / 代码仓库",
+        "value": "github.com/shenge-work",
+        "href": "https://github.com/shenge-work"
+      },
+      {
+        "label": "BASE / 常驻",
+        "value": "广东省深圳市",
+        "mini": "N22.54° · E114.06°",
+        "plain": true
+      }
+    ],
+    "cta": {
+      "title": "简历同步开放下载",
+      "desc": "网页版简历 · 与本档案数据一致 · 可直接打印为 PDF",
+      "btnDownload": "下载简历",
+      "btnPreview": "在线预览",
+      "resumeFile": "resume.html",
+      "resumeDownloadName": "陈培胜-AI全栈工程师-简历.html"
+    }
+  }
+}
