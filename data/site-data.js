@@ -384,7 +384,11 @@ window.SITE_DATA = {
           "v": "-60%",
           "s": "目标定位耗时"
         }
-      ]
+      ],
+      "video": {
+        "src": "videos/lessie-demo.mp4",
+        "duration": "56s"
+      }
     },
     {
       "no": "P-03",

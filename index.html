@@ -270,6 +270,12 @@
     <button class="modal-close" data-close aria-label="关闭详情">×</button>
     <div class="modal-media">
       <img id="modalImg" src="" alt="" width="640" height="360">
+      <video id="modalVideo" preload="none" playsinline controls hidden></video>
+      <button type="button" class="video-play" id="videoPlay" hidden aria-label="播放项目实战演示视频">
+        <span class="video-play-icon" aria-hidden="true"></span>
+        <span class="video-play-label">实战演示</span>
+        <span class="video-play-dur" id="videoDur" aria-hidden="true"></span>
+      </button>
       <span class="proj-no" id="modalNo" aria-hidden="true"></span>
     </div>
     <div class="modal-body">

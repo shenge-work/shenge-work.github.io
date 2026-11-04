@@ -42,6 +42,8 @@ body {
   overflow-x: hidden;
 }
 img { display: block; max-width: 100%; }
+/* hidden 属性权威化：防止作者 display 声明（如 img{display:block}）覆盖 UA 的 [hidden]{display:none} */
+[hidden] { display: none !important; }
 a { color: inherit; text-decoration: none; }
 ul, ol { list-style: none; }
 button { font-family: inherit; cursor: pointer; }
@@ -1267,6 +1269,37 @@ button { font-family: inherit; cursor: pointer; }
 .modal-close:hover { transform: rotate(90deg); }
 .modal-media { position: relative; border-bottom: var(--border-thick); aspect-ratio: 16/9; overflow: hidden; background: var(--paper); }
 .modal-media img { width: 100%; height: 100%; object-fit: cover; }
+/* ── 实战演示视频：有 video 字段的项目以插画作封面，点击按钮原地播放 ── */
+.modal-media video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  background: var(--ink);
+  z-index: 1;
+}
+.video-play {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 24px 13px 18px;
+  background: var(--orange); color: var(--accent-text);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  font-family: var(--font-cn); font-size: 16px; font-weight: 900; letter-spacing: 2px;
+  z-index: 2;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.video-play:hover { transform: translate(-50%, -54%); box-shadow: 7px 9px 0 var(--ink); }
+.video-play:active { transform: translate(-48%, -48%); box-shadow: 0 0 0 var(--ink); }
+.video-play:focus-visible { outline: 3px dashed var(--ink); outline-offset: 4px; }
+.video-play-icon {
+  width: 0; height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 16px solid currentColor;
+}
+.video-play-dur { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0; opacity: .9; }
 .modal-body { padding: 30px 32px 36px; }
 .modal-meta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
 .modal-title { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); line-height: 1.2; }
@@ -1526,6 +1559,9 @@ button { font-family: inherit; cursor: pointer; }
   .modal-panel { max-height: 94vh; }
   .modal-close { width: 38px; height: 38px; font-size: 20px; top: 10px; right: 10px; }
   .modal-media { aspect-ratio: 16/9; }
+  .video-play { padding: 10px 18px 10px 14px; font-size: 14px; letter-spacing: 1.5px; gap: 9px; }
+  .video-play-icon { border-top-width: 8px; border-bottom-width: 8px; border-left-width: 13px; }
+  .video-play-dur { font-size: 11px; }
   .modal-body { padding: 20px 18px 26px; }
   .modal-title { font-size: clamp(20px, 5vw, 28px); }
   .modal-desc { font-size: 14px; }

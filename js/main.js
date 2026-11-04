@@ -552,6 +552,9 @@
     var PROJECTS = window.__PROJECTS__ || [];
     var modal = $('projModal');
     var modalImg = $('modalImg');
+    var modalVideo = $('modalVideo');
+    var videoPlay = $('videoPlay');
+    var videoDur = $('videoDur');
     var modalNo = $('modalNo');
     var modalBadge = $('modalBadge');
     var modalYear = $('modalYear');
@@ -562,9 +565,22 @@
     var modalStats = $('modalStats');
     var lastFocused = null;
 
+    /* 实战演示视频：暂停并复位（移除 src + load() 中止缓冲，回到插画封面态） */
+    function resetVideo() {
+      if (modalVideo) {
+        try { modalVideo.pause(); } catch (err) {}
+        modalVideo.removeAttribute('src');
+        try { modalVideo.load(); } catch (err) {}
+        modalVideo.hidden = true;
+      }
+      modalImg.hidden = false;
+      if (videoPlay) videoPlay.hidden = true;
+    }
+
     function openModal(index) {
       var p = PROJECTS[index];
       if (!p) return;
+      resetVideo();
       modalImg.src = p.img;
       modalImg.alt = p.modalTitle + ' 项目封面';
       modalNo.textContent = p.no;
@@ -577,15 +593,35 @@
       modalStats.innerHTML = (p.stats || []).map(function (st) {
         return '<div><strong>' + esc(st.v) + '</strong><span>' + esc(st.s) + '</span></div>';
       }).join('');
+      /* 实战演示视频：有 video 字段才启用（插画封面 + 播放按钮，preload=none 不点击零流量） */
+      if (p.video && p.video.src && modalVideo && videoPlay) {
+        modalVideo.src = p.video.src;
+        modalVideo.poster = p.video.poster || p.img;
+        modalVideo.setAttribute('aria-label', (p.modalTitle || p.title) + ' 实战演示视频');
+        videoPlay.setAttribute('aria-label', '播放' + (p.modalTitle || p.title) + '实战演示视频');
+        videoDur.textContent = p.video.duration ? '· ' + p.video.duration : '';
+        videoPlay.hidden = false;
+      }
       lastFocused = document.activeElement;
       modal.hidden = false;
       document.body.style.overflow = 'hidden';
       document.querySelector('.modal-close').focus();
     }
     function closeModal() {
+      resetVideo();
       modal.hidden = true;
       document.body.style.overflow = '';
       if (lastFocused) lastFocused.focus();
+    }
+    if (videoPlay) {
+      videoPlay.addEventListener('click', function () {
+        if (!modalVideo || !modalVideo.getAttribute('src')) return;
+        modalImg.hidden = true;
+        videoPlay.hidden = true;
+        modalVideo.hidden = false;
+        var pr = modalVideo.play();
+        if (pr && pr.catch) pr.catch(function () { /* 自动播放被拦截时控件已可见，可手动点播放 */ });
+      });
     }
     document.querySelectorAll('.proj-card').forEach(function (card) {
       card.addEventListener('click', function () { openModal(parseInt(card.dataset.proj, 10)); });
