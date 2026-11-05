@@ -32,7 +32,7 @@
       nameCn: '江屿', nameEn: 'JIANG YU',
       role: '前端开发工程师', roleEn: 'FRONT-END DEVELOPER',
       bio: '临江理工大学计算机科学与技术专业，四年手写代码、两段实习、四个完整项目。相信「界面即体验」：用干净的工程实现有温度的设计，把每一个像素都落到用户看得见的地方。',
-      ctaProjects: '查看作品', ctaResume: '下载简历',
+      ctaProjects: '查看作品', ctaResume: '查看简历',
       resumeFile: 'resume.html', resumeDownloadName: '江屿-前端开发工程师-简历.html',
       statusMeta: 'OPEN TO WORK · 随时到岗 · 杭州 / 上海 / 远程',
       idcard: {
@@ -247,7 +247,7 @@
         { label: 'GITHUB / 代码仓库', value: 'github.com/jiangyu-dev', href: 'https://github.com/jiangyu-dev' },
         { label: 'BASE / 常驻', value: '浙江省杭州市西湖区', mini: 'N30.27° · E120.16°', plain: true }
       ],
-      cta: { title: '简历同步开放下载', desc: '网页版简历 · 与本档案数据一致 · 可直接打印为 PDF', btnDownload: '下载简历', btnPreview: '在线预览', resumeFile: 'resume.html', resumeDownloadName: '江屿-前端开发工程师-简历.html' }
+      cta: { title: '简历同步开放下载', desc: '网页版简历 · 与本档案数据一致 · 可直接打印为 PDF', btnDownload: '查看简历', btnPreview: '在线预览', resumeFile: 'resume.html', resumeDownloadName: '江屿-前端开发工程师-简历.html' }
     }
   };
 
@@ -318,7 +318,7 @@
     $('heroBio').textContent = h.bio || '';
     $('heroCta').innerHTML =
       '<a class="btn btn-solid" href="#projects">' + esc(h.ctaProjects || '查看作品') + ' <span class="btn-arrow" aria-hidden="true">▶▶</span></a>' +
-      '<a class="btn btn-ghost" href="' + esc(h.resumeFile || 'resume.html') + '" download="' + esc(h.resumeDownloadName || '') + '">' + esc(h.ctaResume || '下载简历') + ' <span class="btn-arrow" aria-hidden="true">↓</span></a>';
+      '<a class="btn btn-ghost" href="' + esc(h.resumeFile || 'resume.html') + '">' + esc(h.ctaResume || '查看简历') + ' <span class="btn-arrow" aria-hidden="true">▶</span></a>';
     $('heroStatus').textContent = h.statusMeta || '';
     var ic = h.idcard || {};
     $('idcardPhoto').src = ic.photo || '';
@@ -448,7 +448,7 @@
     var cta = ct.cta || {};
     $('resumeCta').innerHTML =
       '<div class="resume-cta-text"><strong>' + esc(cta.title) + '</strong><p>' + esc(cta.desc) + '</p></div>' +
-      '<a class="btn btn-solid btn-lg" href="' + esc(cta.resumeFile || 'resume.html') + '" download="' + esc(cta.resumeDownloadName || '') + '">' + esc(cta.btnDownload) + ' <span class="btn-arrow" aria-hidden="true">↓</span></a>' +
+      '<a class="btn btn-solid btn-lg" href="' + esc(cta.resumeFile || 'resume.html') + '">' + esc(cta.btnDownload) + ' <span class="btn-arrow" aria-hidden="true">▶</span></a>' +
       '<a class="btn btn-ghost btn-lg" href="' + esc(cta.resumeFile || 'resume.html') + '" target="_blank">' + esc(cta.btnPreview) + '</a>';
   }
 
@@ -639,7 +639,7 @@
       if (e.key === 'Escape' && !modal.hidden) closeModal();
     });
 
-    /* ── 7. Toast（简历下载提示） ── */
+    /* ── 7. Toast（分享卡等场景的轻提示） ── */
     var toast = $('toast');
     var toastTimer = null;
     function showToast(msg) {
@@ -648,11 +648,6 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2600);
     }
-    document.querySelectorAll('a[download]').forEach(function (link) {
-      link.addEventListener('click', function () {
-        showToast('简历已开始下载 — 如未触发，请右键「链接另存为」');
-      });
-    });
 
     /* ── 8. 访问计数器（页面渲染触发 · localStorage 本机累计） ── */
     var hitWidget = document.createElement('div');

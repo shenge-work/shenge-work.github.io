@@ -37,7 +37,7 @@ window.SITE_DATA = {
     "roleEn": "AI FULL-STACK ENGINEER",
     "bio": "5 年 Java 后端 + 2 年 AI 全栈工程，主导 6 套系统从 0 到 1：潜客 CRM、品牌官网、AI 搜索引擎、海外营销平台与投研工作台。技术决策风格三原则：不停机、可回滚、最小改动。",
     "ctaProjects": "查看作品",
-    "ctaResume": "下载简历",
+    "ctaResume": "查看简历",
     "resumeFile": "resume.html",
     "resumeDownloadName": "陈培胜-AI全栈工程师-简历.html",
     "statusMeta": "OPEN TO WORK · 随时到岗 · 深圳 / 广州 / 远程",
@@ -668,7 +668,7 @@ window.SITE_DATA = {
     "cta": {
       "title": "简历同步开放下载",
       "desc": "网页版简历 · 与本档案数据一致 · 可直接打印为 PDF",
-      "btnDownload": "下载简历",
+      "btnDownload": "查看简历",
       "btnPreview": "在线预览",
       "resumeFile": "resume.html",
       "resumeDownloadName": "陈培胜-AI全栈工程师-简历.html"
