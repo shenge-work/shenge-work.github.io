@@ -389,6 +389,8 @@ body {
   body.bw-print .head-name { text-shadow: none; }
   body.bw-print img { filter: grayscale(1); }
   body.bw-print .edu-verify { background: #ffffff; }
+  /* 黑白为正式版：去掉外层右下黑色投影，仅保留边框；彩色版保留风格化阴影 */
+  body.bw-print .sheet { box-shadow: none; }
 }
 @media (max-width: 620px) {
   .head-name { font-size: 32px; }
@@ -597,7 +599,7 @@ body {
 
 <div class="actions">
   <button class="btn btn-solid" onclick="window.print()">保存为 PDF（彩色）⎙</button>
-  <button class="btn btn-blue" onclick="printBW()">打印 PDF（黑白）⎙</button>
+  <button class="btn btn-blue" onclick="printBW()">打印 PDF（正式黑白）⎙</button>
   <button class="btn btn-green" id="btnLongImage" onclick="exportLongImage(this)">生成长图 ▤</button>
   <a class="btn" href="index.html">← 返回作品集主页</a>
 </div>
