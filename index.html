@@ -59,7 +59,7 @@
     </nav>
     <div class="topbar-right">
       <span class="status-pill" id="statusPill"><i class="lamp lamp-green"></i>开放机会 HIRING</span>
-      <button class="share-btn" id="shareBtn" title="生成首页分享长图" aria-label="生成首页分享长图">分享 ⤴</button>
+      <button class="share-btn" id="shareBtn" title="查看/下载作品集分享卡" aria-label="查看/下载作品集分享卡">分享 ⤴</button>
       <button class="menu-btn" id="menuBtn" aria-label="打开菜单" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -302,16 +302,20 @@
   </div>
 </div>
 
-<!-- 分享长图预览弹窗 -->
-<div class="share-overlay" id="shareOverlay" role="dialog" aria-modal="true" aria-label="分享长图预览" hidden>
+<!-- 作品集分享卡预览弹窗（竖版/方形） -->
+<div class="share-overlay" id="shareOverlay" role="dialog" aria-modal="true" aria-label="作品集分享卡预览" hidden>
   <div class="share-panel">
     <div class="share-head">
-      <strong>分享长图预览</strong>
+      <strong>作品集分享卡</strong>
       <button class="share-close" id="shareClose" aria-label="关闭预览">×</button>
     </div>
-    <div class="share-scroll"><img id="shareImg" alt="首页分享长图预览（右下角二维码可扫码访问）"></div>
+    <div class="share-tabs" role="tablist">
+      <button class="share-tab on" data-i="0" role="tab" aria-selected="true">竖版<span class="share-tab-hint">朋友圈 / 小红书</span></button>
+      <button class="share-tab" data-i="1" role="tab" aria-selected="false">方形<span class="share-tab-hint">社群封面 / 名片</span></button>
+    </div>
+    <div class="share-scroll"><img id="shareImg" alt="陈培胜作品集分享卡"></div>
     <div class="share-actions">
-      <button class="btn btn-solid" id="shareDownload">下载分享图 ⬇</button>
+      <button class="btn btn-solid" id="shareDownload">下载分享卡 ⬇</button>
       <button class="btn btn-ghost" id="shareCancel">取消</button>
     </div>
   </div>

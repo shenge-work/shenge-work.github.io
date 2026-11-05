@@ -811,145 +811,51 @@
       try { history.replaceState(null, '', location.pathname); } catch (e) {}
     });
 
-    /* ── 10. 分享长图（全页截屏 + 右下角跳转二维码，预览 / 下载） ── */
-    var SHARE_URL = 'https://shenge-work.github.io';
+    /* ── 10. 作品集分享卡（静态宣传图：竖版 / 方形，预览 + 下载） ── */
+    var SHARE_CARDS = [
+      { file: 'images/陈培胜-作品集-分享卡-竖版.png', name: '陈培胜-作品集-分享卡-竖版.png' },
+      { file: 'images/陈培胜-作品集-分享卡-方形.png', name: '陈培胜-作品集-分享卡-方形.png' }
+    ];
     var shareBtn = $('shareBtn');
     var shareOverlay = $('shareOverlay');
     var shareImg = $('shareImg');
     var shareDownload = $('shareDownload');
-    var shareBusy = false;
-    var shareBlobUrl = null;
+    var shareCur = 0;
 
-    function loadLib(src) {
-      return new Promise(function (resolve, reject) {
-        var s = document.createElement('script');
-        s.src = src;
-        s.onload = function () { resolve(); };
-        s.onerror = function () { reject(new Error('组件加载失败：' + src)); };
-        document.head.appendChild(s);
+    function setShareCard(i) {
+      shareCur = ((i % SHARE_CARDS.length) + SHARE_CARDS.length) % SHARE_CARDS.length;
+      var c = SHARE_CARDS[shareCur];
+      shareImg.src = c.file;
+      shareImg.alt = '陈培胜作品集分享卡' + (shareCur === 0 ? '（竖版）' : '（方形）');
+      document.querySelectorAll('.share-tab').forEach(function (t, idx) {
+        t.classList.toggle('on', idx === shareCur);
+        t.setAttribute('aria-selected', idx === shareCur ? 'true' : 'false');
       });
-    }
-
-    /* 本地库：qrcode-generator 渲染二维码画布（白底含 4 模块静区） */
-    function buildQrCanvas(url) {
-      var qr = window.qrcode(0, 'M');
-      qr.addData(url);
-      qr.make();
-      var count = qr.getModuleCount();
-      var cell = 10, quiet = 4;
-      var size = (count + quiet * 2) * cell;
-      var c = document.createElement('canvas');
-      c.width = size; c.height = size;
-      var ctx = c.getContext('2d');
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(0, 0, size, size);
-      ctx.fillStyle = '#111';
-      for (var r = 0; r < count; r++) {
-        for (var k = 0; k < count; k++) {
-          if (qr.isDark(r, k)) {
-            ctx.fillRect((k + quiet) * cell, (r + quiet) * cell, cell, cell);
-          }
-        }
-      }
-      return c;
     }
 
     function closeShare() {
       shareOverlay.hidden = true;
       document.body.style.overflow = '';
       shareImg.removeAttribute('src');
-      if (shareBlobUrl) { URL.revokeObjectURL(shareBlobUrl); shareBlobUrl = null; }
     }
 
-    function makeShareImage() {
-      if (shareBusy) return;
-      /* file:// 双击打开时本地图片会污染画布导致导出失败，引导到预览服务或线上环境 */
-      if (!/^https?:$/.test(location.protocol)) {
-        showToast('分享图需在本地预览（「本地预览.command」）或线上环境生成');
-        return;
-      }
-      shareBusy = true;
-      shareBtn.classList.add('busy');
-      showToast('正在生成分享长图，页面内容较多请稍候…');
-      Promise.all([
-        window.html2canvas ? Promise.resolve() : loadLib('js/html2canvas.min.js'),
-        window.qrcode ? Promise.resolve() : loadLib('js/qrcode.js')
-      ]).then(function () {
-        /* 1. 预处理：未进场的 reveal 全部点亮、固定挂件隐藏，截完整页 */
-        var notIn = [];
-        document.querySelectorAll('.reveal').forEach(function (el) {
-          if (!el.classList.contains('in')) { notIn.push(el); el.classList.add('in'); }
-        });
-        var hiddenEls = [];
-        ['#hitCounter', '#toast', '#shareOverlay'].forEach(function (sel) {
-          var el = document.querySelector(sel);
-          if (el && !el.hasAttribute('hidden')) { el.setAttribute('hidden', ''); hiddenEls.push(el); }
-        });
-        var bg = getComputedStyle(document.body).backgroundColor;
-        return window.html2canvas(document.body, {
-          scale: 2,
-          backgroundColor: bg,
-          useCORS: true,
-          logging: false,
-          windowWidth: document.documentElement.offsetWidth
-        }).then(function (src) {
-          /* 2. 还原页面状态 */
-          notIn.forEach(function (el) { el.classList.remove('in'); });
-          hiddenEls.forEach(function (el) { el.removeAttribute('hidden'); });
-          /* 3. 右下角合成二维码：白衬板 + 黑描边（深色主题也保证可扫）。
-             注意：html2canvas 返回画布的 2d 上下文自带 scale 变换，若直接按 canvas.width（设备像素）
-             在其上绘制，坐标会被变换二次放大而画到画布外。故先 1:1 拷贝到全新画布，再在干净上下文合成。 */
-          var out = document.createElement('canvas');
-          out.width = src.width; out.height = src.height;
-          var ctx = out.getContext('2d');
-          ctx.drawImage(src, 0, 0);
-          var qrC = buildQrCanvas(SHARE_URL);
-          var w = out.width, h = out.height;
-          var margin = Math.round(w * 0.02) + 16;
-          var pad = 20;
-          var qrSize = Math.max(240, Math.round(w * 0.11));
-          var plateSize = qrSize + pad * 2;
-          var px = w - margin - plateSize, py = h - margin - plateSize;
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(px, py, plateSize, plateSize);
-          ctx.lineWidth = 6;
-          ctx.strokeStyle = '#141311';
-          ctx.strokeRect(px, py, plateSize, plateSize);
-          ctx.drawImage(qrC, px + pad, py + pad, qrSize, qrSize);
-          return out;
-        });
-      }).then(function (canvas) {
-        return new Promise(function (resolve, reject) {
-          canvas.toBlob(function (blob) {
-            if (!blob) { reject(new Error('长图编码失败')); return; }
-            resolve(blob);
-          }, 'image/png');
-        });
-      }).then(function (blob) {
-        shareBlobUrl = URL.createObjectURL(blob);
-        shareImg.src = shareBlobUrl;
+    if (shareBtn) {
+      shareBtn.addEventListener('click', function () {
+        setShareCard(0);
         shareOverlay.hidden = false;
         document.body.style.overflow = 'hidden';
-      }).catch(function (err) {
-        try { console.error('[share] 生成失败：', err); } catch (e) {}
-        showToast('分享图生成失败：' + (err && err.message ? err.message : '未知错误'));
-      }).then(function () {
-        shareBusy = false;
-        shareBtn.classList.remove('busy');
       });
     }
-
-    if (shareBtn) { shareBtn.addEventListener('click', makeShareImage); }
     if (shareDownload) {
       shareDownload.addEventListener('click', function () {
-        if (!shareBlobUrl) return;
+        var c = SHARE_CARDS[shareCur];
         var a = document.createElement('a');
-        a.href = shareBlobUrl;
-        a.download = '陈培胜-求职作品集-分享长图.png';
+        a.href = c.file;
+        a.download = c.name;
         document.body.appendChild(a);
         a.click();
         a.remove();
-        showToast('分享图已开始下载');
+        showToast('正在下载「' + (shareCur === 0 ? '竖版' : '方形') + '」分享卡');
       });
     }
     if (shareOverlay) {
@@ -960,6 +866,9 @@
       if (shareCloseBtn) shareCloseBtn.addEventListener('click', closeShare);
       var shareCancelBtn = $('shareCancel');
       if (shareCancelBtn) shareCancelBtn.addEventListener('click', closeShare);
+      document.querySelectorAll('.share-tab').forEach(function (t, idx) {
+        t.addEventListener('click', function () { setShareCard(idx); });
+      });
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && !shareOverlay.hidden) closeShare();
       });
