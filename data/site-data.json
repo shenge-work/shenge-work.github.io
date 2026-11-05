@@ -204,7 +204,7 @@
   "experience": [
     {
       "company": "进门财经 · 深圳进门财经科技股份有限公司",
-      "role": "AI 全栈工程师 · AI 团队主力研发（金融投研头部）",
+      "role": "机构金融投研 SaaS · Java 开发工程师",
       "time": "2026.01 — 2026.07",
       "points": [
         "搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现<strong>多租户云沙箱</strong>隔离环境，完成发布依赖管理、日志上报与 Agent / Skill 全生命周期管控。",
@@ -308,7 +308,7 @@
       "badgeCls": "tag-orange",
       "company": "进门财经",
       "year": "2026.01 — 2026.07",
-      "yearDetail": "2026.01 — 2026.07 · 进门财经 · AI 团队主力研发",
+      "yearDetail": "2026.01 — 2026.07 · 进门财经 · Java 开发工程师",
       "title": "comein.cn",
       "titleEn": "AI 金融投研工作台",
       "modalTitle": "comein.cn — AI 金融投研工作台（Agent 基座 · 云沙箱）",
