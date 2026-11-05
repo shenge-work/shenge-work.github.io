@@ -306,14 +306,14 @@ window.SITE_DATA = {
     {
       "no": "P-01",
       "img": "images/project-1.jpg",
-      "imgAlt": "AI 投研工作台项目封面——机器人与K线图盾牌插画",
+      "imgAlt": "AI 金融投研工作台项目封面——机器人与K线图盾牌插画",
       "badge": "企业 AI 基建 · 金融投研",
       "badgeCls": "tag-orange",
       "year": "2026.01 — 2026.07",
       "yearDetail": "2026.01 — 2026.07 · 进门财经 · AI 团队主力研发",
       "title": "comein.cn",
-      "titleEn": "AI 投研工作台",
-      "modalTitle": "comein.cn — AI 投研工作台（Agent 基座 · 云沙箱）",
+      "titleEn": "AI 金融投研工作台",
+      "modalTitle": "comein.cn — AI 金融投研工作台（Agent 基座 · 云沙箱）",
       "desc": "合规 Agent 投研闭环平台：Agent 基座、多租户云沙箱、工具生态、模型计费与 Skill 治理。",
       "modalDesc": "面向券商、上市公司及机构投资者构建合规安全的 Agent 投研闭环平台，覆盖 Agent 基座、云沙箱、工具生态、模型计费、多渠道触达和 Skill 治理等核心能力。",
       "points": [
