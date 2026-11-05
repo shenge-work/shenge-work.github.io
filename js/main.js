@@ -812,9 +812,23 @@
     });
 
     /* ── 10. 作品集分享卡（静态宣传图：竖版 / 方形，预览 + 下载） ── */
+    /* 预览走 1080px 轻量 WebP（约 88KB/64KB，显示尺寸下与原图无可见差异），
+       避免直拉 2160px 原图（591KB/395KB）在慢链路下拖长加载；
+       WebP 加载失败（极旧浏览器或网络抖动）自动回退 256 色 PNG 预览；
+       下载仍给 2160px 原图 PNG，保证分享场景最高清晰度。 */
     var SHARE_CARDS = [
-      { file: 'images/陈培胜-作品集-分享卡-竖版.png', name: '陈培胜-作品集-分享卡-竖版.png' },
-      { file: 'images/陈培胜-作品集-分享卡-方形.png', name: '陈培胜-作品集-分享卡-方形.png' }
+      {
+        file: 'images/陈培胜-作品集-分享卡-竖版.png',
+        name: '陈培胜-作品集-分享卡-竖版.png',
+        preview: 'images/陈培胜-作品集-分享卡-竖版-预览.webp',
+        fallback: 'images/陈培胜-作品集-分享卡-竖版-预览.png'
+      },
+      {
+        file: 'images/陈培胜-作品集-分享卡-方形.png',
+        name: '陈培胜-作品集-分享卡-方形.png',
+        preview: 'images/陈培胜-作品集-分享卡-方形-预览.webp',
+        fallback: 'images/陈培胜-作品集-分享卡-方形-预览.png'
+      }
     ];
     var shareBtn = $('shareBtn');
     var shareOverlay = $('shareOverlay');
@@ -825,7 +839,11 @@
     function setShareCard(i) {
       shareCur = ((i % SHARE_CARDS.length) + SHARE_CARDS.length) % SHARE_CARDS.length;
       var c = SHARE_CARDS[shareCur];
-      shareImg.src = c.file;
+      /* 预览失败 → 回退 PNG 预览（只回退一次，防循环） */
+      shareImg.onerror = function () {
+        if (shareImg.getAttribute('src') === c.preview) { shareImg.src = c.fallback; }
+      };
+      shareImg.src = c.preview;
       shareImg.alt = '陈培胜作品集分享卡' + (shareCur === 0 ? '（竖版）' : '（方形）');
       document.querySelectorAll('.share-tab').forEach(function (t, idx) {
         t.classList.toggle('on', idx === shareCur);
@@ -836,6 +854,7 @@
     function closeShare() {
       shareOverlay.hidden = true;
       document.body.style.overflow = '';
+      shareImg.onerror = null;
       shareImg.removeAttribute('src');
     }
 
