@@ -400,6 +400,7 @@
         '<span class="proj-no" aria-hidden="true">' + esc(p.no) + '</span>' +
         '<span class="proj-hover-ui" aria-hidden="true"><span class="proj-hover-btn">查看详情 <i>▶</i></span></span></div>' +
         '<div class="proj-body"><div class="proj-meta">' +
+        '<span class="proj-co"' + (p.company ? '' : ' hidden') + '>' + esc(p.company || '') + '</span>' +
         '<span class="tag ' + (p.badgeCls || 'tag-orange') + '">' + esc(p.badge) + '</span>' +
         '<span class="proj-year">' + esc(p.year) + '</span></div>' +
         '<h3 class="proj-title">' + esc(p.title) + ' <span class="proj-title-en">' + esc(p.titleEn) + '</span></h3>' +
