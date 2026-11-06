@@ -12,11 +12,11 @@
 
   var CONFIG = {
     /* Umami Cloud：Dashboard → 你的站点 → Settings → Website ID（UUID） */
-    umamiWebsiteId: '',
+    umamiWebsiteId: '5c0668b9-2d66-4cfc-ac6b-b0df4cc570bc',
     umamiScriptSrc: 'https://cloud.umami.is/script.js',
 
     /* Microsoft Clarity：Project ID（10 位字母数字），不需要可留空 */
-    clarityProjectId: '',
+    clarityProjectId: 'z9bfezprgd',
 
     /* 是否记录浏览深度（25% / 50% / 75% / 100%） */
     trackScrollDepth: true
