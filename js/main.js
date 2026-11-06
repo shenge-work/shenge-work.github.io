@@ -257,7 +257,8 @@
         由「本地预览.command」自动从 JSON 生成，file:// 双击打开也能加载）
      ③ 技能模板默认示例数据（江屿） */
   function loadSiteData() {
-    return fetch('data/site-data.json', { cache: 'no-cache' })
+    /* 加时间戳绕过 GitHub Pages CDN 的 10 分钟缓存：Pages CMS 保存后刷新即可见 */
+    return fetch('data/site-data.json?v=' + Date.now(), { cache: 'no-cache' })
       .then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();

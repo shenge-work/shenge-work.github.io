@@ -252,3 +252,17 @@ api: 'https://portfolio-visits.xxx.workers.dev',
 - 只接受白名单 Origin（`wrangler.toml` 里的 `ALLOWED_ORIGINS`），别站调用会 403。
 - 换域名（比如以后绑自己的域名）记得同步改 `ALLOWED_ORIGINS` 再 `npx wrangler deploy`。
 
+## 七、内容改完多久能看到
+
+在 Pages CMS 点 Save 之后要过两道关：
+
+1. **构建**：提交到 `main` 后 `pages build and deployment` 约 30–60 秒跑完，这期间线上还是旧版。
+2. **缓存**：GitHub Pages 的 CDN 默认缓存资源 10 分钟。`js/main.js` 拉数据时已带
+   `?v=<时间戳>` 绕过这层缓存，所以构建一完成，刷新页面就能看到新文案。
+
+还是看到旧内容时按顺序排查：硬刷新（`Cmd + Shift + R`）→ 看仓库最新提交是否由
+`Pages CMS` 产生 → 看 Actions 里 `pages build and deployment` 是否 success。
+
+**本地双击预览（`file://`）走的是本地那份 `data/site-data.js` 快照**，不会同步线上：
+本地要看新数据，先 `git pull` 或跑 `python3 scripts/sync_site_data.py` 重新生成快照。
+
