@@ -1,4 +1,5 @@
-/* 本文件由「本地预览.command」从 data/site-data.json 自动生成，请勿手动编辑。
+/* 本文件由 data/site-data.json 自动生成，请勿手动编辑。
+   生成方式：python3 scripts/sync_site_data.py（或「本地预览.command」）。
    作用：file:// 双击打开时浏览器无法 fetch JSON（安全限制），
    此 JS 快照作为数据源，保证双击打开也能展示最新数据。 */
 window.SITE_DATA = {

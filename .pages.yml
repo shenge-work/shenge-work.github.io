@@ -1,0 +1,17 @@
+# Pages CMS 配置（https://app.pagescms.org）
+# 作用：在浏览器里改 data/site-data.json → 直接 commit 到本仓库 → GitHub Pages 自动重新发布
+# 约定：内容只改 JSON，data/site-data.js 由 GitHub Actions / 本地脚本自动重建，不要手改
+# 文档：https://pagescms.org/docs/configuration/
+
+media:
+  input: images
+  output: images
+  rename: safe
+  categories: [image]
+
+content:
+  - name: site-data
+    label: 作品集内容（全站文案）
+    type: file
+    path: data/site-data.json
+    format: code

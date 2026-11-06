@@ -92,6 +92,24 @@ python3 -m http.server 8000
 2. 仓库 `Settings → Pages → Source: Deploy from a branch`
 3. 选择 `main` 分支、`/ (root)` 目录，保存即自动上线
 
+## 统计与内容管理
+
+站点保持纯静态，统计与内容管理全部使用免费服务，**不需要自建后端**：
+
+- **访问统计**：Umami Cloud（10 万事件/月）——PV/UV、来源、设备、自定义事件
+- **行为观测**：Microsoft Clarity（可选）——会话录屏与热图
+- **内容管理**：Pages CMS（app.pagescms.org）——浏览器改 `data/site-data.json`，直接 commit 即发布
+- **数据同步**：GitHub Actions 在 JSON 变更后自动重建 `data/site-data.js` 快照
+
+配置位置：`js/analytics.js` 顶部 `CONFIG`（留空则不加载、不发任何请求）。
+完整说明与「只能本人授权」的账号步骤见 [docs/observability-and-cms.md](docs/observability-and-cms.md)。
+
+重建本地快照：
+
+```bash
+python3 scripts/sync_site_data.py
+```
+
 ## 作者
 
 **陈培胜** · AI 全栈工程师 · 广东深圳

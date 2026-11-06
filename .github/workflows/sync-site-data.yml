@@ -1,0 +1,53 @@
+# 内容改动后自动重建 data/site-data.js 快照
+#
+# 背景：站点的数据源是 data/site-data.json；双击打开（file://）时浏览器读不了 JSON，
+# 需要一个 JS 快照兜底，index.html 里 fetch 失败会回退到 window.SITE_DATA。
+# 后台（Pages CMS）只写 JSON，因此这里在每次 JSON 变更后自动跑一次生成脚本并提交，
+# 避免「网页是最新、本地预览还是旧的」这类数据漂移。
+#
+# 只监听 data/site-data.json：机器人提交的只是 site-data.js，不会触发自身循环。
+
+name: Sync site-data snapshot
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/site-data.json'
+      - 'scripts/sync_site_data.py'
+      - '.github/workflows/sync-site-data.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-site-data
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 准备 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 校验 JSON 并重建快照
+        run: python3 scripts/sync_site_data.py
+
+      - name: 提交快照变更
+        run: |
+          if git diff --quiet -- data/site-data.js; then
+            echo "快照已是最新，无需提交"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/site-data.js
+          git commit -m "chore(data): 由 site-data.json 重建 JS 快照"
+          git push
