@@ -159,10 +159,22 @@ python3 scripts/sync_site_data.py
 ## 六、全站访客计数器（可选 · Cloudflare Worker + KV）
 
 右下角那个 `RENDER LOG` 原本是 `localStorage` 本机累计，只有你自己的电脑会从 1 往上加。
-这一节把它换成全站真实数字：「你是第 N 位访客」，鼠标悬停显示累计访问次数。
+这一节把它换成全站真实数字。
 
-代码已写好并本地自测通过（`node worker/test-local.mjs`，10 项断言全过），
-**但部署必须用你的 Cloudflare 账号**，我没有你的授权，只能给到命令。
+**实测结论（2026-11）**：Cloudflare 的 `*.workers.dev` 域名在中国大陆不可达——DNS 超时、
+HTTPS 直接 `http=000`。Worker 部署和 KV 绑定都正常，但境内访客连不上，所以前端默认走
+另一个境内可达的计数后端，Worker 保留作「以后绑自有域名」的备选。
+
+| 后端 | 境内可达 | 成本 | 代价 |
+|---|---|---|---|
+| **abacus**（默认，`abacus.jasoncameron.dev`） | ✅ 实测 200 / 0.6s | 免费 | 第三方小项目，无 SLA |
+| 自己的 Worker + 自有域名 | ✅ 走自己的域名 | 域名 ¥30–60/年 | 要买域名并绑 Cloudflare |
+| 自己的 Worker + `workers.dev` | ❌ 被墙 | 免费 | 境内拿不到数据 |
+
+切换只改 `js/visitor-count.js` 的 `CONFIG.provider`：`'abacus'` ↔ `'worker'`；选 worker 时再填
+`CONFIG.workerApi`（如 `https://visits.你的域名`）。Worker 的免费额度与部署步骤仍然全部有效，
+只是访问入口要换成自己的域名。
+
 
 ### 免费额度
 

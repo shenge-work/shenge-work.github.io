@@ -85,13 +85,15 @@ if [ -z "$URL" ]; then
   exit 1
 fi
 
-say "⑤ 验证接口（白名单放行 / 非白名单拒绝）"
+say "⑤ 验证接口（只读公开 / 写入仅白名单）"
 ALLOWED=$(curl -s -o /dev/null -w '%{http_code}' -H "Origin: https://shenge-work.github.io" "$URL/stats" || echo "000")
-BLOCKED=$(curl -s -o /dev/null -w '%{http_code}' "$URL/stats" || echo "000")
-echo "白名单 Origin → HTTP $ALLOWED（应为 200）"
-echo "无 Origin     → HTTP $BLOCKED（应为 403）"
-if [ "$ALLOWED" != "200" ] || [ "$BLOCKED" != "403" ]; then
-  echo "⚠ 状态码和预期不符，先别接前端，把这两行发我排查"
+PUBLIC=$(curl -s -o /dev/null -w '%{http_code}' "$URL/stats" || echo "000")
+BLOCKED=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "Origin: https://evil.example.com" -H "Content-Type: application/json" -d '{"id":"deploy-probe"}' "$URL/hit" || echo "000")
+echo "白名单 GET /stats   → ${ALLOWED}（应为 200）"
+echo "无 Origin GET /stats → ${PUBLIC}（应为 200，只读公开）"
+echo "非白名单 POST /hit  → ${BLOCKED}（应为 403）"
+if [ "${ALLOWED}" != "200" ] || [ "${PUBLIC}" != "200" ] || [ "${BLOCKED}" != "403" ]; then
+  echo "⚠ 状态码和预期不符，先别接前端，把这三行发我排查"
 fi
 
 printf '%s' "$URL" > .deploy-url

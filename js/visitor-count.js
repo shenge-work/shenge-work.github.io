@@ -2,24 +2,37 @@
    全站访客计数器 · 前端接入层
    ──────────────────────────────────────────────────────────────────────
    main.js 里那个「访问计数 · RENDER LOG」是 localStorage 本机累计，只有 1 个人
-   能看到真实数字（就是你自己）。这一层在 API 配好之后接管它：
-     · 有 API → 显示「第 N 位访客」，数字来自 Cloudflare Worker + KV
-     · 无 API / 请求失败 → 保持原样，绝不把 0 或空白怼到页面上
-   部署 Worker 后，把地址填进下面 CONFIG.api 即可生效。
+   能看到真实数字（就是你自己）。这一层在配好后端后接管它，显示全站真实数字。
+
+   两个后端，改 CONFIG.provider 一行就能切：
+     · abacus（默认）—— 国内实测可达（200 / 0.6s），免费，无 SLA
+     · worker        —— 自己的 Cloudflare Worker，需要绑自有域名
+                        （workers.dev 域名在境内被墙，实测超时）
+
+   任何后端不可用 / 请求失败时保持原样，绝不把 0 或空白怼到页面上。
    ────────────────────────────────────────────────────────────────────── */
 (function () {
   'use strict';
 
   var CONFIG = {
-    /* 形如 https://portfolio-visits.xxxx.workers.dev，未填写则本文件不生效 */
-    api: '',
-    /* 同一会话内不重复计数，避免刷新页面刷数字 */
+    /* 'abacus'（默认，国内可达）或 'worker'（需 CONFIG.workerApi 配自有域名） */
+    provider: 'abacus',
+
+    /* provider=worker 时必填，形如 https://visits.你的域名 */
+    workerApi: '',
+
+    /* abacus 计数器坐标，命名空间建议保持唯一，避免和别人的计数冲突 */
+    abacusBase: 'https://abacus.jasoncameron.dev',
+    abacusNamespace: 'shenge-portfolio',
+    abacusKey: 'visits',
+
+    /* 同一会话不重复计数，避免刷新页面刷数字 */
     sessionKey: 'shenge_visit_counted',
     visitorKey: 'shenge_visitor_id'
   };
 
-  if (!CONFIG.api) return;
   if (location.protocol === 'file:') return;
+  if (CONFIG.provider === 'worker' && !CONFIG.workerApi) return;
 
   var READY_TIMEOUT = 3000;   // #hitCounter 由 main.js 动态创建，等它出现
   var POLL_INTERVAL = 150;
@@ -84,29 +97,43 @@
     }
   }
 
-  function apply(widget, data) {
-    var visitors = Number(data.visitors) || 0;
-    var total = Number(data.total) || 0;
-    if (!visitors) return;                     // 服务端还没数据时不覆盖本机数字
+  function apply(widget, value, tip) {
+    if (!value) return;                        // 服务端还没数据时不覆盖本机数字
 
     var head = widget.querySelector('.hit-counter-head');
     if (head) {
       var spans = head.querySelectorAll('span');
       var label = spans[spans.length - 1];
-      if (label) label.textContent = '全站访客 · GLOBAL VISITS';
+      if (label) label.textContent = '全站访问 · GLOBAL VISITS';
     }
 
-    renderDigits(widget.querySelector('#hitCounterDigits'), visitors);
+    renderDigits(widget.querySelector('#hitCounterDigits'), value);
 
-    var tip = '你是第 ' + visitors + ' 位访客 · 全站累计访问 ' + total + ' 次';
     widget.title = tip;
     widget.setAttribute('aria-label', tip);
-    widget.setAttribute('data-source', 'worker-kv');
+    widget.setAttribute('data-source', CONFIG.provider);
   }
 
-  function request(widget) {
+  function requestAbacus(widget) {
     var counted = alreadyCounted();
-    var url = CONFIG.api + (counted ? '/stats' : '/hit');
+    var path = (counted ? '/get/' : '/hit/') + CONFIG.abacusNamespace + '/' + CONFIG.abacusKey;
+
+    fetch(CONFIG.abacusBase + path, { credentials: 'omit', cache: 'no-store' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('status ' + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        if (!counted) markCounted();
+        var n = Number(data && (data.value !== undefined ? data.value : data.total));
+        apply(widget, n, '全站累计访问 ' + n + ' 次 · 同一会话只计一次');
+      })
+      .catch(function () { /* 失败就保留本机计数 */ });
+  }
+
+  function requestWorker(widget) {
+    var counted = alreadyCounted();
+    var url = CONFIG.workerApi + (counted ? '/stats' : '/hit');
     var opts = { method: counted ? 'GET' : 'POST', credentials: 'omit' };
 
     if (!counted) {
@@ -121,11 +148,17 @@
       })
       .then(function (data) {
         if (!counted) markCounted();
-        apply(widget, data);
+        var visitors = Number(data.visitors) || 0;
+        var total = Number(data.total) || 0;
+        var tip = '你是第 ' + visitors + ' 位访客 · 全站累计访问 ' + total + ' 次';
+        apply(widget, visitors, tip);
       })
-      .catch(function () {
-        /* 失败就安静地保留本机计数，不影响页面任何功能 */
-      });
+      .catch(function () { /* 失败就保留本机计数 */ });
+  }
+
+  function request(widget) {
+    if (CONFIG.provider === 'worker') requestWorker(widget);
+    else requestAbacus(widget);
   }
 
   function waitForWidget(elapsed) {

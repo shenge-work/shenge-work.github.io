@@ -1,0 +1,83 @@
+
+=== ① 本地自测（部署前先确认逻辑没坏）
+v22.23.2
+1. 首次访问计入 1 位访客
+  ✓ visitors=1 total=1
+  ✓ 写接口回显白名单 Origin
+2. 同一访客再次刷新：总访问 +1，访客数不变
+  ✓ visitors=1 total=2
+3. 新访客：访客数 +1
+  ✓ visitors=2 total=3
+4. 只读 /stats 公开可读（带 Origin 时返回 *）
+  ✓ stats 与计数器一致
+  ✓ 读接口 ACAO=*
+5. 浏览器直接打开 /stats（无 Origin）也能读到
+  ✓ 无 Origin 200 + 数据正确
+6. 根路径给出用法提示
+  ✓ GET / → 200
+7. 非法 visitor id 被清洗后仍能计数
+  ✓ 清洗为 scriptx，按新访客计
+8. 空 body 只加 PV，不加访客
+  ✓ visitors=3 total=5
+9. 写接口拒绝非白名单来源
+  ✓ 403 origin_not_allowed
+  ✓ 无 Origin 的 POST 也拒绝
+10. CORS 预检
+  ✓ 204 + Allow-Methods
+11. 错误方法
+  ✓ GET /hit → 405
+12. 乱七八糟的路径
+  ✓ 404 not_found
+
+全部通过
+
+=== ② 检查 Cloudflare 登录状态
+已登录：
+
+ ⛅️ wrangler 4.158.0
+────────────────────
+Getting User settings...
+👋 You are logged in with an OAuth Token, associated with the email shenge.work@gmail.com.
+🔐 Credentials are stored in: /Users/shenge/Library/Preferences/.wrangler/config/default.toml
+┌─────────────────────────────────┬──────────────────────────────────┐
+│ Account Name                    │ Account ID                       │
+├─────────────────────────────────┼──────────────────────────────────┤
+│ Shenge.work@gmail.com's Account │ ead07d9f00f8e2ac69055a81cc198382 │
+└─────────────────────────────────┴──────────────────────────────────┘
+🔓 Token Permissions:
+
+=== ③ 准备 KV 命名空间 VISITS
+未找到现成的 VISITS，创建中…
+
+ ⛅️ wrangler 4.158.0
+────────────────────
+Resource location: remote 
+
+🌀 Creating namespace with title "VISITS"
+✨ Success!
+To access your new KV Namespace in your Worker, add the following snippet to your configuration file:
+[[kv_namespaces]]
+binding = "VISITS"
+id = "78ccba103c8a444eb1b60e8fb8938e8f"
+KV id: 78ccba103c8a444eb1b60e8fb8938e8f
+✓ 已把 KV id 写进 wrangler.toml
+
+=== ④ 部署 Worker
+
+ ⛅️ wrangler 4.158.0
+────────────────────
+
+Cloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mYou need to register a workers.dev subdomain before publishing to workers.dev[0m
+
+
+? Would you like to register a workers.dev subdomain now?
+🤖 Using fallback value in non-interactive context: no
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mYou can either deploy your worker to one or more routes by specifying them in your wrangler.toml file, or register a workers.dev subdomain here:[0m
+
+  [4mhttps://dash.cloudflare.com/ead07d9f00f8e2ac69055a81cc198382/workers/onboarding[0m
+
+
+🪵  Logs were written to "/Users/shenge/Library/Preferences/.wrangler/logs/wrangler-2026-11-06_08-41-43_680.log"
+✗ 部署失败，把上面的报错发我

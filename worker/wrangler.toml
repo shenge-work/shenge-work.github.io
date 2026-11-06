@@ -6,7 +6,7 @@ compatibility_date = "2025-01-01"
 
 [[kv_namespaces]]
 binding = "VISITS"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "78ccba103c8a444eb1b60e8fb8938e8f"
 
 [vars]
 # 允许调用计数接口的来源，逗号分隔；线上只留你的正式域名
