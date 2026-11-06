@@ -32,7 +32,7 @@ window.SITE_DATA = {
         "cls": "tag-blue"
       }
     ],
-    "nameCn": "陈培胜haha",
+    "nameCn": "陈培胜",
     "nameEn": "CHEN PEISHENG",
     "role": "AI 全栈工程师",
     "roleEn": "AI FULL-STACK ENGINEER",
