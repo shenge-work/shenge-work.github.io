@@ -67,28 +67,33 @@ export default {
     var allow = allowedOrigins(env);
     var route = url.pathname.replace(/\/+$/, '') || '/';
 
-    /* 预检 */
+    /* 预检：只有白名单来源的写操作才放行 */
     if (request.method === 'OPTIONS') {
       if (allow.indexOf(origin) === -1) return new Response(null, { status: 403 });
       return new Response(null, { status: 204, headers: corsHeaders(origin) });
     }
 
-    /* 非白名单来源直接拒绝 */
+    var kv = env.VISITS;
+    if (!kv) return json({ error: 'kv_not_bound' }, {}, 500);
+
+    /* 只读接口公开可读（不含任何个人信息），部署后浏览器直接打开即可验证 */
+    if (request.method === 'GET' && route === '/') {
+      return json({ ok: true, hint: 'GET /stats 读取，POST /hit 计数' }, { 'Access-Control-Allow-Origin': '*' });
+    }
+
+    if (request.method === 'GET' && route === '/stats') {
+      return json(
+        { visitors: await readNum(kv, 'visitors'), total: await readNum(kv, 'total') },
+        { 'Access-Control-Allow-Origin': '*', Vary: 'Origin' }
+      );
+    }
+
+    /* 以下都是写操作，来源必须在白名单里 */
     if (allow.indexOf(origin) === -1) {
       return json({ error: 'origin_not_allowed' }, {}, 403);
     }
 
     var cors = corsHeaders(origin);
-    var kv = env.VISITS;
-
-    if (!kv) return json({ error: 'kv_not_bound' }, cors, 500);
-
-    if (route === '/stats' || (route === '/' && request.method === 'GET')) {
-      return json(
-        { visitors: await readNum(kv, 'visitors'), total: await readNum(kv, 'total') },
-        cors
-      );
-    }
 
     if (route === '/hit') {
       if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, cors, 405);

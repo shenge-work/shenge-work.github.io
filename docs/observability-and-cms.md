@@ -173,15 +173,50 @@ python3 scripts/sync_site_data.py
 | KV 写 | 1000 次/天 | 每次访问 1–2 次写，日访客 <400 才安全 |
 | KV 存储 | 1 GB | 每个访客 id 约 50 字节，180 天过期 |
 
-### 只有你能做的部署步骤
+### 部署方式一：一键脚本（推荐）
 
 ```bash
 cd worker
-npx wrangler login                                  # 弹浏览器，用你的 Cloudflare 账号授权
-npx wrangler kv namespace create VISITS             # 复制输出里的 id
-# 把 id 填进 wrangler.toml 的 REPLACE_WITH_KV_NAMESPACE_ID
-npx wrangler deploy                                 # 终端会打印 https://portfolio-visits.xxx.workers.dev
+bash deploy.sh
 ```
+
+脚本会依次做：本地自测 → 检查登录（没登录就弹浏览器让你点 Allow）→ 查找或创建 KV 命名空间
+→ 自动把 id 回填进 `wrangler.toml` → 部署 → 用两种 Origin 打接口验证 → 把 `workers.dev` 地址写进
+`worker/.deploy-url` 并打印。
+
+### 部署方式二：Cloudflare 控制台（不依赖本地二进制）
+
+如果脚本里 `npx wrangler` 装不上（见下方 Gatekeeper 一节），直接用网页控制台，5 分钟搞定：
+
+1. <https://dash.cloudflare.com> → **Workers & Pages** → **Create** → **Worker** → 命名 `portfolio-visits`。
+2. 编辑器里删掉默认代码，粘贴
+   <https://raw.githubusercontent.com/shenge-work/shenge-work.github.io/main/worker/index.mjs> 的全部内容 → **Deploy**。
+3. **Storage & Databases → KV** → **Create namespace**，名字填 `portfolio-visits-VISITS`。
+4. 回到 Worker → **Settings → Bindings**（新版在 **Runtime/Bindings** 页）→ **Add binding** →
+   类型 **KV namespace**，变量名必须是 `VISITS`，选刚建的那个 → 保存。
+5. 再点一次 **Deploy**，页面顶部的地址就是 `https://portfolio-visits.<子域>.workers.dev`。
+
+### 踩到 Gatekeeper 怎么办
+
+现象：macOS 连续弹「未打开 “esbuild” / “workerd”，Apple 无法验证…」，命令以 exit 1 结束，
+`wrangler` 没装完，登录和部署都没发生。
+
+原因：wrangler 依赖两个原生二进制（打包用的 `esbuild`、本地运行时的 `workerd`），
+它们是从 npm 下载到 `~/.npm` 后被 macOS 打了隔离标记，postinstall 一执行就被拦。
+
+两种解法，任选其一：
+
+```bash
+# 解法 A：解除隔离标记后重跑（只影响 npm 缓存里的文件）
+xattr -dr com.apple.quarantine ~/.npm
+cd worker && bash deploy.sh
+```
+
+```text
+解法 B：改用上面的「部署方式二」，全程在浏览器里做，不需要任何本地二进制。
+```
+
+如果解法 A 之后仍弹窗，改在**系统自带的 Terminal.app** 里执行（不要从被隔离的宿主应用里起终端）。
 
 拿到地址后填进 `js/visitor-count.js`：
 
@@ -195,7 +230,8 @@ api: 'https://portfolio-visits.xxx.workers.dev',
 
 1. 打开站点，右下角标题变成「全站访客 · GLOBAL VISITS」。
 2. 开一个无痕窗口再访问，数字 +1（同一窗口刷新不重复计数，靠 sessionStorage 挡住）。
-3. 直接访问 `https://你的-worker 地址/stats`，应返回 `{"visitors":N,"total":M}`。
+3. 浏览器直接打开 `https://你的-worker 地址/stats`，应返回 `{"visitors":N,"total":M}`
+   （只读接口是公开的，方便部署后立刻验证；只有写操作的 `POST /hit` 校验来源白名单）。
 
 ### 已知限制
 
