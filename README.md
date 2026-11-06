@@ -40,7 +40,7 @@ AI 全栈工程师求职个人网站：基于纯原生 HTML / CSS / JavaScript �
 6. **项目详情数据**：作品卡片数据驱动渲染
 7. **项目模态框**：点击作品弹出详情（多尺寸适配）
 8. **Toast 提示**：简历下载等操作轻提示
-9. **访问计数器**：右下角复古里程表样式，localStorage 累计本设备页面渲染次数
+9. **全站访问计数器**：右下角复古里程表样式，显示全站真实访问次数（默认走免费计数服务，后端不可用时回退本机计数，不会显示 0）
 
 简历页附加能力：
 - 一键「保存为 PDF」：调用浏览器打印，米白纸感样式与屏幕一致
@@ -56,26 +56,41 @@ AI 全栈工程师求职个人网站：基于纯原生 HTML / CSS / JavaScript �
 
 ## 技术栈
 
-- **纯原生 HTML5 / CSS3 / JavaScript（ES5 兼容）**，零框架、零构建工具、零第三方依赖
-- 静态文件直出，GitHub Pages 自动部署，加载快、无后端成本
+- **纯原生 HTML5 / CSS3 / JavaScript（ES5 兼容）**，页面本身零框架、零构建工具
+- 静态文件直出，GitHub Pages 自动部署，加载快、无服务器成本
+- 统计 / 计数脚本按需加载：ID 未配置或后端不可达时不发请求，不影响页面
 - favicon 双尺寸适配（favicon.png / favicon-64.png）
 
 ## 目录结构
 
 ```
-├── index.html          # 作品集主页
-├── resume.html         # 在线简历页
-├── css/
-│   └── style.css       # 全站样式（设计系统 + 响应式 + 打印模式）
+├── index.html              # 作品集主页
+├── resume.html             # 在线简历页
+├── 本地预览.command         # 双击生成快照并起本地预览
+├── css/style.css           # 设计系统 + 响应式 + 打印模式
 ├── js/
-│   └── main.js         # 页面交互（9 大功能模块）
-├── images/
-│   ├── portrait.jpg    # 个人形象照
-│   ├── project-1~5.jpg # 项目作品图
-│   ├── cert-1~3.jpg    # 获奖证书
-│   └── qr-chsi.png     # 学信网学历验证二维码
+│   ├── main.js             # 页面交互（9 大功能模块）+ 数据渲染
+│   ├── analytics.js        # 埋点统一入口（Umami / Clarity，未填 ID 不发请求）
+│   └── visitor-count.js    # 全站访问计数（abacus / 自建 Worker 可切换）
+├── data/
+│   ├── site-data.json      # 唯一编辑源：全部文案、项目、证书、联系方式
+│   └── site-data.js        # 自动生成的 window.SITE_DATA 快照（勿手改）
+├── images/                 # 形象照 / 项目图 / 证书 / 学信网二维码
+├── scripts/sync_site_data.py        # JSON → JS 快照，支持 --check
+├── docs/observability-and-cms.md    # 教程：统计与内容管理接入
+├── worker/                 # 可选：自建 Cloudflare Worker 访客计数
+├── .pages.yml              # Pages CMS 配置
+├── .github/workflows/sync-site-data.yml  # JSON 变更后自动重建快照
 └── favicon.png / favicon-64.png
 ```
+
+## 数据驱动
+
+站内所有文案、项目、证书、联系方式都集中在 `data/site-data.json` 一个文件里，改它即可，不用动 HTML：
+
+- **线上**：`js/main.js` 用 `fetch('data/site-data.json?v=<时间戳>')` 读取，时间戳用于绕过 CDN 缓存
+- **本地双击预览**：`file://` 下 `fetch` 不可用，自动回退到 `data/site-data.js` 快照
+- **快照维护**：`python3 scripts/sync_site_data.py` 手动重建，或由 GitHub Actions 在 JSON 变更后自动重建
 
 ## 本地预览与部署
 
@@ -92,24 +107,24 @@ python3 -m http.server 8000
 2. 仓库 `Settings → Pages → Source: Deploy from a branch`
 3. 选择 `main` 分支、`/ (root)` 目录，保存即自动上线
 
-## 统计与内容管理
+## 可观测统计与内容管理
 
-站点保持纯静态，统计与内容管理全部使用免费服务，**不需要自建后端**：
+站点保持纯静态，统计与内容管理全部走免费服务，**不需要自建后端、不需要服务器**：
 
-- **访问统计**：Umami Cloud（10 万事件/月）——PV/UV、来源、设备、自定义事件
-- **行为观测**：Microsoft Clarity（可选）——会话录屏与热图
-- **内容管理**：Pages CMS（app.pagescms.org）——浏览器改 `data/site-data.json`，直接 commit 即发布
-- **数据同步**：GitHub Actions 在 JSON 变更后自动重建 `data/site-data.js` 快照
-- **全站访客计数**：Cloudflare Worker + KV（可选，把右下角本机计数换成真实访客数）
+| 能力 | 服务 | 免费额度 | 配置位置 |
+|---|---|---|---|
+| 访问统计（PV/UV/来源/事件） | Umami Cloud | 10 万事件/月、1 站点、6 个月留存 | `js/analytics.js` → `umamiWebsiteId` |
+| 行为观测（录屏/热图） | Microsoft Clarity | 不限流量 | `js/analytics.js` → `clarityProjectId` |
+| 内容管理（网页改文案） | Pages CMS | 免费（GitHub App 直连） | `.pages.yml` |
+| 数据同步（JSON→快照） | GitHub Actions | 公开仓库免费 | `.github/workflows/sync-site-data.yml` |
+| 全站访问计数 | abacus（默认）/ Cloudflare Worker + KV（可选） | 免费 | `js/visitor-count.js` → `CONFIG` |
 
-配置位置：`js/analytics.js` 顶部 `CONFIG`（留空则不加载、不发任何请求）。
-完整说明与「只能本人授权」的账号步骤见 [docs/observability-and-cms.md](docs/observability-and-cms.md)。
+接入只需填 ID：`js/analytics.js` 顶部 `CONFIG` 留空 = 不加载、不发任何请求。
 
-重建本地快照：
-
-```bash
-python3 scripts/sync_site_data.py
-```
+**教程入口**
+- 完整接入教程（注册 → 拿 ID → 填配置 → 验证 → 排障）：[docs/observability-and-cms.md](docs/observability-and-cms.md)
+- 只想快速跑通：看教程开头的「5 分钟最快路径」
+- 教程里的账号授权步骤**必须本人操作**（第三方登录与 GitHub App 授权弹窗无法代办）
 
 ## 作者
 

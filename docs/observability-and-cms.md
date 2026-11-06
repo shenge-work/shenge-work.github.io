@@ -1,7 +1,36 @@
-# 可观测统计 + 内容管理（免费方案）
+# 教程：给 GitHub Pages 静态站接入免费可观测统计与内容管理
 
-这个站点是纯静态的 GitHub Pages，**不需要真后端**。访问统计、行为观测、内容管理都用免费 SaaS，
-数据全部留在 GitHub 仓库或对方免费额度内，成本 0。
+适用：纯静态站（GitHub Pages 或任意静态托管）。目标是在不买服务器、不接数据库的前提下，
+拿到「有多少人来、从哪来、点了什么」，并且做到「不改代码就能更新站内文案」。总成本 0。
+
+| 能力 | 服务 | 免费额度 | 你要做的事 |
+|---|---|---|---|
+| 访问统计 PV/UV/事件 | [Umami Cloud](https://cloud.umami.is) | 10 万事件/月、1 站点、6 个月留存 | GitHub 登录 → 建站点 → 复制 Website ID |
+| 行为录屏 / 热图 | [Microsoft Clarity](https://clarity.microsoft.com) | 不限流量 | 微软账号 → 建项目 → 复制 Project ID |
+| 网页内容管理 | [Pages CMS](https://app.pagescms.org) | 免费（GitHub App 直连） | GitHub 授权单个仓库 → 网页改 JSON |
+| 数据一致性 | GitHub Actions | 公开仓库免费 | 已配好，无需操作 |
+| 全站访客计数 | abacus（默认）/ Cloudflare Worker + KV（可选） | 免费 | 默认已生效；自建见第六节 |
+
+## 目录
+
+1. [5 分钟最快路径](#5-分钟最快路径)
+2. [一、接入步骤](#一接入步骤)
+3. [二、仓库里已经配好的文件](#二仓库里已经配好的文件)
+4. [三、埋点事件表](#三埋点事件表)
+5. [四、日常使用流程](#四日常使用流程)
+6. [五、几个必须知道的坑](#五几个必须知道的坑)
+7. [六、全站访客计数器](#六全站访客计数器)
+8. [七、内容改完多久能看到](#七内容改完多久能看到)
+
+## 5 分钟最快路径
+
+只想让它先跑起来，三步：
+
+1. Umami 拿 Website ID → 填进 `js/analytics.js` 的 `umamiWebsiteId`
+2. Pages CMS 授权仓库 → 在网页里改 `data/site-data.json`
+3. 推一次提交 → 等 30–60 秒构建 → 刷新页面验收
+
+下面按平台展开每一步的细节、验证方法与踩坑。
 
 ```
               ┌──────────────── 浏览器 ────────────────┐
@@ -21,10 +50,10 @@
 
 ---
 
-## 一、只有你本人能做的授权（3 步）
+## 一、接入步骤
 
-下面每一步都要用你自己的账号登录、点授权，我无法代做。做完把 ID 发我，或自己填进
-`js/analytics.js` 顶部 `CONFIG`。
+下面每一步都要用**你自己的账号**登录、点授权，代理人无法代做（涉及账号权限与第三方授权弹窗）。
+做完把 ID 填进 `js/analytics.js` 顶部 `CONFIG`，或填完让代理人核对。
 
 ### 1) Umami Cloud —— 访问统计（必做）
 
@@ -82,7 +111,9 @@ Clarity 免费、不限流量，但录屏默认保留一段时间（以官网为
 
 ---
 
-## 二、已经改好的文件（这些是我做的）
+## 二、仓库里已经配好的文件
+
+这些文件是方案落地的部分，接入时只需要填 ID，不用改逻辑：
 
 | 文件 | 作用 |
 |---|---|
@@ -92,7 +123,7 @@ Clarity 免费、不限流量，但录屏默认保留一段时间（以官网为
 | `scripts/sync_site_data.py` | 由 `site-data.json` 生成 `site-data.js` 快照；`--check` 只校验不写 |
 | `.github/workflows/sync-site-data.yml` | JSON 一改，自动重建快照并提交，防止两份数据漂移 |
 | `docs/observability-and-cms.md` | 本文件 |
-| `js/visitor-count.js` | 全站访客计数前端接入层，`CONFIG.api` 未填则不生效 |
+| `js/visitor-count.js` | 全站访客计数前端接入层；`CONFIG.provider` 切换 abacus / 自建 Worker |
 | `worker/` | Cloudflare Worker 源码、wrangler 配置与本地自测脚本 |
 
 `js/analytics.js` 已经在 `file://` 双击打开、`localhost` 预览时自动跳过，
@@ -156,7 +187,9 @@ python3 scripts/sync_site_data.py
 
 ---
 
-## 六、全站访客计数器（可选 · Cloudflare Worker + KV）
+## 六、全站访客计数器
+
+（可选 · Cloudflare Worker + KV，或默认的 abacus 免费计数）
 
 右下角那个 `RENDER LOG` 原本是 `localStorage` 本机累计，只有你自己的电脑会从 1 往上加。
 这一节把它换成全站真实数字。
