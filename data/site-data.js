@@ -4,7 +4,7 @@
    此 JS 快照作为数据源，保证双击打开也能展示最新数据。 */
 window.SITE_DATA = {
   "meta": {
-    "pageTitle": "测试陈培胜 CHEN PEISHENG · AI 全栈工程师 · 求职作品集 2026",
+    "pageTitle": "陈培胜 CHEN PEISHENG · AI 全栈工程师 · 求职作品集 2026",
     "description": "陈培胜的个人求职作品集——5 年全栈工程师，Agent 开发 / AI 工程化 / 企业 AI 基建方向。",
     "brandMark": "CP",
     "brandSub": "CHEN PEISHENG —<br>5年全栈工程师档案",
@@ -32,7 +32,7 @@ window.SITE_DATA = {
         "cls": "tag-blue"
       }
     ],
-    "nameCn": "陈培胜",
+    "nameCn": "陈培胜haha",
     "nameEn": "CHEN PEISHENG",
     "role": "AI 全栈工程师",
     "roleEn": "AI FULL-STACK ENGINEER",
