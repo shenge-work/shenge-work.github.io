@@ -100,6 +100,7 @@ python3 -m http.server 8000
 - **行为观测**：Microsoft Clarity（可选）——会话录屏与热图
 - **内容管理**：Pages CMS（app.pagescms.org）——浏览器改 `data/site-data.json`，直接 commit 即发布
 - **数据同步**：GitHub Actions 在 JSON 变更后自动重建 `data/site-data.js` 快照
+- **全站访客计数**：Cloudflare Worker + KV（可选，把右下角本机计数换成真实访客数）
 
 配置位置：`js/analytics.js` 顶部 `CONFIG`（留空则不加载、不发任何请求）。
 完整说明与「只能本人授权」的账号步骤见 [docs/observability-and-cms.md](docs/observability-and-cms.md)。

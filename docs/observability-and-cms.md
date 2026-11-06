@@ -92,6 +92,8 @@ Clarity 免费、不限流量，但录屏默认保留一段时间（以官网为
 | `scripts/sync_site_data.py` | 由 `site-data.json` 生成 `site-data.js` 快照；`--check` 只校验不写 |
 | `.github/workflows/sync-site-data.yml` | JSON 一改，自动重建快照并提交，防止两份数据漂移 |
 | `docs/observability-and-cms.md` | 本文件 |
+| `js/visitor-count.js` | 全站访客计数前端接入层，`CONFIG.api` 未填则不生效 |
+| `worker/` | Cloudflare Worker 源码、wrangler 配置与本地自测脚本 |
 
 `js/analytics.js` 已经在 `file://` 双击打开、`localhost` 预览时自动跳过，
 不会把本地调试算进线上数据。
@@ -151,3 +153,54 @@ python3 scripts/sync_site_data.py
 4. **Actions 首次运行可能要开写权限**。若 workflow 报 `403`：
    仓库 Settings → Actions → General → Workflow permissions → 选 **Read and write permissions**。
 5. **数据保留有限**。Umami 免费版留 6 个月，长期趋势想留档就定期导出 CSV。
+
+---
+
+## 六、全站访客计数器（可选 · Cloudflare Worker + KV）
+
+右下角那个 `RENDER LOG` 原本是 `localStorage` 本机累计，只有你自己的电脑会从 1 往上加。
+这一节把它换成全站真实数字：「你是第 N 位访客」，鼠标悬停显示累计访问次数。
+
+代码已写好并本地自测通过（`node worker/test-local.mjs`，10 项断言全过），
+**但部署必须用你的 Cloudflare 账号**，我没有你的授权，只能给到命令。
+
+### 免费额度
+
+| 项 | 免费额度 | 说明 |
+|---|---|---|
+| Worker 请求 | 10 万次/天 | 作品集远远用不到 |
+| KV 读 | 10 万次/天 | 每次命中 1–2 次读 |
+| KV 写 | 1000 次/天 | 每次访问 1–2 次写，日访客 <400 才安全 |
+| KV 存储 | 1 GB | 每个访客 id 约 50 字节，180 天过期 |
+
+### 只有你能做的部署步骤
+
+```bash
+cd worker
+npx wrangler login                                  # 弹浏览器，用你的 Cloudflare 账号授权
+npx wrangler kv namespace create VISITS             # 复制输出里的 id
+# 把 id 填进 wrangler.toml 的 REPLACE_WITH_KV_NAMESPACE_ID
+npx wrangler deploy                                 # 终端会打印 https://portfolio-visits.xxx.workers.dev
+```
+
+拿到地址后填进 `js/visitor-count.js`：
+
+```js
+api: 'https://portfolio-visits.xxx.workers.dev',
+```
+
+提交推送后 1 分钟生效。**没填地址或请求失败时，这个文件完全不工作**，页面继续显示原来的本机计数，不会出现 0 或空白。
+
+### 验证
+
+1. 打开站点，右下角标题变成「全站访客 · GLOBAL VISITS」。
+2. 开一个无痕窗口再访问，数字 +1（同一窗口刷新不重复计数，靠 sessionStorage 挡住）。
+3. 直接访问 `https://你的-worker 地址/stats`，应返回 `{"visitors":N,"total":M}`。
+
+### 已知限制
+
+- KV 的读改写不是原子操作，同一秒多人同时命中会有个位数漂移。作品集流量下无感；
+  要严格精确得换 Durable Objects（需付费计划），为这点误差不值得。
+- 只接受白名单 Origin（`wrangler.toml` 里的 `ALLOWED_ORIGINS`），别站调用会 403。
+- 换域名（比如以后绑自己的域名）记得同步改 `ALLOWED_ORIGINS` 再 `npx wrangler deploy`。
+
