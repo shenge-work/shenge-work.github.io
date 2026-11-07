@@ -899,7 +899,18 @@
       timeout: 20000,       // 云函数执行超时 30s，前端留余量
       maxChars: 200,        // 与后端 MAX_QUESTION_CHARS 对齐
       welcome: '你好，我是 CP.AI —— 陈培胜的档案问答助手。<br>后端跑在 <b>CloudBase 云函数</b>上：先用 TF-IDF 在 32 段简历切片里召回相关段落，再交给大模型受约束生成答案，每次回答都会标注依据来源。<br>可以问我项目细节、技术栈、工作经历。',
-      quickQuestions: ['主导过哪些 0→1 系统？', 'Agent 架构经验？', '技术栈与方向？', '联系方式？']
+      quickQuestions: ['主导过哪些 0→1 系统？', 'Agent 架构经验？', '技术栈与方向？', '联系方式？'],
+      /* ── 主动性：停留 10 秒仍未开口，就主动把问题递到手边 ── */
+      autoDelay: 10000,             // 触发时刻（毫秒）
+      autoTipAhead: 4000,           // 距触发还剩多久冒小气泡
+      autoCooldown: 30 * 60 * 1000, // 同一台设备 30 分钟内不再自动弹
+      autoTip: '简历看不完？直接问我就行',
+      autoLead: '我是 CP.AI，陈培胜的档案问答助手。<br>这页塞了 6 套系统、几十条技术细节，翻页挺慢——<b>直接问我更快</b>，回答都带原文出处。<br>不想打字就先点一个：',
+      autoPrompts: [
+        { q: '你主导过哪些 0→1 的系统？', label: '0→1 系统' },
+        { q: 'Agent 架构这块你做到什么程度？', label: 'Agent 深度' },
+        { q: '技术栈与方向？', label: '技术栈' }
+      ]
     };
     var aiFab = $('aiFab');
     var aiPanel = $('aiPanel');
@@ -926,14 +937,14 @@
       t.classList.add('ai-typing');
       return t;
     }
-    function aiOpenPanel() {
+    function aiOpenPanel(auto) {
       aiPanel.hidden = false;
       aiPanel.classList.add('opening');
       setTimeout(function () { aiPanel.classList.remove('opening'); }, 320);
       aiFab.setAttribute('aria-expanded', 'true');
       if (!aiReady) {
         aiReady = true;
-        aiAppendMsg('bot', AI_CONFIG.welcome);
+        if (!auto) aiAppendMsg('bot', AI_CONFIG.welcome);
         aiQuick.innerHTML = AI_CONFIG.quickQuestions.map(function (q) {
           return '<button class="ai-chip" type="button">' + esc(q) + '</button>';
         }).join('');
@@ -941,7 +952,8 @@
           chip.addEventListener('click', function () { aiSubmit(chip.textContent); });
         });
       }
-      setTimeout(function () { aiInput.focus(); }, 60);
+      /* 自动弹出时不抢焦点：移动端不弹键盘，桌面端不打断当前阅读位置 */
+      if (!auto) setTimeout(function () { aiInput.focus(); }, 60);
     }
     function aiClosePanel() {
       aiPanel.hidden = true;
@@ -952,6 +964,7 @@
       if (!q || aiBusy) return;
       aiBusy = true;
       aiSend.disabled = true;
+      if (aiPanel) aiPanel.classList.remove('ai-quiet');
       aiAppendMsg('user', esc(q));
       aiInput.value = '';
       aiInput.style.height = '';
@@ -1026,16 +1039,99 @@
       }
       return '▍通道暂时不可用，请稍后再试，或邮件联系：shenge.work@gmail.com';
     }
+    /* ── 主动性：停留 10 秒自动打招呼（每会话一次，同设备 30 分钟冷却） ──
+       思路：先 4 秒后冒一个小气泡做预告，到 10 秒仍没被搭理才展开面板并递上三个入口；
+       用户任何主动动作（点浮标 / 关面板 / 提问题 / 按 Esc）都视作"已接管"，立刻撤销自动行为。 */
+    var aiAutoTimer = null;
+    var aiTipTimer = null;
+    var aiTipEl = null;
+    var aiLastScroll = 0;
+    var aiManual = false;
+
+    function aiHideTip() {
+      if (aiTipEl && aiTipEl.parentNode) aiTipEl.parentNode.removeChild(aiTipEl);
+      aiTipEl = null;
+    }
+    function aiShowTip() {
+      if (aiTipEl || !aiFab || !aiFab.parentNode) return;
+      aiTipEl = document.createElement('div');
+      aiTipEl.className = 'ai-fab-tip';
+      aiTipEl.textContent = AI_CONFIG.autoTip;
+      aiFab.parentNode.appendChild(aiTipEl);
+    }
+    function aiCancelAuto() {
+      if (aiAutoTimer) { clearTimeout(aiAutoTimer); aiAutoTimer = null; }
+      if (aiTipTimer) { clearTimeout(aiTipTimer); aiTipTimer = null; }
+      aiHideTip();
+    }
+    function aiAutoOpen() {
+      if (!aiPanel.hidden) return;
+      aiHideTip();
+      aiOpenPanel(true);
+      aiPanel.classList.add('ai-quiet');
+      var lead = aiAppendMsg('bot',
+        AI_CONFIG.autoLead +
+        '<div class="ai-greet-acts">' + AI_CONFIG.autoPrompts.map(function (p) {
+          return '<button class="ai-greet-btn" type="button" data-ai-q="' + esc(p.q) + '">' +
+            esc(p.label) + ' →</button>';
+        }).join('') + '</div>');
+      lead.classList.add('ai-greet');
+      if (aiFab) {
+        aiFab.classList.add('ai-fab-pulse');
+        setTimeout(function () { aiFab.classList.remove('ai-fab-pulse'); }, 1700);
+      }
+    }
+    function aiTryAutoOpen() {
+      aiAutoTimer = null;
+      if (aiManual || !aiPanel.hidden) return;
+      if (document.hidden) { aiAutoTimer = setTimeout(aiTryAutoOpen, 3000); return; }
+      /* 正在滚动/惯性滚动时不打断，等手停下来再弹 */
+      if (Date.now() - aiLastScroll < 800) { aiAutoTimer = setTimeout(aiTryAutoOpen, 1400); return; }
+      try {
+        sessionStorage.setItem('cpai_auto', '1');
+        localStorage.setItem('cpai_auto_ts', String(Date.now()));
+      } catch (e) {}
+      aiAutoOpen();
+    }
+    function aiScheduleAuto() {
+      if (!aiFab || !aiPanel) return;
+      try {
+        if (sessionStorage.getItem('cpai_auto') === '1') return;
+        var ts = parseInt(localStorage.getItem('cpai_auto_ts') || '0', 10);
+        if (ts && (Date.now() - ts) < AI_CONFIG.autoCooldown) return;
+      } catch (e) {}
+      aiTipTimer = setTimeout(aiShowTip, Math.max(1200, AI_CONFIG.autoDelay - AI_CONFIG.autoTipAhead));
+      aiAutoTimer = setTimeout(aiTryAutoOpen, AI_CONFIG.autoDelay);
+    }
+
+    window.addEventListener('scroll', function () { aiLastScroll = Date.now(); }, false);
+
     if (aiFab) {
       aiFab.addEventListener('click', function () {
+        aiManual = true; aiCancelAuto();
         if (aiPanel.hidden) aiOpenPanel(); else aiClosePanel();
       });
     }
-    if (aiCloseBtn) aiCloseBtn.addEventListener('click', aiClosePanel);
-    if (aiSend) aiSend.addEventListener('click', function () { aiSubmit(); });
+    if (aiCloseBtn) {
+      aiCloseBtn.addEventListener('click', function () {
+        aiManual = true; aiCancelAuto();
+        aiClosePanel();
+      });
+    }
+    if (aiSend) aiSend.addEventListener('click', function () { aiManual = true; aiCancelAuto(); aiSubmit(); });
+    /* 主动开场里的引导按钮统一走委托，点一下就等于替你问了一句 */
+    if (aiBody) {
+      aiBody.addEventListener('click', function (e) {
+        var btn = (e.target && e.target.closest) ? e.target.closest('[data-ai-q]') : null;
+        if (!btn) return;
+        e.preventDefault();
+        aiManual = true; aiCancelAuto();
+        aiSubmit(btn.getAttribute('data-ai-q'));
+      });
+    }
     if (aiInput) {
       aiInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiSubmit(); }
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiManual = true; aiCancelAuto(); aiSubmit(); }
       });
       aiInput.addEventListener('input', function () {
         aiInput.style.height = 'auto';
@@ -1043,8 +1139,13 @@
       });
     }
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && aiPanel && !aiPanel.hidden) aiClosePanel();
+      if (e.key === 'Escape' && aiPanel && !aiPanel.hidden) {
+        aiManual = true; aiCancelAuto();
+        aiClosePanel();
+      }
     });
+
+    aiScheduleAuto();
   }
 
   /* ══════════════ 启动 ══════════════ */
