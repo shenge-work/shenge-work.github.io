@@ -188,7 +188,7 @@ button { font-family: inherit; cursor: pointer; }
   border-bottom: var(--border);
 }
 .topbar-inner {
-  max-width: var(--wrap);
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 24px;
   height: 72px;
@@ -197,6 +197,7 @@ button { font-family: inherit; cursor: pointer; }
   justify-content: space-between;
   gap: 20px;
 }
+.topbar-left { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
 .brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 .brand-mark {
   font-family: var(--font-tech);
@@ -221,7 +222,7 @@ button { font-family: inherit; cursor: pointer; }
 .nav a {
   font-size: 14px;
   font-weight: 700;
-  padding: 8px 10px;
+  padding: 8px 7px;
   border: 2px solid transparent;
   transition: border-color .15s ease, background .15s ease;
   white-space: nowrap;
@@ -235,6 +236,24 @@ button { font-family: inherit; cursor: pointer; }
 .nav a:hover { border-color: var(--ink); background: var(--card); }
 .nav a.active { background: var(--ink); color: var(--paper); }
 .nav a.active .nav-no { color: var(--orange); }
+.nav-tag {
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+  color: var(--orange); border: 1px solid var(--orange);
+  padding: 1px 4px; margin-left: 4px; border-radius: 2px;
+  vertical-align: 1px; white-space: nowrap;
+}
+@media (min-width: 1110px) and (max-width: 1440px) {
+  .nav { gap: 2px; }
+  .nav a { font-size: 13px; padding: 7px 5px; }
+  .nav-tag { font-size: 8px; }
+}
+/* 1025–1109：导航项最窄档，保证 10 项在窄桌面不溢出 */
+@media (min-width: 1025px) and (max-width: 1109px) {
+  .nav { gap: 2px; }
+  .nav a { font-size: 12px; padding: 6px 4px; }
+  .nav-no { font-size: 9px; margin-right: 3px; }
+  .nav-tag { font-size: 8px; padding: 1px 3px; margin-left: 3px; }
+}
 .topbar-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
 /* ── 分享按钮（生成首页长图 + 右下角二维码） ── */
 .share-btn {
@@ -253,15 +272,19 @@ button { font-family: inherit; cursor: pointer; }
 .share-btn.busy { opacity: .55; pointer-events: none; }
 .status-pill {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   border: 2px solid var(--ink);
   background: var(--card);
-  padding: 7px 12px;
+  padding: 6px 10px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   white-space: nowrap;
+}
+/* 窄屏隐藏状态标签，避免与长导航挤在一起 */
+@media (max-width: 1199px) {
+  .status-pill { display: none; }
 }
 .menu-btn {
   display: none;
@@ -772,6 +795,14 @@ button { font-family: inherit; cursor: pointer; }
   margin-bottom: 14px;
 }
 .edu-years { font-family: var(--font-mono); font-size: 14px; font-weight: 700; }
+.edu-brand { display: flex; align-items: center; gap: 16px; margin-top: 2px; }
+.edu-logo {
+  width: 54px; height: 54px; flex: 0 0 auto;
+  border: 2px solid var(--ink); border-radius: 50%;
+  background: var(--card);
+  object-fit: contain; padding: 0;
+  box-shadow: 3px 3px 0 rgba(var(--ink-rgb), .18);
+}
 .edu-school { font-family: var(--font-display); font-weight: 900; font-size: clamp(30px, 3.6vw, 42px); line-height: 1.2; }
 .edu-major { font-size: 18px; font-weight: 700; margin-top: 4px; }
 .edu-en {
@@ -1210,6 +1241,7 @@ button { font-family: inherit; cursor: pointer; }
 .contact-card-plain { background: var(--ink); color: var(--paper); }
 .contact-card-plain .contact-label { color: rgba(var(--paper-rgb), .55); }
 .contact-card-plain .contact-mini { color: var(--orange); }
+.contact-card-wide { grid-column: 1 / -1; }
 
 .resume-cta {
   border: var(--border-thick);
@@ -1424,7 +1456,8 @@ button { font-family: inherit; cursor: pointer; }
 .about-photo-wrap.reveal.in { transform: translateY(0) rotate(0deg); }
 
 /* ══════════════ 响应式 ══════════════ */
-@media (max-width: 1024px) {
+/* 导航→汉堡菜单：10 项导航较长，仅在大屏展示完整导航，≤1280 收进汉堡 */
+@media (max-width: 1280px) {
   .nav { display: none; }
   .menu-btn { display: flex; }
   .nav.open {
@@ -1441,6 +1474,9 @@ button { font-family: inherit; cursor: pointer; }
   }
   .nav.open a { font-size: 17px; padding: 12px 10px; border-bottom: 2px solid rgba(20,19,17,.12); }
   .brand-sub { display: none; }
+}
+
+@media (max-width: 1024px) {
   .hero-inner { grid-template-columns: 1fr; gap: 72px; }
   .hero-right { max-width: 480px; }
   .about-grid { grid-template-columns: 1fr; gap: 56px; }
@@ -1531,6 +1567,8 @@ button { font-family: inherit; cursor: pointer; }
   .edu-card::before { font-size: 10px; left: 18px; }
   .edu-card-head { gap: 8px; margin-bottom: 12px; }
   .edu-years { font-size: 12.5px; }
+  .edu-brand { gap: 12px; }
+  .edu-logo { width: 44px; height: 44px; }
   .edu-school { font-size: clamp(22px, 6vw, 30px); }
   .edu-major { font-size: 16px; }
   .edu-en { font-size: 10px; margin-left: 6px; }
@@ -1766,7 +1804,7 @@ button { font-family: inherit; cursor: pointer; }
    三连击页脚「FILE END — EOF」唤出（见 main.js）；10 秒无操作自动隐藏 */
 .theme-ctl {
   position: fixed;
-  right: 18px;
+  left: 18px;
   bottom: 114px; /* 访问计数器（高约 80 + 18 边距）上方 */
   z-index: 89;
   display: flex;
@@ -1807,7 +1845,7 @@ button { font-family: inherit; cursor: pointer; }
 .theme-ctl-btn.off b { color: var(--ink-soft); }
 
 @media (max-width: 640px) {
-  .theme-ctl { right: 12px; bottom: 104px; }
+  .theme-ctl { left: 12px; bottom: 104px; }
   .theme-ctl-btn { font-size: 9px; padding: 8px 10px; }
 }
 @media print { .theme-ctl { display: none; } }
