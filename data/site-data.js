@@ -1,7 +1,8 @@
-/* 本文件由 data/site-data.json 自动生成，请勿手动编辑。
-   生成方式：python3 scripts/sync_site_data.py（或「本地预览.command」）。
-   作用：file:// 双击打开时浏览器无法 fetch JSON（安全限制），
-   此 JS 快照作为数据源，保证双击打开也能展示最新数据。 */
+/* ═══════════════════════════════════════════════════════════
+   site-data.js — 同步快照（勿直接编辑）
+   唯一编辑源：data/site-data.json
+   修改 json 后运行「本地预览.command」或同步脚本重新生成本文件
+   ═══════════════════════════════════════════════════════════ */
 window.SITE_DATA = {
   "meta": {
     "pageTitle": "陈培胜 CHEN PEISHENG · AI 全栈工程师 · 求职作品集 2026",
@@ -160,6 +161,7 @@ window.SITE_DATA = {
       "tag": "本科 · 全日制统招",
       "tagCls": "tag-orange",
       "school": "中山大学新华学院",
+      "logo": "images/edu-xinhua.png",
       "major": "软件工程",
       "majorEn": "SOFTWARE ENGINEERING",
       "stats": [
@@ -778,6 +780,12 @@ window.SITE_DATA = {
         "value": "广东省深圳市",
         "mini": "N22.54° · E114.06°",
         "plain": true
+      },
+      {
+        "label": "BLOG / 博客",
+        "value": "shenge-blog.pages.dev",
+        "href": "https://shenge-blog.pages.dev",
+        "span": true
       }
     ],
     "cta": {
