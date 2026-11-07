@@ -889,6 +889,126 @@
         if (e.key === 'Escape' && !shareOverlay.hidden) closeShare();
       });
     }
+
+    /* ── 11. CP.AI 简历问答助手（UI/交互已完成；RAG 后端占位，待 Cloudflare Workers 接入） ── */
+    var AI_CONFIG = {
+      /* TODO(接入 Cloudflare Workers 后端)：
+         1) 将 endpoint 换成 Workers 服务地址，如 https://resume-assistant.xxx.workers.dev/chat
+         2) 替换下方 askAI() 内的占位实现为真实 fetch（详见函数注释）
+         其余 UI / 交互代码无需改动 */
+      endpoint: '',
+      welcome: '你好，我是 CP.AI —— 陈培胜的档案问答助手。<br>正在接入 <b>RAG 引擎</b>（Cloudflare Workers 中转 + 简历向量切片检索 + LLM 生成），上线后可直接向我提问项目细节、技术栈与工作经历。<br>当前为 <b>UI 预览模式</b>，交互流程已就绪，欢迎体验。',
+      quickQuestions: ['主导过哪些 0→1 系统？', 'Agent 架构经验？', '技术栈与方向？', '联系方式？'],
+      stubReplies: [
+        '▍已收到：「<b>{q}</b>」。<br>问答引擎正在建设中 —— Workers 中转 + 简历向量切片 + LLM 生成即将接入。当前这条回复由<b>占位逻辑</b>输出，仅用于演示交互流程。',
+        '▍「<b>{q}</b>」是个好问题。<br>CP.AI 的检索链路（Vectorize 向量召回 → DeepSeek / 通义千问生成）部署中，上线后将引用简历原文与项目档案作答。当前为占位回复。',
+        '▍「<b>{q}</b>」已进入待答队列。<br>Workers + Vectorize 服务就绪后会给出结构化回答。在此之前这里是 UI 占位通道 —— 感谢体验。'
+      ]
+    };
+    var aiFab = $('aiFab');
+    var aiPanel = $('aiPanel');
+    var aiCloseBtn = $('aiClose');
+    var aiBody = $('aiBody');
+    var aiInput = $('aiInput');
+    var aiSend = $('aiSend');
+    var aiQuick = $('aiQuick');
+    var aiReady = false;
+    var aiBusy = false;
+    var aiReplyIdx = 0;
+
+    function aiScroll() { aiBody.scrollTop = aiBody.scrollHeight; }
+    function aiAppendMsg(who, html) {
+      var wrap = document.createElement('div');
+      wrap.className = 'ai-msg ai-msg-' + who;
+      wrap.innerHTML = '<span class="ai-msg-name">' + (who === 'bot' ? 'CP.AI' : 'YOU') + '</span>' +
+        '<div class="ai-bubble">' + html + '</div>';
+      aiBody.appendChild(wrap);
+      aiScroll();
+      return wrap;
+    }
+    function aiShowTyping() {
+      var t = aiAppendMsg('bot', '<span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span>');
+      t.classList.add('ai-typing');
+      return t;
+    }
+    function aiOpenPanel() {
+      aiPanel.hidden = false;
+      aiPanel.classList.add('opening');
+      setTimeout(function () { aiPanel.classList.remove('opening'); }, 320);
+      aiFab.setAttribute('aria-expanded', 'true');
+      if (!aiReady) {
+        aiReady = true;
+        aiAppendMsg('bot', AI_CONFIG.welcome);
+        aiQuick.innerHTML = AI_CONFIG.quickQuestions.map(function (q) {
+          return '<button class="ai-chip" type="button">' + esc(q) + '</button>';
+        }).join('');
+        aiQuick.querySelectorAll('.ai-chip').forEach(function (chip) {
+          chip.addEventListener('click', function () { aiSubmit(chip.textContent); });
+        });
+      }
+      setTimeout(function () { aiInput.focus(); }, 60);
+    }
+    function aiClosePanel() {
+      aiPanel.hidden = true;
+      aiFab.setAttribute('aria-expanded', 'false');
+    }
+    function aiSubmit(text) {
+      var q = (typeof text === 'string' ? text : aiInput.value).trim();
+      if (!q || aiBusy) return;
+      aiBusy = true;
+      aiSend.disabled = true;
+      aiAppendMsg('user', esc(q));
+      aiInput.value = '';
+      aiInput.style.height = '';
+      var typing = aiShowTyping();
+      askAI(q).then(function (answer) {
+        typing.remove();
+        aiAppendMsg('bot', answer);
+      }).catch(function () {
+        typing.remove();
+        aiAppendMsg('bot', '▍通道暂时不可用，请稍后再试。');
+      }).then(function () {
+        aiBusy = false;
+        aiSend.disabled = false;
+        if (!aiPanel.hidden) aiInput.focus();
+      });
+    }
+    /* TODO(接入 Cloudflare Workers 后端)：这是唯一需要替换的占位函数。
+       约定接口：POST AI_CONFIG.endpoint
+         请求体 { "question": "..." }
+         响应体 { "answer": "..." }（answer 允许内联 <b>/<br> 标签，会原样渲染）
+       接入时改为：
+         return fetch(AI_CONFIG.endpoint, {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ question: question })
+         }).then(function (r) { return r.json(); }).then(function (d) { return d.answer; }); */
+    function askAI(question) {
+      return new Promise(function (resolve) {
+        setTimeout(function () {
+          resolve(AI_CONFIG.stubReplies[aiReplyIdx++ % AI_CONFIG.stubReplies.length].replace(/\{q\}/g, esc(question)));
+        }, 900 + Math.random() * 800);
+      });
+    }
+    if (aiFab) {
+      aiFab.addEventListener('click', function () {
+        if (aiPanel.hidden) aiOpenPanel(); else aiClosePanel();
+      });
+    }
+    if (aiCloseBtn) aiCloseBtn.addEventListener('click', aiClosePanel);
+    if (aiSend) aiSend.addEventListener('click', function () { aiSubmit(); });
+    if (aiInput) {
+      aiInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiSubmit(); }
+      });
+      aiInput.addEventListener('input', function () {
+        aiInput.style.height = 'auto';
+        aiInput.style.height = Math.min(aiInput.scrollHeight, 88) + 'px';
+      });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && aiPanel && !aiPanel.hidden) aiClosePanel();
+    });
   }
 
   /* ══════════════ 启动 ══════════════ */
