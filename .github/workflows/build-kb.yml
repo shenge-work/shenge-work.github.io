@@ -1,0 +1,59 @@
+name: build-kb
+
+# 简历内容变更 → 自动重建 AI 助手知识库
+# 注意：与 sync-site-data.yml 共用同一 concurrency group，避免两条流程互相顶掉提交
+
+on:
+  push:
+    paths:
+      - data/site-data.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-data-sync
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 重建知识库（零依赖，provider=tfidf）
+        run: python3 scripts/build_kb.py
+
+      - name: 隐私闸门 —— 产物中不允许出现手机号
+        run: |
+          if grep -nE "(^|[^0-9])1[3-9][0-9]{9}([^0-9]|$)" knowledge/chunks.json knowledge/kb.js; then
+            echo "::error::知识库中出现疑似手机号，已中止"
+            exit 1
+          fi
+          if grep -niE "tel:" knowledge/chunks.json knowledge/kb.js; then
+            echo "::error::知识库中出现 tel: 直拨链接，已中止"
+            exit 1
+          fi
+
+      - name: 幂等校验
+        run: python3 scripts/build_kb.py --check
+
+      - name: 切片统计
+        run: python3 scripts/build_kb.py --report | tail -3
+
+      - name: 提交产物
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- knowledge/; then
+            echo "知识库无变化，跳过提交"
+            exit 0
+          fi
+          git add knowledge/
+          git commit -m "chore(kb): 由 site-data.json 重建知识库"
+          git push

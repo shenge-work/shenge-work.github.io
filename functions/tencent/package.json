@@ -1,0 +1,8 @@
+{
+  "name": "resume-ai-chat",
+  "version": "1.0.0",
+  "private": true,
+  "description": "简历站 AI 助手：TF-IDF 检索 + CloudBase 内置大模型",
+  "main": "index.js",
+  "dependencies": {}
+}

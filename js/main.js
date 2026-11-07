@@ -890,20 +890,16 @@
       });
     }
 
-    /* ── 11. CP.AI 简历问答助手（UI/交互已完成；RAG 后端占位，待 Cloudflare Workers 接入） ── */
+    /* ── 11. CP.AI 简历问答助手（已接入后端：腾讯云 CloudBase 云函数 + 静态 RAG） ──
+       链路：静态页 → CloudBase HTTP 网关 /chat → 云函数 resume-ai-chat
+             → char-bigram TF-IDF 检索 knowledge/ 切片 → hy3 生成（带 <context> 约束）
+       源码：functions/tencent/（index.js 业务主体 / prompt.js 提示词与拦截） */
     var AI_CONFIG = {
-      /* TODO(接入 Cloudflare Workers 后端)：
-         1) 将 endpoint 换成 Workers 服务地址，如 https://resume-assistant.xxx.workers.dev/chat
-         2) 替换下方 askAI() 内的占位实现为真实 fetch（详见函数注释）
-         其余 UI / 交互代码无需改动 */
-      endpoint: '',
-      welcome: '你好，我是 CP.AI —— 陈培胜的档案问答助手。<br>正在接入 <b>RAG 引擎</b>（Cloudflare Workers 中转 + 简历向量切片检索 + LLM 生成），上线后可直接向我提问项目细节、技术栈与工作经历。<br>当前为 <b>UI 预览模式</b>，交互流程已就绪，欢迎体验。',
-      quickQuestions: ['主导过哪些 0→1 系统？', 'Agent 架构经验？', '技术栈与方向？', '联系方式？'],
-      stubReplies: [
-        '▍已收到：「<b>{q}</b>」。<br>问答引擎正在建设中 —— Workers 中转 + 简历向量切片 + LLM 生成即将接入。当前这条回复由<b>占位逻辑</b>输出，仅用于演示交互流程。',
-        '▍「<b>{q}</b>」是个好问题。<br>CP.AI 的检索链路（Vectorize 向量召回 → DeepSeek / 通义千问生成）部署中，上线后将引用简历原文与项目档案作答。当前为占位回复。',
-        '▍「<b>{q}</b>」已进入待答队列。<br>Workers + Vectorize 服务就绪后会给出结构化回答。在此之前这里是 UI 占位通道 —— 感谢体验。'
-      ]
+      endpoint: 'https://resume-ai-d9g7zghnxda2ee2cb-1307508155.ap-shanghai.app.tcloudbase.com/chat',
+      timeout: 20000,       // 云函数执行超时 30s，前端留余量
+      maxChars: 200,        // 与后端 MAX_QUESTION_CHARS 对齐
+      welcome: '你好，我是 CP.AI —— 陈培胜的档案问答助手。<br>后端跑在 <b>CloudBase 云函数</b>上：先用 TF-IDF 在 32 段简历切片里召回相关段落，再交给大模型受约束生成答案，每次回答都会标注依据来源。<br>可以问我项目细节、技术栈、工作经历。',
+      quickQuestions: ['主导过哪些 0→1 系统？', 'Agent 架构经验？', '技术栈与方向？', '联系方式？']
     };
     var aiFab = $('aiFab');
     var aiPanel = $('aiPanel');
@@ -914,7 +910,6 @@
     var aiQuick = $('aiQuick');
     var aiReady = false;
     var aiBusy = false;
-    var aiReplyIdx = 0;
 
     function aiScroll() { aiBody.scrollTop = aiBody.scrollHeight; }
     function aiAppendMsg(who, html) {
@@ -960,35 +955,76 @@
       aiAppendMsg('user', esc(q));
       aiInput.value = '';
       aiInput.style.height = '';
+      if (q.length > AI_CONFIG.maxChars) {
+        aiAppendMsg('bot', '▍问题太长啦，' + AI_CONFIG.maxChars + ' 字以内就好。');
+        aiBusy = false;
+        aiSend.disabled = false;
+        return;
+      }
       var typing = aiShowTyping();
-      askAI(q).then(function (answer) {
+      askAI(q).then(function (data) {
         typing.remove();
-        aiAppendMsg('bot', answer);
-      }).catch(function () {
+        aiAppendMsg('bot', aiRenderAnswer(data));
+      }).catch(function (err) {
         typing.remove();
-        aiAppendMsg('bot', '▍通道暂时不可用，请稍后再试。');
+        aiAppendMsg('bot', aiRenderError(err));
       }).then(function () {
         aiBusy = false;
         aiSend.disabled = false;
         if (!aiPanel.hidden) aiInput.focus();
       });
     }
-    /* TODO(接入 Cloudflare Workers 后端)：这是唯一需要替换的占位函数。
-       约定接口：POST AI_CONFIG.endpoint
-         请求体 { "question": "..." }
-         响应体 { "answer": "..." }（answer 允许内联 <b>/<br> 标签，会原样渲染）
-       接入时改为：
-         return fetch(AI_CONFIG.endpoint, {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify({ question: question })
-         }).then(function (r) { return r.json(); }).then(function (d) { return d.answer; }); */
+    /* 真实请求：POST /chat，契约 { question } → { ok, answer, sources[], fallback } */
     function askAI(question) {
-      return new Promise(function (resolve) {
-        setTimeout(function () {
-          resolve(AI_CONFIG.stubReplies[aiReplyIdx++ % AI_CONFIG.stubReplies.length].replace(/\{q\}/g, esc(question)));
-        }, 900 + Math.random() * 800);
+      var ctrl = (typeof AbortController === 'function' ? new AbortController() : null);
+      var timer = null;
+      var opts = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: question })
+      };
+      if (ctrl) opts.signal = ctrl.signal;
+
+      return new Promise(function (resolve, reject) {
+        if (ctrl) {
+          timer = setTimeout(function () { ctrl.abort(); }, AI_CONFIG.timeout);
+        }
+        fetch(AI_CONFIG.endpoint, opts).then(function (r) {
+          return r.text().then(function (txt) {
+            var d = null;
+            try { d = JSON.parse(txt); } catch (e) { d = null; }
+            if (!d) { reject(new Error('bad_json')); return; }
+            if (!r.ok || !d.ok) { reject(new Error(d.error || ('http_' + r.status))); return; }
+            resolve(d);
+          });
+        }).catch(reject).then(function () {
+          if (timer) clearTimeout(timer);
+        });
       });
+    }
+
+    /* 答案文本：转义后把换行变 <br>，来源单独渲染成标签 */
+    function aiRenderAnswer(data) {
+      var html = esc(String(data.answer || '')).replace(/\r?\n/g, '<br>');
+      if (data.sources && data.sources.length) {
+        var tags = data.sources.slice(0, 3).map(function (s) {
+          var label = esc(String(s.title || ''));
+          if (label.length > 26) label = label.slice(0, 26) + '…';
+          return '<span class="ai-src" title="' + esc(String(s.id || '')) + '">' + label + '</span>';
+        }).join('');
+        html += '<div class="ai-src-row"><span class="ai-src-label">依据</span>' + tags + '</div>';
+      }
+      return html;
+    }
+
+    function aiRenderError(err) {
+      var code = (err && err.message) || '';
+      if (code === 'rate_limited') return '▍问得有点急，隔一分钟再问我吧。';
+      if (code === 'AbortError') return '▍响应超时了，稍等再试一次。';
+      if (code === 'origin_denied' || code === 'bad_request') {
+        return '▍通道拒绝了这次请求。可以直接邮件联系：shenge.work@gmail.com';
+      }
+      return '▍通道暂时不可用，请稍后再试，或邮件联系：shenge.work@gmail.com';
     }
     if (aiFab) {
       aiFab.addEventListener('click', function () {

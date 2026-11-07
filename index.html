@@ -324,17 +324,17 @@
 <!-- Toast 提示 -->
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<!-- CP.AI 简历问答助手：入口 + 面板（UI/交互就绪，RAG 后端占位，待 Cloudflare Workers 接入） -->
+<!-- CP.AI 简历问答助手：入口 + 面板（后端已接腾讯云 CloudBase 云函数，见 js/main.js 第 11 节） -->
 <button class="ai-fab" id="aiFab" aria-label="打开 CP.AI 简历问答助手" aria-expanded="false">
   <span class="ai-fab-mark">CP<i>.</i>AI</span>
-  <span class="ai-fab-txt">简历问答<small>RAG · BETA</small></span>
+  <span class="ai-fab-txt">简历问答<small>RAG · ONLINE</small></span>
   <span class="ai-fab-lamp" aria-hidden="true"></span>
 </button>
 <aside class="ai-panel" id="aiPanel" role="dialog" aria-modal="false" aria-label="CP.AI 简历问答助手" hidden>
   <div class="ai-head">
     <span class="ai-head-mark">CP<i>.</i>AI</span>
     <span class="ai-head-sub">RESUME // ASSISTANT</span>
-    <span class="ai-head-status"><i class="ai-lamp" aria-hidden="true"></i>建设中</span>
+    <span class="ai-head-status"><i class="ai-lamp" aria-hidden="true"></i>在线</span>
     <button class="ai-close" id="aiClose" aria-label="关闭 AI 助手">×</button>
   </div>
   <div class="ai-body" id="aiBody" aria-live="polite"></div>
@@ -343,10 +343,10 @@
     <textarea id="aiInput" rows="1" placeholder="问问 CP.AI：他的 Agent 架构经验？" aria-label="输入你的问题"></textarea>
     <button class="ai-send" id="aiSend" aria-label="发送问题">▶</button>
   </div>
-  <div class="ai-foot" aria-hidden="true">CLOUDFLARE WORKERS · VECTORIZE RAG // 接入中</div>
+  <div class="ai-foot" aria-hidden="true">CLOUDBASE 云函数 · 静态 RAG · hy3 // 已接入</div>
 </aside>
 
-<script src="js/main.js"></script>
+<script src="js/main.js?v=20261107"></script>
 <script src="js/analytics.js" defer></script>
 <script src="js/visitor-count.js" defer></script>
 </body>

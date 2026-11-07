@@ -1880,6 +1880,10 @@ button { font-family: inherit; cursor: pointer; }
 .ai-bubble b { color: var(--orange); }
 .ai-msg-user .ai-bubble { background: var(--blue); color: #fff; }
 .ai-msg-user .ai-bubble b { color: #fff; }
+/* 答案依据来源（后端返回 sources[] 时渲染） */
+.ai-src-row { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 9px; padding-top: 7px; border-top: 2px dashed rgba(var(--ink-rgb), .28); }
+.ai-src-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; color: var(--ink-soft); text-transform: uppercase; }
+.ai-src { font-size: 10.5px; line-height: 1.4; padding: 2px 6px; background: var(--card); border: 2px solid var(--ink); color: var(--ink-soft); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ai-typing .ai-bubble { display: flex; align-items: center; gap: 5px; padding: 12px 14px; }
 .ai-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink); animation: aiBlinkDot 1s infinite; }
 .ai-dot:nth-child(2) { animation-delay: .18s; }
