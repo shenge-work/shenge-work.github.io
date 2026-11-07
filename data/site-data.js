@@ -765,8 +765,9 @@ window.SITE_DATA = {
         "href": "mailto:shenge.work@gmail.com"
       },
       {
-        "label": "TEL / 电话",
+        "label": "TEL / 电话·微信",
         "value": "+86 180 2283 4605",
+        "mini": "微信同号",
         "href": "tel:+8618022834605"
       },
       {
