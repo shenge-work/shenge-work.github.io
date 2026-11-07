@@ -409,6 +409,40 @@
         '<div class="proj-stack">' + (p.stackTags || []).map(function (s) { return '<span>' + esc(s) + '</span>'; }).join('') + '</div></div></article>';
     }).join('');
 
+    /* ── 个人作品（水平无缝自动滚动）── */
+    var _worksCards = (d.works || []).map(function (w) {
+      var up = w.status === 'upcoming';
+      return '<article class="work-card' + (up ? ' work-upcoming' : '') + '">' +
+        (up ? '<span class="work-badge">预告 · 规划中</span>' : '') +
+        '<div class="work-head"><span class="work-no" aria-hidden="true">' + esc(w.no) + '</span>' +
+        '<h3 class="work-title">' + esc(w.title) + '<span class="work-title-en">' + esc(w.titleEn) + '</span></h3></div>' +
+        '<p class="work-desc">' + esc(w.desc) + '</p>' +
+        '<div class="work-tech">' + (w.tech || []).map(function (t) {
+          return '<span>' + esc(t) + '</span>';
+        }).join('') + '</div>' +
+        '<div class="work-links">' +
+        (up
+          ? '<span class="work-soon">规划中 · 敬请期待</span>'
+          : '<a class="work-link work-gh" href="' + esc(w.github) + '" target="_blank" rel="noopener noreferrer" aria-label="查看 ' + esc(w.title) + ' 的 GitHub 源码">GitHub 源码 ↗</a>' +
+            (w.live ? '<a class="work-link" href="' + esc(w.live) + '" target="_blank" rel="noopener noreferrer" aria-label="在线访问 ' + esc(w.title) + '">在线访问 ↗</a>' : '')) +
+        '</div></article>';
+    }).join('');
+    /* 无缝滚动：卡片组重复两遍，track 平移 -50% 形成无限循环 */
+    var _worksSet = '<div class="works-set">' + _worksCards + '</div>';
+    var _wGrid = $('worksGrid');
+    _wGrid.innerHTML = _worksSet + '<div class="works-set" aria-hidden="true">' + _worksCards + '</div>';
+    /* 恒定速度：滚动时长 = 单组宽度 / 速度(px/s)，随内容多少自适应 */
+    var _wSet = _wGrid.firstElementChild;
+    if (_wSet) {
+      _wGrid.style.setProperty('--scroll-duration', (_wSet.getBoundingClientRect().width / 110).toFixed(2) + 's');
+    }
+    /* 卡片对齐内容安全区：偏移 = 板块左缘到窗口 + 板块左内边距（随宽度自适应） */
+    var _wSec = document.getElementById('works');
+    if (_wSec) {
+      var _wPad = _wSec.getBoundingClientRect().left + parseFloat(getComputedStyle(_wSec).paddingLeft);
+      _wGrid.style.setProperty('--ws-pad', Math.max(0, Math.round(_wPad)) + 'px');
+    }
+
     /* ── 专业技能 ── */
     var sk = d.skills || {};
     $('skillBars').innerHTML = (sk.bars || []).map(function (b) {

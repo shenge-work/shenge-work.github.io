@@ -101,7 +101,7 @@
         "label": "年工程经验"
       },
       {
-        "count": 3,
+        "count": 5,
         "suffix": "",
         "label": "段企业经历"
       },
@@ -205,7 +205,7 @@
     {
       "company": "进门财经 · 深圳进门财经科技股份有限公司",
       "role": "机构金融投研 SaaS · Java 开发工程师",
-      "time": "2026.01 — 2026.07",
+      "time": "2026.01 — 2026.07（组织架构调整，团队缩编）",
       "points": [
         "搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现<strong>多租户云沙箱</strong>隔离环境，完成发布依赖管理、日志上报与 Agent / Skill 全生命周期管控。",
         "设计 <strong>MCP / Skill 统一能力扩展体系</strong>：能力注册、发现、调用、权限与版本全流程标准化，兼容 MCP 协议与外部 API，支持多模态能力接入。",
@@ -263,6 +263,41 @@
         {
           "text": "Spring Boot",
           "cls": "tag-blue"
+        }
+      ]
+    },
+    {
+      "company": "房极客 · 深圳市房极客网络科技有限公司",
+      "role": "房地产 SaaS · Java 开发工程师",
+      "time": "2023.08 — 2024.01",
+      "points": [
+        "参与小鹿选房 C 端、看房日记 B 端、经纪人 ERP 中台研发，负责新房报备 / 上下架 / 房源跟进 / 权限控制 / 余额划转等模块，<strong>打通新房业务线上流转</strong>。"
+      ],
+      "tags": [
+        {
+          "text": "Java"
+        },
+        {
+          "text": "Spring Boot"
+        },
+        {
+          "text": "MySQL"
+        }
+      ]
+    },
+    {
+      "company": "丰速 · 深圳丰速科技有限公司",
+      "role": "电商 SaaS（顺丰投资）· Java 开发工程师",
+      "time": "2023.07（公司搬迁苏州，仅工作两周）",
+      "points": [
+        "短期参与电商 ERP 与订单履约的需求梳理和研发交接，对接企得宝 ERP、易打单、速打等覆盖电商全链路的核心产品。"
+      ],
+      "tags": [
+        {
+          "text": "Java"
+        },
+        {
+          "text": "电商 ERP"
         }
       ]
     },
@@ -514,6 +549,80 @@
           "s": "用户数据管理"
         }
       ]
+    }
+  ],
+  "works": [
+    {
+      "no": "W-01",
+      "title": "求职作品集 · 本站",
+      "titleEn": "PORTFOLIO SITE",
+      "desc": "你正在浏览的本站——档案风求职作品集：数据驱动渲染（site-data.json 单一数据源）、网页简历（彩色 / 正式黑白双模式、2 页 PDF）、分享宣传卡、CP.AI 问答终端（RAG 接入中）。GitHub Pages 部署。",
+      "tech": [
+        "HTML / CSS / JS",
+        "GitHub Pages",
+        "无框架纯静态"
+      ],
+      "github": "https://github.com/shenge-work/shenge-work.github.io",
+      "live": "https://shenge-work.github.io"
+    },
+    {
+      "no": "W-02",
+      "title": "CareerAgent · 求职工作台",
+      "titleEn": "CAREER-AGENT",
+      "desc": "本地服务器部署的求职 Agent 工作台：账号登录 + 行级数据隔离 + PostgreSQL 兼容数据库（PGlite），以岗位为第一公民——简历编辑（A4 实时预览 / 矢量与图片版 PDF）、公司档案、投递追踪（BOSS 聊天采集）、AI 模型转发与本地版本历史，数据全部留在本机。",
+      "tech": [
+        "TypeScript",
+        "Node.js",
+        "PGlite / PostgreSQL"
+      ],
+      "github": "https://github.com/shenge-work/career-agent"
+    },
+    {
+      "no": "W-03",
+      "title": "IM Gateway · 分布式 IM 网关",
+      "titleEn": "IM-GATEWAY",
+      "desc": "把飞书 / 钉钉 / 企微 / 微信 / QQ 统一收口的 Go 网关：平台差异封在适配器、分布式正确性封在协调层，多实例扩缩容与滚动发布不丢消息，分布式租约 + 消费侧去重保证幂等，单一二进制零运行时依赖。",
+      "tech": [
+        "Go",
+        "分布式",
+        "Apache-2.0"
+      ],
+      "github": "https://github.com/shenge-work/im-gateway"
+    },
+    {
+      "no": "W-04",
+      "title": "Personal Agent · 贾维斯",
+      "titleEn": "PERSONAL AGENT",
+      "desc": "个人 AI 智能体（预告）：面向日常任务的个人智能助理，未来着手开发，覆盖任务与社交场景。",
+      "tech": [
+        "AI Agent",
+        "规划中"
+      ],
+      "status": "upcoming"
+    },
+    {
+      "no": "W-05",
+      "title": "AI Reply · 社交自动回复",
+      "titleEn": "AI-REPLY",
+      "desc": "AI 社交回复助手（预告）：自动回复社交 / 产品消息，缓解社恐与线上社交困难；可获取聊天记录、分析对方性格特点与需求，辅助更自然的互动。项目名待定。",
+      "tech": [
+        "AI",
+        "性格分析",
+        "规划中"
+      ],
+      "status": "upcoming"
+    },
+    {
+      "no": "W-06",
+      "title": "Skill Hub · 技能中枢",
+      "titleEn": "SKILL HUB",
+      "desc": "AI 技能中枢（预告）：聚合、规划与按需调用个人 AI 技能包，支持技能检索、索引与持续更新。",
+      "tech": [
+        "Skills 生态",
+        "索引",
+        "规划中"
+      ],
+      "status": "upcoming"
     }
   ],
   "skills": {

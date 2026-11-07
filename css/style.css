@@ -1959,3 +1959,96 @@ button { font-family: inherit; cursor: pointer; }
   .ai-fab-tip { right: 12px; bottom: 160px; max-width: 176px; font-size: 12px; padding: 8px 9px; }
   .ai-panel { left: 12px; right: 12px; bottom: 12px; width: auto; height: min(72vh, 620px); }
 }
+
+/* ══════════════ SEC.05 个人作品（水平无缝自动滚动） ══════════════ */
+.works-scroller {
+  position: relative;
+  width: 100vw;               /* 全幅延伸到页面窗口边缘 */
+  margin-left: calc(50% - 50vw);
+  overflow: hidden;
+  --ws-fade: min(160px, 14vw); /* 两端渐隐宽度：从窗口边缘起，桌面约160px、移动自适应 */
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--ws-fade), #000 calc(100% - var(--ws-fade)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--ws-fade), #000 calc(100% - var(--ws-fade)), transparent 100%);
+  padding: 6px 0 10px; /* 给 hover 抬升阴影留出空间 */
+}
+.works-track {
+  display: flex;
+  width: max-content;
+  animation: worksScroll var(--scroll-duration, 40s) linear infinite;
+  will-change: transform;
+}
+.works-scroller:hover .works-track { animation-play-state: paused; }
+.works-set { display: flex; gap: 22px; padding-left: var(--ws-pad, 0px); padding-right: 22px; }
+@keyframes worksScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.work-card {
+  position: relative;
+  display: flex; flex-direction: column;
+  width: 380px;
+  flex: 0 0 auto;
+  background: var(--card);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  padding: 22px 20px;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.work-card:hover { transform: translate(-3px, -3px); box-shadow: var(--shadow-lg); }
+.work-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+.work-no {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+  color: var(--card); background: var(--orange);
+  border: 2px solid var(--ink);
+  padding: 2px 7px; white-space: nowrap;
+}
+.work-title { font-family: var(--font-display); font-weight: 900; font-size: 18px; line-height: 1.3; word-break: keep-all; }
+.work-title-en { display: block; font-family: var(--font-tech); font-weight: 400; font-size: 11px; letter-spacing: .14em; color: var(--blue); margin-top: 3px; }
+.work-desc { flex: 1; font-size: 14px; line-height: 1.72; color: var(--ink-soft); margin-bottom: 14px; }
+.work-tech { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+.work-tech span {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  border: 2px solid var(--ink); background: var(--paper);
+  padding: 3px 8px; white-space: nowrap;
+}
+.work-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.work-link {
+  display: inline-flex; align-items: center;
+  font-size: 13px; font-weight: 700;
+  border: 2px solid var(--ink);
+  padding: 8px 14px;
+  text-decoration: none; color: var(--ink);
+  background: var(--card);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, color .12s ease;
+}
+.work-link:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.work-gh { background: var(--ink); color: var(--card); }
+.work-gh:hover { background: var(--orange); color: var(--card); }
+
+/* 预告卡（规划中项目） */
+.work-upcoming { padding-top: 56px; }
+.work-badge {
+  position: absolute; top: 16px; right: 16px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .06em; white-space: nowrap;
+  color: var(--card); background: var(--orange);
+  border: 2px solid var(--ink); padding: 3px 9px;
+}
+.work-soon {
+  display: inline-flex; align-items: center;
+  font-size: 13px; font-weight: 700; color: var(--ink-soft);
+  border: 2px dashed var(--ink-soft); padding: 8px 14px;
+}
+
+@media (max-width: 1024px) {
+  .work-card { width: 360px; }
+}
+@media (max-width: 620px) {
+  .works-set { gap: 16px; padding-right: 16px; }
+  .work-card { width: min(92vw, 360px); padding: 18px 16px; }
+  .work-upcoming { padding-top: 52px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .works-scroller { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+  .works-track { animation: none; }
+}
