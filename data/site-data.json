@@ -156,6 +156,7 @@
       "tag": "本科 · 全日制统招",
       "tagCls": "tag-orange",
       "school": "中山大学新华学院",
+      "logo": "images/edu-xinhua.png",
       "major": "软件工程",
       "majorEn": "SOFTWARE ENGINEERING",
       "stats": [
@@ -774,6 +775,12 @@
         "value": "广东省深圳市",
         "mini": "N22.54° · E114.06°",
         "plain": true
+      },
+      {
+        "label": "BLOG / 博客",
+        "value": "shenge-blog.pages.dev",
+        "href": "https://shenge-blog.pages.dev",
+        "span": true
       }
     ],
     "cta": {
