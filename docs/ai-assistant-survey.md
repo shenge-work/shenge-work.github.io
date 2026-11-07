@@ -586,12 +586,82 @@ access-control-max-age: -1,86400
 | V6 无匹配 | ✅ 低于阈值 → "简历里没写这块" |
 | V7 超长输入 | ✅ >200 字 → 400 `bad_request` |
 | V8 陌生来源 | ✅ 非白名单 Origin → 403 `origin_denied` |
-| V9 脱敏日志 | ✅ 控制台结构化 `[chat_log]`（ip_hash 前 16 位 / top_ids / top1_score / latency_ms / model / suspect） |
+| V9 脱敏日志 | ✅ 控制台 `[chat_log]` + PostgreSQL `chat_logs` 表落库（手机号打码、ip_hash 前 16 位） |
 | V10 前端降级 | ✅ 失败分支区分 `rate_limited` / `AbortError` / 其它，兜底给邮箱 |
 
-**未做**：`chat_logs` 数据库集合 + 30 天 TTL（当前日志只在云函数控制台日志里，`LOG_ENABLED` 也未落库）。
-理由：体验版云函数引入数据库 SDK 会额外加依赖与冷启动成本，先以平台日志满足"可审计 + 脱敏"，
-等有真实问答量再补落库。
+**未做**：网关限频、知识库自动联动、CI 实跑、回归脚本、移动端实测、监控告警、README 项目章节。
+
+### 13.9 D6 日志落库：PostgREST 直写，不引 SDK
+
+这一版把"日志"从云函数控制台搬到数据库，全程**没加任何依赖**（`dependencies` 仍是 `{}`）。
+
+**为什么不是引 `@cloudbase/node-sdk`**：体验版冷启动本来就慢，多一个依赖就多一次
+`node_modules` 解析；而这个环境是 **PostgreSQL（PG 模式）**，平台自动把 `public` schema
+暴露成 PostgREST，一条 `fetch` 就够。
+
+**表结构（极简三列，业务字段塞 JSONB）**：
+
+```sql
+chat_logs (
+  id         uuid         primary key default gen_random_uuid(),
+  created_at timestamptz  default now(),
+  user_id    uuid,                        -- 预留，未用
+  payload    jsonb                        -- 全部业务字段
+)
+```
+
+选 JSONB 的原因：日志字段会随迭代增加（今天 15 个，明天可能要加 `ua`、`ref`），
+关系列每加一个都要改表 + 改代码；JSONB 只要改代码。查询照样能聚合：
+`payload->>'q'`、`(payload->>'suspect')::bool`。
+
+`payload` 实际字段：
+
+| 字段 | 说明 |
+|---|---|
+| `q` / `a` | 问题与答案，**入库前已 scrub**（手机号 → `[手机号已隐藏]`），分别截 300 / 800 字 |
+| `question_len` / `answer_len` | 长度，用于统计"问得长 = 没找到重点" |
+| `top_ids` / `top1_score` | 命中知识块与最高分，反查检索质量 |
+| `fallback` / `degraded` / `model_called` | 降级链路标志位 |
+| `latency_ms` | 端到端耗时 |
+| `model` | 实际模型名（`hy3`） |
+| `ip_hash` | sha256(IP+盐) 前 16 位，**不存原始 IP** |
+| `origin` | 来源域名，区分线上 / localhost |
+| `suspect` / `blocked` | 敏感或越界拦截标记 |
+| `tag` | 限流等特殊事件 |
+
+**写入路径**：
+
+```js
+POST https://<envId>.api.tcloudbasegateway.com/v1/rdb/rest/chat_logs
+Authorization: Bearer <服务端 API Key>   // service_role，BYPASSRLS
+Prefer: return=minimal
+{ "payload": { ... } }
+```
+
+复用已有的 `AI_API_KEY`（同一把服务端 Key 既是 AI 网关凭据，也是 PostgREST 的
+`service_role`），所以**不需要新建密钥、不需要 GRANT**：平台对 `service_role`
+默认放行，实测 `POST` → 201、`DELETE` → 204。
+
+**失败不影响主链路**：`logToDb` 全部 fire-and-forget，`.catch` 只打一行
+`[chat_log_db] err=`；即使数据库挂了，用户拿到的答案一模一样。
+
+**30 天 TTL**：PG 没有原生 TTL（不像 Mongo 集合），三种做法里选了最省的一种——
+**写时懒清理**：每次写日志顺手判断"距上次清理是否超过 1 小时"，超了就
+`DELETE /chat_logs?created_at=lt.<30天前 ISO>`。低流量站点一天最多跑几次 DELETE，
+比定时触发器 / pg_cron 都简单，也不用额外云函数。
+
+**开关**：`LOG_ENABLED=false` 同时关掉控制台日志与落库；`LOG_RETENTION_DAYS` 可改保留天数。
+
+**验收记录（2026-11-07 23:1x 实测）**：
+
+| 项 | 结果 |
+|---|---|
+| 建表 | ✅ 控制台"新建表"可视化建（Monaco 在 805px 视口挤成 1px，输不进去） |
+| 写入 | ✅ 正式问答后表内新增一行，`payload` 15 字段齐全 |
+| 脱敏 | ✅ 提问含 `13800138000` → 入库为 `[手机号已隐藏]` |
+| 清理权限 | ✅ `DELETE` 返回 204（非 401/403） |
+| 清理闭环 | ✅ 插一条 40 天前记录（201）→ 执行清理 → 该行消失，总数回落 |
+| 无副作用 | ✅ 诊断分支已从生产代码移除，再调用返回 400 `bad_request` |
 
 ### 13.8 主动性设计：停留 10 秒自动开场
 

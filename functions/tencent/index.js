@@ -14,8 +14,10 @@
  *   AI_BASE_URL      可选，默认本环境 AI 网关
  *   AI_MODEL         可选，默认 hy3（体验版唯一可套餐抵扣的模型）
  *   ALLOWED_ORIGINS  可选，逗号分隔，默认 https://shenge-work.github.io
- *   LOG_ENABLED      可选，默认 true
+ *   LOG_ENABLED      可选，默认 true；置 false 则既不打日志也不落库
  *   LOG_SALT         可选，IP 盐化用
+ *   LOG_RETENTION_DAYS 可选，默认 30（懒清理：写库时按 5% 概率触发删除过期行）
+ *   RDB_LOG_URL      可选，默认本环境 PostgREST 的 chat_logs 端点
  */
 
 var https = require('https');
@@ -33,6 +35,13 @@ var AI_KEY = process.env.AI_API_KEY || process.env.CLOUDBASE_APIKEY || '';
 var AI_MODEL = process.env.AI_MODEL || 'hy3';
 var LOG_ENABLED = String(process.env.LOG_ENABLED || 'true') !== 'false';
 var LOG_SALT = process.env.LOG_SALT || 'resume-ai-salt';
+
+// D6 日志落库：PG 模式环境自动暴露 PostgREST，直接 POST 一行 payload(jsonb)，无需引入 SDK
+var RDB_LOG_URL = process.env.RDB_LOG_URL ||
+  'https://resume-ai-d9g7zghnxda2ee2cb.api.tcloudbasegateway.com/v1/rdb/rest/chat_logs';
+var LOG_RETENTION_DAYS = Number(process.env.LOG_RETENTION_DAYS || 30);
+var LOG_PURGE_GAP_MS = 60 * 60 * 1000;   // 每个实例每小时最多清理一次
+var lastPurgeAt = 0;
 
 var DEFAULT_ORIGINS = ['https://shenge-work.github.io', 'http://localhost:8000', 'http://127.0.0.1:8000'];
 var ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || DEFAULT_ORIGINS.join(','))
@@ -298,6 +307,66 @@ function parseBody(event) {
 function logLine(obj) {
   if (!LOG_ENABLED) return;
   try { console.log('[chat_log] ' + JSON.stringify(obj)); } catch (e) { /* 忽略 */ }
+  logToDb(obj);
+}
+
+// 落库失败绝不影响主链路：一律 fire-and-forget，异常只打一行控制台
+function logToDb(obj) {
+  if (!LOG_ENABLED || !AI_KEY || typeof fetch !== 'function') return;
+  try {
+    var q = promptLib.scrub(String(obj.q || '')).slice(0, 300);
+    var a = promptLib.scrub(String(obj.a || '')).slice(0, 800);
+    var payload = {
+      q: q,
+      a: a,
+      question_len: q.length,
+      answer_len: a.length,
+      tag: obj.tag || null,
+      top_ids: obj.top_ids || [],
+      top1_score: obj.top1_score == null ? null : Number(obj.top1_score),
+      fallback: !!obj.fallback,
+      latency_ms: obj.latency_ms == null ? null : Number(obj.latency_ms),
+      model: obj.model || null,
+      ip_hash: obj.ip_hash || null,
+      origin: obj.origin || null,
+      suspect: !!obj.suspect,
+      blocked: obj.blocked || null,
+      degraded: !!obj.degraded,
+      model_called: obj.model_called == null ? null : !!obj.model_called
+    };
+    fetch(RDB_LOG_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + AI_KEY,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ payload: payload })
+    }).then(function (r) {
+      if (r.status >= 300) console.log('[chat_log_db] http=' + r.status);
+    }).catch(function (e) {
+      console.log('[chat_log_db] err=' + (e && e.message ? e.message : 'unknown'));
+    });
+    if (Date.now() - lastPurgeAt > LOG_PURGE_GAP_MS) {
+      lastPurgeAt = Date.now();
+      purgeOldLogs();
+    }
+  } catch (e) { /* 忽略 */ }
+}
+
+// PG 没有原生 TTL：写入时低频顺手清掉 30 天前的行（DELETE ... created_at < cutoff）
+function purgeOldLogs() {
+  try {
+    var cutoff = new Date(Date.now() - LOG_RETENTION_DAYS * 86400000).toISOString();
+    fetch(RDB_LOG_URL + '?created_at=lt.' + encodeURIComponent(cutoff), {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + AI_KEY, 'Prefer': 'return=minimal' }
+    }).then(function (r) {
+      console.log('[chat_log_purge] http=' + r.status);
+    }).catch(function (e) {
+      console.log('[chat_log_purge] err=' + (e && e.message ? e.message : 'unknown'));
+    });
+  } catch (e) { /* 忽略 */ }
 }
 
 // ---------------------------------------------------------------- 主流程
@@ -331,18 +400,18 @@ exports.main = async function (event) {
   var ip = clientIp(event, headers);
   var iph = ipHash(ip);
   if (rateLimited(iph)) {
-    logLine({ ts: started, ip_hash: iph, q: '', a: '', channel: 'tencent', tag: 'rate_limited' });
+    logLine({ ts: started, origin: origin, ip_hash: iph, q: '', a: '', channel: 'tencent', tag: 'rate_limited' });
     return reply(429, origin, { ok: false, error: 'rate_limited', message: '问得有点快，稍等几秒再试' });
   }
 
   var cls = promptLib.classifyInput(question);
   var suspect = cls.action === 'suspect';
   if (cls.action === 'sensitive') {
-    logLine({ ts: started, ip_hash: iph, q: question, a: promptLib.SENSITIVE_REPLY, channel: 'tencent', top_ids: [], top1_score: 0, fallback: true, latency_ms: Date.now() - started, blocked: 'sensitive:' + cls.reason });
+    logLine({ ts: started, origin: origin, ip_hash: iph, q: question, a: promptLib.SENSITIVE_REPLY, channel: 'tencent', top_ids: [], top1_score: 0, fallback: true, latency_ms: Date.now() - started, blocked: 'sensitive:' + cls.reason });
     return reply(200, origin, { ok: true, answer: promptLib.SENSITIVE_REPLY, sources: [], top1_score: 0, fallback: true });
   }
   if (cls.action === 'offtopic') {
-    logLine({ ts: started, ip_hash: iph, q: question, a: promptLib.OFFTOPIC_REPLY, channel: 'tencent', top_ids: [], top1_score: 0, fallback: true, latency_ms: Date.now() - started, blocked: 'offtopic:' + cls.reason });
+    logLine({ ts: started, origin: origin, ip_hash: iph, q: question, a: promptLib.OFFTOPIC_REPLY, channel: 'tencent', top_ids: [], top1_score: 0, fallback: true, latency_ms: Date.now() - started, blocked: 'offtopic:' + cls.reason });
     return reply(200, origin, { ok: true, answer: promptLib.OFFTOPIC_REPLY, sources: [], top1_score: 0, fallback: true });
   }
 
@@ -354,7 +423,7 @@ exports.main = async function (event) {
   }
 
   if (!ret.hits.length) {
-    logLine({ ts: started, ip_hash: iph, q: question, a: promptLib.NO_MATCH_REPLY, channel: 'tencent', top_ids: [], top1_score: 0, fallback: true, latency_ms: Date.now() - started, model_called: false, suspect: suspect });
+    logLine({ ts: started, origin: origin, ip_hash: iph, q: question, a: promptLib.NO_MATCH_REPLY, channel: 'tencent', top_ids: [], top1_score: 0, fallback: true, latency_ms: Date.now() - started, model_called: false, suspect: suspect });
     return reply(200, origin, { ok: true, answer: promptLib.NO_MATCH_REPLY, sources: [], top1_score: 0, fallback: true, no_match: true });
   }
 
@@ -388,12 +457,12 @@ exports.main = async function (event) {
     // 模型侧失败 → 纯检索降级：直接把最相关的知识块原文给出去，不让用户看到空白
     var fallbackText = (kb.byId[ret.hits[0].id] || {}).text || promptLib.NO_MATCH_REPLY;
     fallbackText = promptLib.scrub(fallbackText).slice(0, MAX_ANSWER_CHARS);
-    logLine({ ts: started, ip_hash: iph, q: question, a: fallbackText, channel: 'tencent', top_ids: ret.hits.map(function (h) { return h.id; }), top1_score: ret.top1, fallback: true, latency_ms: Date.now() - started, model_called: true, degraded: true, suspect: suspect });
+    logLine({ ts: started, origin: origin, ip_hash: iph, q: question, a: fallbackText, channel: 'tencent', top_ids: ret.hits.map(function (h) { return h.id; }), top1_score: ret.top1, fallback: true, latency_ms: Date.now() - started, model_called: true, degraded: true, suspect: suspect });
     return reply(200, origin, { ok: true, answer: fallbackText, sources: sources, top1_score: ret.top1, fallback: ret.fallback, degraded: true });
   }
 
   answer = promptLib.scrub(answer).slice(0, MAX_ANSWER_CHARS);
-  logLine({ ts: started, ip_hash: iph, q: question, a: answer, channel: 'tencent', top_ids: ret.hits.map(function (h) { return h.id; }), top1_score: ret.top1, fallback: ret.fallback, latency_ms: Date.now() - started, model_called: true, model: AI_MODEL, suspect: suspect });
+  logLine({ ts: started, origin: origin, ip_hash: iph, q: question, a: answer, channel: 'tencent', top_ids: ret.hits.map(function (h) { return h.id; }), top1_score: ret.top1, fallback: ret.fallback, latency_ms: Date.now() - started, model_called: true, model: AI_MODEL, suspect: suspect });
   return reply(200, origin, { ok: true, answer: answer, sources: sources, top1_score: ret.top1, fallback: ret.fallback });
 };
 
