@@ -197,6 +197,20 @@ def build_chunks(data):
         pack_points(chunks, "proj-%s" % no, "projects", title, "index.html#projects",
                     intro, proj.get("points", []), tail)
 
+    # 4b) 个人作品（W-xx）
+    for wk in data.get("works", []):
+        no = re.sub(r"[^0-9A-Za-z]", "", str(wk.get("no", ""))).lower() or "x"
+        title = "%s｜%s" % (clean(wk.get("title", "")), clean(wk.get("titleEn", "")))
+        tech = "；".join(clean(t) for t in wk.get("tech", []) if clean(t))
+        tail = ""
+        if tech:
+            tail += "技术栈：" + tech + "。"
+        live = clean(wk.get("live", ""))
+        if live:
+            tail += "在线地址：" + live + "。"
+        pack_points(chunks, "work-%s" % no, "works", title, "index.html#works",
+                    clean(wk.get("desc", "")), [], tail)
+
     # 5) 专业技能
     skills = data.get("skills", {})
     bars = "；".join("%s（自评 %s 分，满分 100）" % (clean(b.get("label", "")), b.get("pct", ""))

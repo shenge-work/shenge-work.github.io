@@ -30,15 +30,15 @@
   {
     "id": "exp-01-01",
     "section": "experience",
-    "title": "进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Java 开发工程师（2026.01 — 2026.07）",
-    "text": "【进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Java 开发工程师（2026.01 — 2026.07）】搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现多租户云沙箱隔离环境，完成发布依赖管理、日志上报与 Agent / Skill 全生命周期管控。 设计 MCP / Skill 统一能力扩展体系：能力注册、发现、调用、权限与版本全流程标准化，兼容 MCP 协议与外部 API，支持多模态能力接入。 设计多租户 AI 资源精细化计费链路（费率转换 / 实时预扣 / 离线扣费 / 账单校准 / 补偿机制），模型调用成本实时计量、全程可追溯。",
+    "title": "进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Java 开发工程师（2026.01 — 2026.07（组织架构调整，团队缩编））",
+    "text": "【进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Java 开发工程师（2026.01 — 2026.07（组织架构调整，团队缩编））】搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现多租户云沙箱隔离环境，完成发布依赖管理、日志上报与 Agent / Skill 全生命周期管控。 设计 MCP / Skill 统一能力扩展体系：能力注册、发现、调用、权限与版本全流程标准化，兼容 MCP 协议与外部 API，支持多模态能力接入。 设计多租户 AI 资源精细化计费链路（费率转换 / 实时预扣 / 离线扣费 / 账单校准 / 补偿机制），模型调用成本实时计量、全程可追溯。",
     "url": "index.html#experience"
   },
   {
     "id": "exp-01-02",
     "section": "experience",
-    "title": "进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Java 开发工程师（2026.01 — 2026.07）",
-    "text": "【进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Java 开发工程师（2026.01 — 2026.07）】自研分布式 IM 网关：一套接入层统一承接飞书 / 企微 / 钉钉 / 微信 / QQ 五端消息，支撑多副本扩缩容与滚动发布不丢消息。",
+    "title": "进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Java 开发工程师（2026.01 — 2026.07（组织架构调整，团队缩编））",
+    "text": "【进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Java 开发工程师（2026.01 — 2026.07（组织架构调整，团队缩编））】自研分布式 IM 网关：一套接入层统一承接飞书 / 企微 / 钉钉 / 微信 / QQ 五端消息，支撑多副本扩缩容与滚动发布不丢消息。",
     "url": "index.html#experience"
   },
   {
@@ -58,12 +58,26 @@
   {
     "id": "exp-03-01",
     "section": "experience",
+    "title": "房极客 · 深圳市房极客网络科技有限公司｜房地产 SaaS · Java 开发工程师（2023.08 — 2024.01）",
+    "text": "【房极客 · 深圳市房极客网络科技有限公司｜房地产 SaaS · Java 开发工程师（2023.08 — 2024.01）】参与小鹿选房 C 端、看房日记 B 端、经纪人 ERP 中台研发，负责新房报备 / 上下架 / 房源跟进 / 权限控制 / 余额划转等模块，打通新房业务线上流转。",
+    "url": "index.html#experience"
+  },
+  {
+    "id": "exp-04-01",
+    "section": "experience",
+    "title": "丰速 · 深圳丰速科技有限公司｜电商 SaaS（顺丰投资）· Java 开发工程师（2023.07（公司搬迁苏州，仅工作两周））",
+    "text": "【丰速 · 深圳丰速科技有限公司｜电商 SaaS（顺丰投资）· Java 开发工程师（2023.07（公司搬迁苏州，仅工作两周））】短期参与电商 ERP 与订单履约的需求梳理和研发交接，对接企得宝 ERP、易打单、速打等覆盖电商全链路的核心产品。",
+    "url": "index.html#experience"
+  },
+  {
+    "id": "exp-05-01",
+    "section": "experience",
     "title": "周生生（中国）商业有限公司｜Java 开发工程师 · 获评「高级程序员」职称（港企 · 电商零售）（2021.09 — 2023.06）",
     "text": "【周生生（中国）商业有限公司｜Java 开发工程师 · 获评「高级程序员」职称（港企 · 电商零售）（2021.09 — 2023.06）】牵头多渠道潜客跟踪分析 CRM 平台研发：整合大陆、港澳台线上线下销售线索，日活用户 10W+，销售转化率提升 70%。 搭建各地区门店预约体验流程与预约限额体系，设计分地区业务逻辑分层与跨境敏感数据过滤、定期清除机制，保障多地区业务合规，预约到店率提升 40%。 基于 ShardingSphere 分库分表突破单库性能瓶颈，MQ + 适配器模式搭建离线任务中心支撑 300W+ 级数据导入导出； 基于 JBPM 编排财务差异审批流程，任务自动分配。",
     "url": "index.html#experience"
   },
   {
-    "id": "exp-03-02",
+    "id": "exp-05-02",
     "section": "experience",
     "title": "周生生（中国）商业有限公司｜Java 开发工程师 · 获评「高级程序员」职称（港企 · 电商零售）（2021.09 — 2023.06）",
     "text": "【周生生（中国）商业有限公司｜Java 开发工程师 · 获评「高级程序员」职称（港企 · 电商零售）（2021.09 — 2023.06）】搭建供应商平台 API 网关鉴权、额度消费机制与监控看板，Redash BI 数据埋点输出多维度看板； 参与香港帝舵官网研发（会员体系、订单支付、对账、库存同步），在职期间获评「高级程序员」职称。",
@@ -187,6 +201,48 @@
     "title": "多渠道潜客 CRM OMNI-CRM｜周生生（2021.09 — 2023.06）",
     "text": "【多渠道潜客 CRM OMNI-CRM｜周生生（2021.09 — 2023.06）】量化结果：10W+ 日活用户； +70% 销售转化率提升； 300W+ 用户数据管理。 技术栈：Spring Cloud · Spring Boot · Oracle · TK-Mybatis · Redis · JasperReport · JBPM · ShardingSphere · EasyExcel · Redash。",
     "url": "index.html#projects"
+  },
+  {
+    "id": "work-w01-01",
+    "section": "works",
+    "title": "求职作品集 · 本站｜PORTFOLIO SITE",
+    "text": "【求职作品集 · 本站｜PORTFOLIO SITE】你正在浏览的本站——档案风求职作品集：数据驱动渲染（site-data.json 单一数据源）、网页简历（彩色 / 正式黑白双模式、2 页 PDF）、分享宣传卡、CP.AI 问答终端（RAG 接入中）。 GitHub Pages 部署。 技术栈：HTML / CSS / JS； GitHub Pages； 无框架纯静态。 在线地址：https://shenge-work.github.io。",
+    "url": "index.html#works"
+  },
+  {
+    "id": "work-w02-01",
+    "section": "works",
+    "title": "CareerAgent · 求职工作台｜CAREER-AGENT",
+    "text": "【CareerAgent · 求职工作台｜CAREER-AGENT】本地服务器部署的求职 Agent 工作台：账号登录 + 行级数据隔离 + PostgreSQL 兼容数据库（PGlite），以岗位为第一公民——简历编辑（A4 实时预览 / 矢量与图片版 PDF）、公司档案、投递追踪（BOSS 聊天采集）、AI 模型转发与本地版本历史，数据全部留在本机。 技术栈：TypeScript； Node.js； PGlite / PostgreSQL。",
+    "url": "index.html#works"
+  },
+  {
+    "id": "work-w03-01",
+    "section": "works",
+    "title": "IM Gateway · 分布式 IM 网关｜IM-GATEWAY",
+    "text": "【IM Gateway · 分布式 IM 网关｜IM-GATEWAY】把飞书 / 钉钉 / 企微 / 微信 / QQ 统一收口的 Go 网关：平台差异封在适配器、分布式正确性封在协调层，多实例扩缩容与滚动发布不丢消息，分布式租约 + 消费侧去重保证幂等，单一二进制零运行时依赖。 技术栈：Go； 分布式； Apache-2.0。",
+    "url": "index.html#works"
+  },
+  {
+    "id": "work-w04-01",
+    "section": "works",
+    "title": "Personal Agent · 贾维斯｜PERSONAL AGENT",
+    "text": "【Personal Agent · 贾维斯｜PERSONAL AGENT】个人 AI 智能体（预告）：面向日常任务的个人智能助理，未来着手开发，覆盖任务与社交场景。 技术栈：AI Agent； 规划中。",
+    "url": "index.html#works"
+  },
+  {
+    "id": "work-w05-01",
+    "section": "works",
+    "title": "AI Reply · 社交自动回复｜AI-REPLY",
+    "text": "【AI Reply · 社交自动回复｜AI-REPLY】AI 社交回复助手（预告）：自动回复社交 / 产品消息，缓解社恐与线上社交困难； 可获取聊天记录、分析对方性格特点与需求，辅助更自然的互动。 项目名待定。 技术栈：AI； 性格分析； 规划中。",
+    "url": "index.html#works"
+  },
+  {
+    "id": "work-w06-01",
+    "section": "works",
+    "title": "Skill Hub · 技能中枢｜SKILL HUB",
+    "text": "【Skill Hub · 技能中枢｜SKILL HUB】AI 技能中枢（预告）：聚合、规划与按需调用个人 AI 技能包，支持技能检索、索引与持续更新。 技术栈：Skills 生态； 索引； 规划中。",
+    "url": "index.html#works"
   },
   {
     "id": "skills-01",
