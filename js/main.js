@@ -366,7 +366,8 @@
       '<div class="edu-card reveal">' +
         '<div class="edu-card-head"><span class="edu-years">' + esc(em.time) + '</span>' +
         '<span class="tag ' + (em.tagCls || 'tag-orange') + '">' + esc(em.tag) + '</span></div>' +
-        '<h3 class="edu-school">' + esc(em.school) + '</h3>' +
+        '<div class="edu-brand">' + (em.logo ? '<img class="edu-logo" src="' + esc(em.logo) + '" alt="' + esc(em.school) + ' 校徽">' : '') +
+        '<h3 class="edu-school">' + esc(em.school) + '</h3></div>' +
         '<p class="edu-major">' + esc(em.major) + ' <span class="edu-en">' + esc(em.majorEn) + '</span></p>' +
         '<div class="edu-stats">' + (em.stats || []).map(function (s) {
           return '<div class="edu-stat ' + (s.cls || '') + '"><strong>' + esc(s.num) + '<span>' + esc(s.unit) + '</span></strong><em>' + esc(s.label) + '</em></div>';
@@ -476,9 +477,10 @@
         '<span class="contact-value">' + esc(c.value) + '</span>' +
         (c.mini ? '<span class="contact-mini">' + esc(c.mini) + '</span>' : '') +
         (c.plain ? '' : '<span class="pixel-arrow contact-arrow" aria-hidden="true">▶</span>');
+      var wide = c.span ? ' contact-card-wide' : '';
       return c.plain || !c.href
-        ? '<div class="contact-card contact-card-plain reveal">' + inner + '</div>'
-        : '<a class="contact-card reveal" href="' + esc(c.href) + '"' +
+        ? '<div class="contact-card contact-card-plain' + wide + ' reveal">' + inner + '</div>'
+        : '<a class="contact-card' + wide + ' reveal" href="' + esc(c.href) + '"' +
           (/^https?:/.test(c.href) ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + inner + '</a>';
     }).join('');
     var cta = ct.cta || {};
@@ -505,7 +507,7 @@
       menuBtn.setAttribute('aria-expanded', String(isOpen));
     });
     nav.addEventListener('click', function (e) { if (e.target.closest('a')) closeMenu(); });
-    window.addEventListener('resize', function () { if (window.innerWidth > 1024) closeMenu(); });
+    window.addEventListener('resize', function () { if (window.innerWidth > 1280) closeMenu(); });
 
     /* ── 2. 导航当前区高亮 ── */
     var sections = ['about', 'objective', 'education', 'experience', 'projects', 'skills', 'awards', 'contact']
