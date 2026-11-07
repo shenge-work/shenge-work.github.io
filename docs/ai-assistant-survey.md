@@ -522,3 +522,73 @@ for i in $(seq 1 21); do curl -s -o /dev/null -w "%{http_code} " \
 - 境内可达性实测：见第 3.2 节，执行于 2026-11-07，深圳本地网络（`curl --max-time 6`）。
 - 仓库既有实现：`js/visitor-count.js`（provider 切换范式）、`worker/`（Cloudflare Worker 迭代记录）、`scripts/sync_site_data.py`、`.github/workflows/sync-site-data.yml`。
 - 知识库源结构：`data/site-data.json`（19.4 KB，字段：`hero/about/objective/education/experience/projects/skills/awards/contact`）。
+
+
+## 13. 实施记录与实测踩坑（2026-11-07 落地版）
+
+方案定稿后按 M1→M3 落地，过程中的真实结论（都是"文档没写、测试才知道"的那类）：
+
+### 13.1 模型：文档里的 GLM-4-Flash 用不了
+
+云开发「体验版」的资源点抵扣只对**极少数模型**开放。逐一实测 16 个模型名（`hy4 / hy4-preview / hy3 /
+deepseek-v4.1-flash / deepseek-v4.1-flash-1017 / glm-5.3 / glm-5.3-flash / glm-5.3-flashx / glm-5.2 /
+kimi-k3 / kimi-k2.6 / kimi-k2.8-preview / deepseek-v4-pro / minimax-m3.1-flash / mimo-v2.6-flash /
+step-5-preview`），**只有 `hy3` 返回 200**，其余统一 `AI_MODEL_NOT_SUPPORTED`（"模型未开启套餐抵扣"）。
+`/models` 端点也报同一错误，不能用来探测可用模型。→ 默认模型锁定 `hy3`。
+
+### 13.2 `hy3` 默认是"思考型"，会白烧 token
+
+- `max_tokens=60`：60 token 全进 `reasoning_tokens`，`content` 为空、`finish_reason=length`。
+- `max_tokens=800`：`reasoning_tokens=343`，正文只有 22 字。
+- 关思考：请求体加 `"thinking":{"type":"disabled"}` → `completion_tokens=11, reasoning=0`。
+  `enable_thinking:false` **无效**（仍有 41 个 reasoning token）。
+→ 函数固定 `thinking:{type:"disabled"}` + `max_tokens=800` + `temperature=0.3`。
+
+### 13.3 API Key 注入：别手填环境变量
+
+控制台「环境变量」在体验版里是受控组件，脚本化填值会被框架判为空值（反复提示"值不能为空"）。
+正确姿势是「**API Key 设置**」开关：打开后自动注入 `CLOUDBASE_APIKEY`，下拉里直接选已有 Key。
+函数读取顺序因此改成 `process.env.AI_API_KEY || process.env.CLOUDBASE_APIKEY`。
+
+### 13.4 HTTP 网关跨域：开了会双重下发 CORS 头
+
+路由上开「跨域设置」后，网关会把 CORS 头**和函数自己返回的头拼在一起**：
+
+```
+access-control-allow-origin: https://shenge-work.github.io,https://shenge-work.github.io
+access-control-max-age: -1,86400
+```
+
+浏览器按"逗号分隔列表"解析，判定 origin 不匹配 → 前端拿到的是 CORS 错误而不是 403/200。
+→ 路由上关闭跨域，CORS 全部由函数 `index.js` 的 `corsHeaders()` 负责（白名单可配 `ALLOWED_ORIGINS`）。
+
+### 13.5 部署的两个硬门槛
+
+- 包内**必须有 `package.json`**，否则版本详情报"根目录下无 package.json，无法进行云端安装依赖"。
+- 默认**执行超时 3 秒**，模型调用 2.4–3.3 秒必超时；必须先改成 30 秒再测前端。
+
+### 13.6 静态站的脚本缓存会骗人
+
+推送后 GitHub Pages 的 CDN 对 JS 仍吐旧文件（HTML 已更新、`main.js` 还是旧版），
+表现是"面板点不开/占位回复还在"。排查顺序：先确认 `curl 站点/index.html` 里的脚本 URL 变了，
+再确认 `curl 站点/js/main.js` 的内容是否已更新；PowerShell/curl 都取不到新版就该怀疑 CDN 缓存而不是代码。
+前端脚本因此加 `?v=YYYYMMDD` 版本参数（改文件名同样能破，但改查询串更省事）。
+
+### 13.7 当前落地状态（V1–V10 对照）
+
+| 检查项 | 结果 |
+|---|---|
+| V1 公网可达 | ✅ `/chat` 返回 200，深圳家宽实测 0.9–4.4s |
+| V2 CORS 预检 | ✅ `OPTIONS` 204，单条 `ACAO` |
+| V3 检索命中 | ✅ `langgraph` top1=0.2193、`contact` 0.25 |
+| V4 敏感问题 | ✅ 薪资/空窗/外包/到岗 → 统一话术，不调模型 |
+| V5 越界请求 | ✅ 写代码/翻译/角色扮演 → 固定话术 |
+| V6 无匹配 | ✅ 低于阈值 → "简历里没写这块" |
+| V7 超长输入 | ✅ >200 字 → 400 `bad_request` |
+| V8 陌生来源 | ✅ 非白名单 Origin → 403 `origin_denied` |
+| V9 脱敏日志 | ✅ 控制台结构化 `[chat_log]`（ip_hash 前 16 位 / top_ids / top1_score / latency_ms / model / suspect） |
+| V10 前端降级 | ✅ 失败分支区分 `rate_limited` / `AbortError` / 其它，兜底给邮箱 |
+
+**未做**：`chat_logs` 数据库集合 + 30 天 TTL（当前日志只在云函数控制台日志里，`LOG_ENABLED` 也未落库）。
+理由：体验版云函数引入数据库 SDK 会额外加依赖与冷启动成本，先以平台日志满足"可审计 + 脱敏"，
+等有真实问答量再补落库。
