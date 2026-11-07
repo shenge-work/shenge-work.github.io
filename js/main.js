@@ -3,8 +3,8 @@
    数据源：data/site-data.json（唯一编辑源）
    - http(s) 环境读取 JSON 并渲染
    - 读取失败（文件缺失 / file:// 协议限制）→ 内置示例数据
-   交互：导航 / 滚动进场 / 数字滚动 / 技能条 / 模态框 / Toast /
-         访问计数器 / 风格彩蛋控制台
+    交互：导航 / 滚动进场 / 数字滚动 / 技能条 / 模态框 / Toast /
+          风格彩蛋控制台
    ════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -686,74 +686,6 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2600);
     }
-
-    /* ── 8. 访问计数器（页面渲染触发 · localStorage 本机累计） ── */
-    var hitWidget = document.createElement('div');
-    hitWidget.className = 'hit-counter';
-    hitWidget.id = 'hitCounter';
-    hitWidget.title = '本设备页面渲染累计（localStorage 独立计数）';
-    hitWidget.setAttribute('role', 'status');
-    hitWidget.innerHTML =
-      '<div class="hit-counter-head">' +
-        '<span class="hit-counter-dot" aria-hidden="true"></span>' +
-        '<span>访问计数 · RENDER LOG</span>' +
-      '</div>' +
-      '<div class="hit-counter-digits" id="hitCounterDigits" aria-hidden="true"></div>';
-    document.body.appendChild(hitWidget);
-
-    (function () {
-      var KEY = 'shenge_portfolio_render_count';
-      var store = null;
-      try {
-        localStorage.setItem('__hc_probe', '1');
-        localStorage.removeItem('__hc_probe');
-        store = localStorage;
-      } catch (e) { store = null; }
-      var count = 1;
-      if (store) {
-        count = parseInt(store.getItem(KEY) || '0', 10);
-        if (isNaN(count) || count < 0) count = 0;
-        count += 1;
-        try { store.setItem(KEY, String(count)); } catch (e) {}
-      }
-      hitWidget.setAttribute('aria-label', '本设备累计渲染 ' + count + ' 次');
-
-      var digitsWrap = $('hitCounterDigits');
-      function render(n) {
-        var str = String(n);
-        var len = Math.max(6, str.length);
-        while (str.length < len) str = '0' + str;
-        while (digitsWrap.children.length < len) {
-          var cell = document.createElement('span');
-          cell.className = 'hit-digit';
-          digitsWrap.appendChild(cell);
-        }
-        var firstSig = -1;
-        for (var s = 0; s < len; s++) {
-          if (str.charAt(s) !== '0') { firstSig = s; break; }
-        }
-        if (firstSig === -1) firstSig = len - 1;
-        for (var i = 0; i < len; i++) {
-          var d = digitsWrap.children[i];
-          d.textContent = str.charAt(i);
-          d.classList.toggle('dim', i < firstSig);
-        }
-      }
-
-      var reduceMotion = window.matchMedia &&
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduceMotion) { render(count); return; }
-      var from = Math.max(0, count - 24);
-      var t0 = null, DUR = 900;
-      function tick(ts) {
-        if (t0 === null) t0 = ts;
-        var p = Math.min((ts - t0) / DUR, 1);
-        var eased = 1 - Math.pow(1 - p, 3);
-        render(Math.round(from + (count - from) * eased));
-        if (p < 1) requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-    })();
 
     /* ── 9. 风格控制台（私人彩蛋：三连击页脚「FILE END — EOF」唤出） ── */
     var NAMES = { archive: 'ARCHIVE', blueprint: 'BLUEPRINT', newsprint: 'NEWSPRINT', noir: 'NOIR' };
