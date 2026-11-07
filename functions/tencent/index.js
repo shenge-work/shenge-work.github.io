@@ -232,9 +232,13 @@ function extractAnswer(resp) {
   return String(ch.message.content || '').trim();
 }
 
-// ---------------------------------------------------------------- 限流（实例内内存，尽力而为）
+// ---------------------------------------------------------------- 限流
+// 两级：实例内存计数（快、零成本）+ 超阈值后查 PG 做跨实例精确计数。
+// 平台侧网关限频（资源维度/客户端维度）在免费体验版不可用（点了直接弹升级），
+// 而内存计数在多实例/冷启动下会重置，所以补一层数据库计数兜底。
 
 var buckets = Object.create(null);
+var RATE_DB_CHECK_AT = 8;            // 本实例窗口内超过 8 次，才去查库
 
 function rateLimited(key) {
   var now = Date.now();
@@ -248,7 +252,49 @@ function rateLimited(key) {
   }
   b.windowCount++;
   b.dayCount++;
-  return b.windowCount > RATE_LIMIT_PER_WINDOW || b.dayCount > RATE_LIMIT_PER_DAY;
+  return {
+    blocked: b.windowCount > RATE_LIMIT_PER_WINDOW || b.dayCount > RATE_LIMIT_PER_DAY,
+    reason: b.windowCount > RATE_LIMIT_PER_WINDOW ? 'window_mem' : 'day_mem',
+    count: b.windowCount
+  };
+}
+
+// 库里数最近 60 秒该 ip_hash 的行数（写日志时就落了这个字段，顺带复用）
+async function countRecentByDb(iph) {
+  if (!AI_KEY || typeof fetch !== 'function') return null;
+  try {
+    var since = new Date(Date.now() - RATE_WINDOW_MS).toISOString();
+    var url = RDB_LOG_URL +
+      '?ip_hash=eq.' + encodeURIComponent(iph) +
+      '&created_at=gt.' + encodeURIComponent(since) +
+      '&select=id';
+    var r = await fetch(url, {
+      headers: {
+        'Authorization': 'Bearer ' + AI_KEY,
+        'Prefer': 'count=exact',
+        'Range-Unit': 'items',
+        'Range': '0-0'
+      }
+    });
+    if (r.status >= 300) return null;
+    var cr = r.headers.get('content-range') || '';   // 形如 "0-0/37"
+    var total = Number(String(cr).split('/')[1]);
+    return isFinite(total) ? total : null;
+  } catch (e) {
+    return null;   // 查库失败一律放行，不能因为数据库抖动把访客挡在门外
+  }
+}
+
+async function rateCheck(iph) {
+  var mem = rateLimited(iph);
+  if (mem.blocked) return mem;
+  if (mem.count > RATE_DB_CHECK_AT) {
+    var dbCount = await countRecentByDb(iph);
+    if (dbCount != null && dbCount > RATE_LIMIT_PER_WINDOW) {
+      return { blocked: true, reason: 'window_db', count: dbCount };
+    }
+  }
+  return { blocked: false, count: mem.count };
 }
 
 // ---------------------------------------------------------------- HTTP 适配
@@ -399,8 +445,12 @@ exports.main = async function (event) {
 
   var ip = clientIp(event, headers);
   var iph = ipHash(ip);
-  if (rateLimited(iph)) {
-    logLine({ ts: started, origin: origin, ip_hash: iph, q: '', a: '', channel: 'tencent', tag: 'rate_limited' });
+  var rl = await rateCheck(iph);
+  if (rl.blocked) {
+    logLine({
+      ts: started, origin: origin, ip_hash: iph, q: '', a: '', channel: 'tencent',
+      tag: 'rate_limited', blocked: 'rate_limited:' + rl.reason, count: rl.count
+    });
     return reply(429, origin, { ok: false, error: 'rate_limited', message: '问得有点快，稍等几秒再试' });
   }
 
