@@ -1707,6 +1707,62 @@ button { font-family: inherit; cursor: pointer; }
   .marquee-track { animation: none; }
 }
 
+/* ══════════════ 访问计数器 · 复古里程表（顶栏分享按钮左侧） ══════════════
+   接 js/visitor-count.js 显示全站真实访问量（abacus）；
+   本地预览展示示例数字以便肉眼可见。本机 localStorage 累计已移除。 */
+.hit-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: var(--card);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 4px 8px 5px;
+  user-select: none;
+  cursor: default;
+  white-space: nowrap;
+}
+.hit-counter-head {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-tech);
+  font-size: 9px;
+  letter-spacing: .08em;
+  color: var(--ink-soft);
+  margin-bottom: 0;
+}
+.hit-counter-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--orange);
+  border: 1.5px solid var(--ink);
+  flex: none;
+  animation: hitBlink 2.2s steps(1, end) infinite;
+}
+@keyframes hitBlink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: .2; } }
+.hit-counter-digits { display: flex; gap: 2px; }
+.hit-digit {
+  font-family: var(--font-tech);
+  font-size: 15px;
+  line-height: 1;
+  min-width: 14px;
+  text-align: center;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  padding: 3px 0 2px;
+}
+.hit-digit.dim { color: rgba(var(--ink-rgb), .22); } /* 前导零淡化，仿真实里程表 */
+
+@media (max-width: 640px) {
+  .hit-counter { display: none; }
+  .hit-counter-head { font-size: 8px; }
+  .hit-digit { font-size: 13px; min-width: 12px; padding: 2px 0 1px; }
+}
+@media print { .hit-counter { display: none; } }
+
 /* ════════════════════════════════════════════════════════════
    风格系列 · 按日期每日自动轮换（骨架不变，配色质感切换）
    轮换脚本见 index.html <head>；?theme=xxx 可强制指定
