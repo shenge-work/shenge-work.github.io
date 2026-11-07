@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # push 前的 rebase 需要完整历史
 
       - uses: actions/setup-python@v5
         with:
@@ -56,4 +58,21 @@ jobs:
           fi
           git add knowledge/
           git commit -m "chore(kb): 由 site-data.json 重建知识库"
-          git push
+          # checkout 之后远端可能已被另一个 workflow 推过，直接 push 会被拒
+          # （cannot lock ref ... expected <旧 sha>）。先 rebase 再推，失败重试。
+          for i in 1 2 3; do
+            if ! git fetch origin main --quiet; then
+              echo "::warning::fetch 失败，重试"; sleep 5; continue
+            fi
+            if git rebase origin/main --quiet; then
+              if git push --quiet; then
+                echo "推送成功（第 $i 次尝试）"
+                exit 0
+              fi
+            else
+              echo "::warning::rebase 冲突，放弃本轮"; git rebase --abort || true
+            fi
+            sleep 5
+          done
+          echo "::error::三次重试后仍无法推送 knowledge/"
+          exit 1

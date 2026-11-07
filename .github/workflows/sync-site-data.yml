@@ -22,8 +22,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: sync-site-data
-  cancel-in-progress: true
+  group: site-data-sync      # 与 build-kb.yml 同名：两条流程改同一仓库，必须串行
+  cancel-in-progress: false
 
 jobs:
   sync:
@@ -31,6 +31,8 @@ jobs:
     steps:
       - name: 检出仓库
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: 准备 Python
         uses: actions/setup-python@v5
@@ -50,4 +52,19 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/site-data.js
           git commit -m "chore(data): 由 site-data.json 重建 JS 快照"
-          git push
+          for i in 1 2 3; do
+            if ! git fetch origin main --quiet; then
+              echo "::warning::fetch 失败，重试"; sleep 5; continue
+            fi
+            if git rebase origin/main --quiet; then
+              if git push --quiet; then
+                echo "推送成功（第 $i 次尝试）"
+                exit 0
+              fi
+            else
+              echo "::warning::rebase 冲突，放弃本轮"; git rebase --abort || true
+            fi
+            sleep 5
+          done
+          echo "::error::三次重试后仍无法推送 data/site-data.js"
+          exit 1
