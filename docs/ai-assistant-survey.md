@@ -799,3 +799,98 @@ ENDPOINT=http://127.0.0.1:9000/chat ./scripts/smoke-test.sh   # 打本地
 合计：21 通过  0 失败     # --with-model
 合计：20 通过  0 失败     # --with-rate
 ```
+
+### 13.12 CI 实跑：一条从未执行过的流水线，一次真实的竞态失败
+
+`build-kb.yml` 写了好几天，**从来没有被执行过**。这次手动 `workflow_dispatch` 跑了一次，才把问题逼出来。
+
+**第一次跑（`workflow_dispatch`，head `ca9f424`）**：success。但它是"空跑"——知识库和源一致，
+走到「知识库无变化，跳过提交」就结束了，什么都没验证到。
+
+**翻历史发现一次真失败**（`42386072515`，事件 `push`，head `3977e76`，也就是你昨天加"个人作品板块"那次）：
+
+```
+JOB build  failure
+  ✅ 重建知识库
+  ✅ 隐私闸门
+  ✅ 幂等校验
+  ✅ 切片统计
+  ❌ 提交产物           ← 挂在最后一步
+```
+
+日志里写得很清楚：
+
+```
+! [remote rejected] main -> main
+  (cannot lock ref 'refs/heads/main': is at db90730… but expected 3977e76…)
+error: failed to push some refs
+```
+
+**根因不是权限，也不是分支保护，是两条 workflow 打架**：
+
+| workflow | 实际 concurrency group | 注释里说的 |
+|---|---|---|
+| `build-kb.yml` | `site-data-sync` | "与 sync-site-data.yml 共用同一 group" |
+| `sync-site-data.yml` | `sync-site-data` | — |
+
+两个名字根本不一样，注释和代码对不上号。所以它们可以**同时**跑：都从 `3977e76` checkout，
+`sync-site-data.yml` 先推成 `db90730`，`build-kb.yml` 拿着过期的 base 去 push，就被 `cannot lock ref` 挡了。
+倒霉的是 `build-kb` 是后跑的那条，它的 `knowledge/` 重建成果直接丢了 —— 这就是为什么你加了作品板块，
+知识库却一直没更新。
+
+**修复（三层）**：
+
+1. **真正共用 group**：两条都改成 `group: site-data-sync`，`cancel-in-progress: false`（排队，不互相取消）。
+2. **推送前 rebase**：`checkout` 加 `fetch-depth: 0`（rebase 需要历史），`push` 前 `git fetch origin main && git rebase origin/main`。
+3. **重试 3 次**：仍失败就 `sleep 5` 再来一轮，三次都失败才 `::error::` 退出。
+
+**验证方式：故意把产物弄脏**
+
+光看"成功"没用，得让它真的需要推送。于是往 `knowledge/chunks.json` 第一个块的 `text` 尾巴塞了 5 个字符：
+
+```bash
+python3 -c "…items[0]['text'] += 'DRIFT'…"
+python3 scripts/build_kb.py --check
+# → 知识库已过期，请运行 python3 scripts/build_kb.py 重建：chunks.json
+```
+
+推上去、手动 dispatch，结果：
+
+| 检查 | 结果 |
+|---|---|
+| CI 运行结论 | success |
+| 远端是否出现机器人提交 | ✅ `1181671 chore(kb): 由 site-data.json 重建知识库` |
+| 远端 `chunks.json` 首块是否还含 DRIFT | ❌ False（已被重建覆盖） |
+| 远端块数 | 40 |
+
+也就是说：**产物漂移会被 CI 自己修好并推回来**，不需要人盯着。
+
+**顺带发现：知识库联动的缺口不是"忘了跑脚本"**
+
+`--check` 报过期之后，我按提示重建，块数从 32 一下变成 34，但**问"有哪些作品"依然检不到**。
+查下去才发现：`build_kb.py` 里只有 `experience` / `projects` / `skills` 等字段的采集逻辑，
+**根本没有 `works`**。site-data.json 里明明有 6 条作品，脚本视而不见。
+
+补上 `works` 采集（标题 + 描述 + 技术栈 + 在线地址，anchor 指向 `index.html#works`）后：
+32 → 40 块（6 个作品被切成多块），线上实测：
+
+| 问题 | top1 | 回答 |
+|---|---|---|
+| 他有哪些个人作品 | 0.2279 | 列出贾维斯 / Skill Hub / 求职作品集本站 |
+| 作品集都有什么 | 0.3920 | 说出数据驱动渲染、双模简历、CP.AI 终端 |
+
+**还剩一个架构缺口（没解决，写清）**
+
+CI 现在能自动重建 `knowledge/` 并推回仓库，但**它不会重新部署云函数**。线上用的是
+`functions/tencent/kb/` 里那份副本，还得手动 `build_kb.py --sync-functions` + 控制台上传 zip。
+所以"改了 site-data.json → 线上 AI 立刻知道"这条链仍然是断的，中间隔着一次人工部署。
+
+三个补法，按性价比排：
+
+1. **CI 里只做校验 + 提醒**：跑 `--check`，不一致就 `::error::` 让 job 变红，靠失败通知提醒人。（最省事，零成本）
+2. **CI 直接调 CloudBase API 部署**：需要把 API Key / Secret 存进 GitHub Secrets，多一套密钥要管，且云函数权限较大，泄露影响面不小。
+3. **彻底换掉知识库下发方式**：把 `knowledge/` 放到静态站上由云函数 `fetch` 拉取（带版本号），
+   改一次 JSON 自动生效，连包都不用重传。代价是每次冷启动多一次 HTTP（可用内存缓存 + 版本比对缓解）。
+
+目前停在 1+2 之间：**没做自动部署，但把链路缺口写清楚**，因为方案 2 的密钥风险与"成本趋近 0、纯静态"的
+前提冲突，值得单独决策一次。
