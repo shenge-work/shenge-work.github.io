@@ -1116,15 +1116,43 @@
     aiScheduleAuto();
   }
 
+  /* ══════════════ 视口自适应 ══════════════
+     1) --vw-real：真实内容视口宽度（排除 Windows 经典滚动条），供全幅区块使用
+     2) 顶栏溢出兜底：字体放大 / 浏览器缩放 / 文案变长导致内容仍放不下时，
+        自动收起横向导航、启用汉堡菜单，保证任何屏幕尺寸都不出现横向裁切
+     测量前先移除 .bar-tight，避免紧凑状态自身影响判断而反复抖动。 */
+  function syncResponsiveGuard() {
+    var root = document.documentElement;
+    var bar = document.querySelector('.topbar-inner');
+    root.style.setProperty('--vw-real', root.clientWidth + 'px');
+    if (!bar) return;
+    document.body.classList.remove('bar-tight');
+    if (bar.scrollWidth > bar.clientWidth + 1) {
+      document.body.classList.add('bar-tight');
+      var navEl = document.getElementById('nav');
+      var menuEl = document.getElementById('menuBtn');
+      if (navEl && !navEl.classList.contains('open') && menuEl) {
+        menuEl.classList.remove('open');
+        menuEl.setAttribute('aria-expanded', 'false');
+      }
+    }
+  }
+  syncResponsiveGuard();
+  window.addEventListener('resize', syncResponsiveGuard, { passive: true });
+  window.addEventListener('load', syncResponsiveGuard);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncResponsiveGuard);
+
   /* ══════════════ 启动 ══════════════ */
   loadSiteData().then(function (data) {
     renderSite(data);
     initInteractions();
+    syncResponsiveGuard(); /* 计数器数字位等动态内容渲染后再校一次 */
   }).catch(function (err) {
     /* 双保险：渲染本身异常也不至于白屏 */
     try { console.error('[site-data] 渲染失败：', err); } catch (e) {}
     renderSite(EXAMPLE_DATA);
     initInteractions();
+    syncResponsiveGuard();
   });
 
 })();
