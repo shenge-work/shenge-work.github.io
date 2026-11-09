@@ -5,3 +5,6 @@ node_modules/
 
 # 部署日志（本地排查用，不入库）
 worker/*.log
+
+# WorkBuddy 项目本地数据（记忆/技能等，不入库）
+.workbuddy/

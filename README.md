@@ -41,6 +41,7 @@ AI 全栈工程师求职个人网站：基于纯原生 HTML / CSS / JavaScript �
 7. **项目模态框**：点击作品弹出详情（多尺寸适配）
 8. **Toast 提示**：简历下载等操作轻提示
 9. **全站访问计数器**：右下角复古里程表样式，显示全站真实访问次数（默认走免费计数服务，后端不可用时回退本机计数，不会显示 0）
+10. **3D AI 简历问答助手**：右下角可切换 9 款角色皮肤（3 款真 3D GLB + 本地 SVG 角色 + AI 生成立绘），无边框悬浮，待机/思考/回答都有对应动画；首次进入自动挥手打招呼并自我介绍「我是 AI 简历问答助手」；右键/双击/长按/快捷键 `S` 切换皮肤，数字 `1–9` 直达，选择本地记忆（设计文档：[docs/ai-avatar-skins.md](docs/ai-avatar-skins.md)）
 
 简历页附加能力：
 - 一键「保存为 PDF」：调用浏览器打印，米白纸感样式与屏幕一致
@@ -69,15 +70,22 @@ AI 全栈工程师求职个人网站：基于纯原生 HTML / CSS / JavaScript �
 ├── 本地预览.command         # 双击生成快照并起本地预览
 ├── css/style.css           # 设计系统 + 响应式 + 打印模式
 ├── js/
-│   ├── main.js             # 页面交互（9 大功能模块）+ 数据渲染
+│   ├── main.js             # 页面交互（10 大功能模块）+ 数据渲染
+│   ├── ai-skins.js         # 3D AI 助手皮肤系统（角色舞台/皮肤切换/状态联动）
 │   ├── analytics.js        # 埋点统一入口（Umami / Clarity，未填 ID 不发请求）
 │   └── visitor-count.js    # 全站访问计数（abacus / 自建 Worker 可切换）
+├── css/
+│   ├── style.css           # 设计系统 + 响应式 + 打印模式
+│   └── ai-skins.css        # AI 助手角色皮肤样式
+├── assets/skins/           # 3D 模型 / model-viewer / AI 立绘 / 皮肤总览
 ├── data/
 │   ├── site-data.json      # 唯一编辑源：全部文案、项目、证书、联系方式
 │   └── site-data.js        # 自动生成的 window.SITE_DATA 快照（勿手改）
 ├── images/                 # 形象照 / 项目图 / 证书 / 学信网二维码
 ├── scripts/sync_site_data.py        # JSON → JS 快照，支持 --check
+├── docs/ai-avatar-skins.md          # 3D AI 助手皮肤系统（设计 + 实施 + 迭代）
 ├── docs/observability-and-cms.md    # 教程：统计与内容管理接入
+├── docs/ai-assistant-survey.md      # AI 简历问答后端（RAG）方案与实施
 ├── worker/                 # 可选：自建 Cloudflare Worker 访客计数
 ├── .pages.yml              # Pages CMS 配置
 ├── .github/workflows/sync-site-data.yml  # JSON 变更后自动重建快照

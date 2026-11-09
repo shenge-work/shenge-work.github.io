@@ -1,0 +1,283 @@
+/* ════════════════════════════════════════════════════════════
+   CP.AI 角色舞台 / 皮肤切换系统
+   --------------------------------------------------------------
+   · 只覆盖「视觉层」：js/main.js 里的问答、自动打招呼、CloudBase RAG 全部不动
+   · 皮肤分两类：3D 真模型（本地 GLB + model-viewer）/ 2D 本地自绘角色（零外部依赖）
+   · 全部资源本地化，离线可跑；配色跟随站点 4 套主题变量
+   ════════════════════════════════════════════════════════════ */
+
+/* ── 原方框按钮：由 3D 角色卡完全取代，视觉隐藏但保留 DOM 供 JS 程序化点击 ── */
+body.has-ai-skin .ai-fab {
+  position: fixed; right: 18px; bottom: 18px;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+/* 主动打招呼气泡：从对齐旧方框改为对齐角色卡上方 */
+body.has-ai-skin .ai-fab-tip { bottom: 240px; right: 18px; }
+
+/* ── 角色舞台 ─────────────────────────────────────────────── */
+.ai-stage {
+  position: fixed; right: 18px; bottom: 18px; z-index: 96;
+  width: 184px; height: 216px;
+  /* 透明悬浮：无背景、无边框、无阴影，角色直接浮在页面上 */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: right .28s ease, opacity .2s ease, transform .2s ease;
+  user-select: none; -webkit-user-select: none;
+}
+.ai-stage::before { display: none; }
+.ai-stage::after { display: none; }
+.ai-stage:hover { transform: translateY(-3px); }
+.ai-stage.is-switching { animation: aiStagePop .42s cubic-bezier(.2, .9, .3, 1.15); }
+@keyframes aiStagePop {
+  0% { transform: scale(.86) rotate(-3deg); opacity: .35; }
+  60% { transform: scale(1.04) rotate(1deg); opacity: 1; }
+  100% { transform: none; }
+}
+
+.ai-stage-actor {
+  position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+  overflow: visible; pointer-events: none;
+}
+.ai-stage-actor > * { pointer-events: auto; }
+.ai-skin-host { width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: center; }
+
+.ai-stage-name {
+  position: absolute; left: 50%; bottom: 2px; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+  letter-spacing: .1em; white-space: nowrap;
+  color: var(--card); background: var(--ink);
+  border: none; border-radius: 6px; padding: 3px 8px 4px;
+  opacity: .9; box-shadow: 0 2px 6px rgba(var(--ink-rgb), .18);
+  z-index: 3; pointer-events: none;
+}
+.ai-stage-menu-btn {
+  position: absolute; right: -6px; top: -6px; z-index: 4;
+  width: 27px; height: 27px; padding: 0;
+  font-family: var(--font-mono); font-size: 13px; font-weight: 700; line-height: 1;
+  color: var(--card); background: var(--ink); border: 2px solid var(--card);
+  box-shadow: 2px 2px 0 var(--orange);
+  transition: transform .12s ease, background .12s ease;
+}
+.ai-stage-menu-btn:hover { background: var(--orange); transform: rotate(45deg); }
+
+/* 面板展开时把角色挪到面板左侧，保留表情状态联动 */
+body.ai-panel-open .ai-stage { right: 420px; bottom: 24px; }
+body.ai-panel-open .ai-stage-name { bottom: 2px; }
+
+/* ── 皮肤菜单小窗口 ───────────────────────────────────────── */
+.ai-skin-menu {
+  position: fixed; right: 200px; bottom: 66px; z-index: 210;
+  width: 348px; max-width: calc(100vw - 24px);
+  max-height: min(560px, calc(100vh - 90px));
+  display: flex; flex-direction: column;
+  background: var(--card); border: 3px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--blue);
+  animation: aiSkinMenuIn .22s cubic-bezier(.2, .9, .3, 1.1) both;
+}
+@keyframes aiSkinMenuIn { from { transform: translateY(12px) scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
+.ai-skin-menu-head {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--ink); color: var(--card); padding: 9px 10px;
+}
+.ai-skin-menu-title { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: .1em; }
+.ai-skin-menu-sub { font-family: var(--font-mono); font-size: 9px; opacity: .7; flex: 1; letter-spacing: .06em; }
+.ai-skin-menu-x {
+  width: 24px; height: 24px; padding: 0; font-family: var(--font-mono); font-size: 16px; font-weight: 700;
+  background: transparent; color: var(--card); border: 2px solid var(--card); line-height: 1;
+}
+.ai-skin-menu-x:hover { background: var(--orange); }
+.ai-skin-menu-body { overflow-y: auto; padding: 10px; background: var(--paper); }
+.ai-skin-group { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .14em; color: var(--ink-soft); margin: 8px 2px 6px; }
+.ai-skin-group:first-child { margin-top: 0; }
+.ai-skin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+.ai-skin-card {
+  display: flex; align-items: center; gap: 7px; text-align: left;
+  background: var(--card); border: 2px solid var(--ink); padding: 6px 7px;
+  color: var(--ink); transition: transform .1s ease, box-shadow .1s ease, background .1s ease;
+}
+.ai-skin-card:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
+.ai-skin-card.is-active { background: var(--blue); color: #fff; border-color: var(--blue); box-shadow: 3px 3px 0 var(--ink); }
+.ai-skin-card-key {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  border: 2px solid currentColor; width: 18px; height: 18px;
+  display: flex; align-items: center; justify-content: center; flex: 0 0 auto; line-height: 1;
+}
+.ai-skin-card-txt { min-width: 0; }
+.ai-skin-card-name { font-size: 11.5px; font-weight: 900; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-skin-card-meta { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: .04em; opacity: .72; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-skin-menu-foot {
+  font-family: var(--font-mono); font-size: 9px; line-height: 1.6; color: var(--ink-soft);
+  padding: 8px 10px; border-top: 2px solid var(--ink); background: var(--card);
+}
+.ai-skin-menu-foot b { color: var(--orange); }
+.ai-skin-note { font-size: 9.5px; line-height: 1.55; color: var(--ink-soft); margin: 7px 2px 0; padding: 6px 7px; border: 2px dashed rgba(var(--ink-rgb), .3); }
+
+/* ── SVG 通用着色（跟随主题变量） ─────────────────────────── */
+.ai-sk-svg { width: 100%; height: 100%; overflow: visible; }
+.sk-line { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.sk-line-thin { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.sk-ink { fill: var(--ink); }
+.sk-card { fill: var(--card); }
+.sk-paper { fill: var(--paper); }
+.sk-blue { fill: var(--blue); }
+.sk-orange { fill: var(--orange); }
+.sk-green { fill: var(--green); }
+.sk-white { fill: #fff; }
+
+/* 通用待机：轻微浮动 + 呼吸 */
+.ai-skin-host { animation: skFloat 3.4s ease-in-out infinite; transform-origin: 50% 82%; }
+@keyframes skFloat { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-5px) scale(1.012); } }
+.sk-blink { transform-origin: center; animation: skBlink 4.6s ease-in-out infinite; }
+@keyframes skBlink { 0%, 91%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.08); } 97% { transform: scaleY(1); } }
+.sk-breathe { transform-origin: 50% 100%; animation: skBreathe 3.4s ease-in-out infinite; }
+@keyframes skBreathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.028); } }
+
+/* ── CP.AI 档案机器人 ────────────────────────────────────── */
+.sk-cpbot-antenna { transform-origin: 50% 100%; animation: skSway 2.6s ease-in-out infinite; }
+@keyframes skSway { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(7deg); } }
+.sk-cpbot-eyes { animation: skScan 4.2s ease-in-out infinite; }
+@keyframes skScan { 0%, 100% { transform: translateX(0); } 30% { transform: translateX(3px); } 65% { transform: translateX(-3px); } }
+.sk-cpbot-lamp { animation: skLamp 1.8s ease-in-out infinite; }
+@keyframes skLamp { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+.ai-skin-host.is-thinking .sk-cpbot-eyes { animation: skThinking .6s linear infinite; }
+.ai-skin-host.is-answer .sk-cpbot-lamp { animation: skLamp .35s linear infinite; }
+@keyframes skThinking { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* ── 猫宠（Rive / Lottie 风格状态动画） ──────────────────── */
+.sk-cat-tail { transform-origin: 12px 118px; animation: skTail 2.8s ease-in-out infinite; }
+@keyframes skTail { 0%, 100% { transform: rotate(-9deg); } 50% { transform: rotate(14deg); } }
+.sk-cat-ear { transform-origin: center; animation: skEar 5.2s ease-in-out infinite; }
+@keyframes skEar { 0%, 88%, 100% { transform: rotate(0); } 92% { transform: rotate(-11deg); } 96% { transform: rotate(6deg); } }
+.sk-cat-head { transform-origin: 60px 92px; animation: skHead 6s ease-in-out infinite; }
+@keyframes skHead { 0%, 100% { transform: rotate(0); } 45% { transform: rotate(3.5deg); } 72% { transform: rotate(-2deg); } }
+.sk-cat-paw { transform-origin: center; animation: skPaw 3.6s ease-in-out infinite; }
+@keyframes skPaw { 0%, 86%, 100% { transform: translateY(0); } 92% { transform: translateY(-7px); } }
+.ai-skin-host.is-answer .sk-cat-tail { animation-duration: .7s; }
+.ai-skin-host.is-thinking .sk-cat-head { animation: skHead .9s ease-in-out infinite; }
+
+/* ── 看板娘（分层视差 + 眨眼 + 发丝） ────────────────────── */
+.sk-l2d-layer { transition: transform .18s ease-out; }
+.sk-l2d-hair { transform-origin: 60px 42px; animation: skHair 3.8s ease-in-out infinite; }
+@keyframes skHair { 0%, 100% { transform: rotate(-1.4deg); } 50% { transform: rotate(1.8deg); } }
+.sk-l2d-body { transform-origin: 60px 130px; animation: skBreathe 3.4s ease-in-out infinite; }
+.ai-skin-host.is-answer .sk-l2d-mouth { animation: skTalk .28s ease-in-out infinite alternate; transform-origin: center; }
+@keyframes skTalk { from { transform: scaleY(.6); } to { transform: scaleY(1.35); } }
+
+/* ── 桌宠状态机 ──────────────────────────────────────────── */
+.ai-skin-host.sk-pet-host { align-items: flex-end; justify-content: flex-start; overflow: hidden; }
+.sk-pet { position: relative; left: 0; bottom: 0; width: 58px; height: 58px; transition: left .1s linear; }
+.sk-pet-body { transform-origin: 50% 100%; }
+.sk-pet[data-state="sit"] .sk-pet-body { transform: scaleY(.78) scaleX(1.1); }
+.sk-pet[data-state="jump"] { animation: skPetJump .72s cubic-bezier(.3, .6, .4, 1); }
+@keyframes skPetJump { 0% { transform: translateY(0); } 45% { transform: translateY(-46px); } 100% { transform: translateY(0); } }
+.sk-pet[data-state="walk"] .sk-pet-body { animation: skPetWalk .34s ease-in-out infinite; }
+@keyframes skPetWalk { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-4px) rotate(4deg); } }
+.sk-pet[data-state="wave"] .sk-pet-arm { animation: skPetWave .45s ease-in-out infinite alternate; transform-origin: bottom center; }
+@keyframes skPetWave { from { transform: rotate(-16deg); } to { transform: rotate(46deg); } }
+.sk-pet.is-dragging { filter: drop-shadow(0 0 0 var(--orange)); }
+.sk-pet-shadow { position: absolute; bottom: 0; left: 0; width: 48px; height: 5px; background: rgba(var(--ink-rgb), .22); }
+
+/* ── 专属吉祥物 / 生成立绘 ───────────────────────────────── */
+.sk-gen-img { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(3px 4px 0 rgba(var(--ink-rgb), .22)); }
+.ai-skin-host.is-answer .sk-gen-img { animation: skGenPulse .48s ease-in-out infinite alternate; }
+.ai-skin-host.is-thinking .sk-gen-img { animation: skGenTilt .7s ease-in-out infinite alternate; }
+@keyframes skGenPulse { from { transform: translateY(0) scale(1); } to { transform: translateY(-7px) scale(1.035); } }
+@keyframes skGenTilt { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+.sk-mascot-ring { transform-origin: center; animation: skSpin 9s linear infinite; }
+@keyframes skSpin { to { transform: rotate(360deg); } }
+.sk-mascot-core { animation: skBreathe 3s ease-in-out infinite; transform-origin: center; }
+.ai-skin-host.is-thinking .sk-mascot-ring { animation-duration: 1.4s; }
+
+/* ── 实时数字人（本地等效：说话波形） ────────────────────── */
+.sk-talk-mouth { transform-origin: center; animation: skIdleMouth 3.6s ease-in-out infinite; }
+@keyframes skIdleMouth { 0%, 88%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.45); } }
+.ai-skin-host.is-answer .sk-talk-mouth { animation: skTalk .22s ease-in-out infinite alternate; }
+.sk-wave-bar { transform-origin: bottom; animation: skWaveBar 1.4s ease-in-out infinite; }
+.sk-wave-bar:nth-child(2) { animation-delay: .18s; }
+.sk-wave-bar:nth-child(3) { animation-delay: .36s; }
+.sk-wave-bar:nth-child(4) { animation-delay: .54s; }
+.sk-wave-bar:nth-child(5) { animation-delay: .12s; }
+@keyframes skWaveBar { 0%, 100% { transform: scaleY(.35); } 50% { transform: scaleY(1); } }
+.ai-skin-host.is-answer .sk-wave-bar { animation-duration: .42s; }
+
+/* ── 3D 模型 ─────────────────────────────────────────────── */
+model-viewer.ai-mv {
+  width: 100%; height: 100%; background-color: transparent;
+  --poster-color: transparent; --progress-bar-color: var(--blue);
+  --progress-mask-color: rgba(var(--ink-rgb), .12);
+}
+.ai-mv-hud {
+  position: absolute; left: 4px; top: 6px; z-index: 3;
+  font-family: var(--font-mono); font-size: 8px; font-weight: 700; letter-spacing: .1em;
+  color: var(--card); background: var(--ink); border: 2px solid var(--card);
+  padding: 2px 5px 3px; pointer-events: none;
+}
+.ai-mv-frame { position: absolute; inset: 4px 4px 22px; border: 2px dashed rgba(var(--ink-rgb), .35); pointer-events: none; }
+.ai-mv-scan { position: absolute; left: 6px; right: 6px; top: 6px; height: 2px; background: var(--orange); opacity: .7; pointer-events: none; animation: skMvScan 3.2s linear infinite; }
+@keyframes skMvScan { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: .8; } 85% { opacity: .8; } 100% { transform: translateY(120px); opacity: 0; } }
+.ai-mv-loading {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .12em; color: var(--ink-soft);
+}
+
+/* ── 响应式 / 可访问性 ───────────────────────────────────── */
+@media (max-width: 900px) {
+  body.ai-panel-open .ai-stage { opacity: 0; pointer-events: none; }
+}
+@media (max-width: 560px) {
+  .ai-stage { width: 140px; height: 168px; bottom: 12px; }
+  .ai-skin-menu { right: 12px; left: 12px; bottom: 64px; width: auto; }
+  .ai-skin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-stage, .ai-skin-host, .ai-stage.is-switching,
+  .ai-sk-svg *, .sk-pet, model-viewer.ai-mv { animation: none !important; transition: none !important; }
+}
+/* SVG 变换基准统一为元素自身包围盒，消除浏览器对 view-box 默认值差异 */
+.ai-sk-svg .sk-breathe,
+.ai-sk-svg .sk-blink,
+.ai-sk-svg .sk-cpbot-antenna,
+.ai-sk-svg .sk-cpbot-eyes,
+.ai-sk-svg .sk-cat-tail,
+.ai-sk-svg .sk-cat-ear,
+.ai-sk-svg .sk-cat-head,
+.ai-sk-svg .sk-cat-paw,
+.ai-sk-svg .sk-l2d-hair,
+.ai-sk-svg .sk-l2d-body,
+.ai-sk-svg .sk-l2d-mouth,
+.ai-sk-svg .sk-talk-mouth,
+.ai-sk-svg .sk-wave-bar,
+.ai-sk-svg .sk-mascot-ring,
+.ai-sk-svg .sk-mascot-core,
+.ai-sk-svg .sk-pet-arm,
+.ai-sk-svg .sk-pet-body { transform-box: fill-box; }
+.ai-sk-svg .sk-blink,
+.ai-sk-svg .sk-cpbot-eyes,
+.ai-sk-svg .sk-l2d-mouth,
+.ai-sk-svg .sk-talk-mouth,
+.ai-sk-svg .sk-mascot-ring,
+.ai-sk-svg .sk-mascot-core { transform-origin: 50% 50%; }
+.ai-sk-svg .sk-cpbot-antenna,
+.ai-sk-svg .sk-cat-ear,
+.ai-sk-svg .sk-cat-head,
+.ai-sk-svg .sk-cat-paw,
+.ai-sk-svg .sk-l2d-body,
+.ai-sk-svg .sk-pet-arm,
+.ai-sk-svg .sk-pet-body { transform-origin: 50% 100%; }
+.ai-sk-svg .sk-cat-tail { transform-origin: 0% 100%; }
+.ai-sk-svg .sk-l2d-hair { transform-origin: 50% 0%; }
+.ai-sk-svg .sk-wave-bar { transform-origin: 50% 100%; }
+
+/* 桌宠会横向走动，名字牌移到卡片顶部、整体上抬，避免压住角色 */
+.ai-stage[data-skin="deskpet"] .ai-stage-name { top: 6px; bottom: auto; }
+.ai-stage[data-skin="deskpet"] .ai-skin-host { padding-bottom: 24px; }
+body.ai-panel-open .ai-stage[data-skin="deskpet"] .ai-stage-name { top: 6px; bottom: auto; }
+
+@media print { .ai-stage, .ai-skin-menu, .ai-stage-menu-btn { display: none !important; } }
