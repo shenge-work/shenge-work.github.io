@@ -574,15 +574,13 @@ window.SITE_DATA = {
       "no": "W-02",
       "title": "CareerAgent · 求职工作台",
       "titleEn": "CAREER-AGENT",
-      "desc": "本地优先的 AI 求职 Agent 桌面应用（Windows / macOS 装好即用）：投递追踪、公司调研、简历改写这些杂活交给 AI——按 JD 自动改写简历并导出 PDF、六维公司调研与面试简报、聊天记录归档去重、内推跟进自动提醒；数据存本地 PGlite，只留在本机，换设备走端到端加密同步。",
+      "desc": "本地服务器部署的求职 Agent 工作台：账号登录 + 行级数据隔离 + PostgreSQL 兼容数据库（PGlite），以岗位为第一公民——简历编辑（A4 实时预览 / 矢量与图片版 PDF）、公司档案、投递追踪（BOSS 聊天采集）、AI 模型转发与本地版本历史，数据全部留在本机。",
       "tech": [
         "TypeScript",
         "Node.js",
-        "Electron 桌面端",
         "PGlite / PostgreSQL"
       ],
-      "github": "https://github.com/shenge-work/career-agent",
-      "live": "https://career-agent-3gi.pages.dev/"
+      "github": "https://github.com/shenge-work/career-agent"
     },
     {
       "no": "W-03",
@@ -633,85 +631,138 @@ window.SITE_DATA = {
     }
   ],
   "skills": {
-    "bars": [
+    "rows": [
       {
-        "label": "Agent 编排（LangChain · LangGraph · LlamaIndex）",
-        "pct": 86
+        "name": "Agent 编排与基座",
+        "domain": "ai",
+        "ref": "投研工作台",
+        "stack": "LangGraph · LangChain · LlamaIndex",
+        "proof": "3 套 Agent 系统 0→1，MCP · A2A 协议"
       },
       {
-        "label": "Java / Spring 生态（JVM 调优 · 并发）",
-        "pct": 88
+        "name": "RAG 与评测治理",
+        "domain": "ai",
+        "ref": "人脉搜索",
+        "stack": "Agentic RAG · Few-Shot · Langfuse",
+        "proof": "评测集作上线闸门，链路可追溯"
       },
       {
-        "label": "RAG 检索增强 / LLM 评测体系",
-        "pct": 84
+        "name": "AI 驱动编程",
+        "domain": "ai",
+        "ref": "本站",
+        "stack": "Claude Code · Codex · Cursor",
+        "proof": "需求到部署交由 Coding Agent 驱动"
       },
       {
-        "label": "数据与中间件（MySQL · Redis · ES · MQ）",
-        "pct": 86
+        "name": "后端与网关",
+        "domain": "eng",
+        "ref": "CHANMESH",
+        "stack": "Java / Spring 5 年 · Python · Go",
+        "proof": "Java 5 年撑 SaaS；自建 IM 网关"
       },
       {
-        "label": "Python / Golang（FastAPI · Gin）",
-        "pct": 84
+        "name": "数据与中间件",
+        "domain": "eng",
+        "ref": "KOL 中台",
+        "stack": "Milvus · Kafka · Flink · Redis",
+        "proof": "300+ 万达人画像日更，检索链路贯通"
       },
       {
-        "label": "前端（Vue · UniApp · Electron）",
-        "pct": 80
+        "name": "前端与交付",
+        "domain": "mix",
+        "ref": "营销 SaaS",
+        "stack": "Vue · UniApp · Electron · K8s",
+        "proof": "多端上线；CI/CD 与 Nexus 私服自建"
       }
     ],
     "toolboxTitle": "工具箱 TOOLBOX",
-    "toolbox": [
+    "toolboxGroups": [
       {
-        "text": "Dify"
+        "label": "LLM 编排与 Agent",
+        "tags": [
+          {
+            "text": "Dify"
+          },
+          {
+            "text": "Coze"
+          },
+          {
+            "text": "n8n"
+          },
+          {
+            "text": "MCP / Skill 生态",
+            "cls": "tag-orange"
+          },
+          {
+            "text": "LangSmith / Langfuse"
+          },
+          {
+            "text": "AgentScope"
+          },
+          {
+            "text": "QwenPaw / OpenCode",
+            "cls": "tag-orange"
+          }
+        ]
       },
       {
-        "text": "Coze"
+        "label": "检索与存储",
+        "tags": [
+          {
+            "text": "Milvus"
+          },
+          {
+            "text": "Elasticsearch"
+          },
+          {
+            "text": "Redis"
+          },
+          {
+            "text": "MySQL / PostgreSQL"
+          }
+        ]
       },
       {
-        "text": "n8n"
+        "label": "消息与流",
+        "tags": [
+          {
+            "text": "Kafka"
+          },
+          {
+            "text": "RocketMQ"
+          },
+          {
+            "text": "Flink",
+            "cls": "tag-blue"
+          }
+        ]
       },
       {
-        "text": "MCP / Skill 生态",
-        "cls": "tag-orange"
-      },
-      {
-        "text": "Milvus"
-      },
-      {
-        "text": "Flink",
-        "cls": "tag-blue"
-      },
-      {
-        "text": "ElasticSearch"
-      },
-      {
-        "text": "RocketMQ / Kafka"
-      },
-      {
-        "text": "Docker / K8s"
-      },
-      {
-        "text": "QwenPaw / OpenCode",
-        "cls": "tag-orange"
-      },
-      {
-        "text": "AgentScope"
-      },
-      {
-        "text": "Claude Code / Cursor",
-        "cls": "tag-blue"
-      },
-      {
-        "text": "Jenkins / Git"
-      },
-      {
-        "text": "AWS SES / SendGrid"
-      },
-      {
-        "text": "Stripe / Paypal"
+        "label": "运行与交付",
+        "tags": [
+          {
+            "text": "Docker / K8s"
+          },
+          {
+            "text": "Jenkins"
+          },
+          {
+            "text": "Nexus"
+          },
+          {
+            "text": "Git"
+          },
+          {
+            "text": "Claude Code / Cursor",
+            "cls": "tag-blue"
+          },
+          {
+            "text": "Stripe / PayPal"
+          }
+        ]
       }
     ],
-    "note": "技能值代表「能独立交付的熟练度」，不做装饰性满格。持续探索中：A2A 协议、Coding Agent 底层架构。"
+    "note": "不设自评分 —— 分数无法被验证，落点可以。持续探索：A2A 协议、Coding Agent 底层架构。"
   },
   "awards": {
     "certs": [
