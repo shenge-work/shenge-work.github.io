@@ -206,7 +206,7 @@
     "id": "work-w02-01",
     "section": "works",
     "title": "CareerAgent · 求职工作台｜CAREER-AGENT",
-    "text": "【CareerAgent · 求职工作台｜CAREER-AGENT】本地服务器部署的求职 Agent 工作台：账号登录 + 行级数据隔离 + PostgreSQL 兼容数据库（PGlite），以岗位为第一公民——简历编辑（A4 实时预览 / 矢量与图片版 PDF）、公司档案、投递追踪（BOSS 聊天采集）、AI 模型转发与本地版本历史，数据全部留在本机。 技术栈：TypeScript； Node.js； PGlite / PostgreSQL。",
+    "text": "【CareerAgent · 求职工作台｜CAREER-AGENT】本地优先的 AI 求职 Agent 桌面应用（Windows / macOS 装好即用）：投递追踪、公司调研、简历改写这些杂活交给 AI——按 JD 自动改写简历并导出 PDF、六维公司调研与面试简报、聊天记录归档去重、内推跟进自动提醒； 数据存本地 PGlite，只留在本机，换设备走端到端加密同步。 技术栈：TypeScript； Node.js； Electron 桌面端； PGlite / PostgreSQL。 在线地址：https://career-agent-3gi.pages.dev/。",
     "url": "index.html#works"
   },
   {
