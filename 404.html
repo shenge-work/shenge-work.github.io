@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 · 页面不在档案里 · 陈培胜</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-64.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+<meta name="theme-color" content="#F3EEE2">
+<style>
+  :root {
+    --paper: #F3EEE2; --card: #FFFCF4; --ink: #141311; --ink-soft: #4A463F;
+    --orange: #FF5A1E; --blue: #2B4BE0;
+    --font-cn: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    --font-mono: 'Space Mono', 'SF Mono', Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh; display: grid; place-items: center;
+    padding: 32px 20px; background: var(--paper); color: var(--ink);
+    font-family: var(--font-cn); line-height: 1.7;
+    background-image:
+      linear-gradient(rgba(20,19,17,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20,19,17,.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .sheet {
+    width: 100%; max-width: 640px; background: var(--card);
+    border: 3px solid var(--ink); box-shadow: 8px 8px 0 var(--ink);
+    padding: 36px 32px 30px;
+  }
+  .tag {
+    display: inline-block; font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: .08em; padding: 3px 8px; border: 2px solid var(--ink);
+    background: var(--orange); color: var(--card);
+  }
+  .code { display: flex; align-items: baseline; gap: 14px; margin: 22px 0 10px; }
+  .code b { font-family: var(--font-mono); font-size: clamp(44px, 11vw, 76px); line-height: 1; }
+  .code span { font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; color: var(--ink-soft); }
+  h1 { font-size: clamp(20px, 4.6vw, 26px); font-weight: 900; letter-spacing: -.01em; }
+  p.lead { margin-top: 10px; font-size: 15px; color: var(--ink-soft); }
+  .rule { height: 3px; background: var(--ink); margin: 22px 0 18px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+    padding: 10px 16px; text-decoration: none; color: var(--ink);
+    background: var(--card); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink);
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease, color .12s ease;
+  }
+  .btn:hover, .btn:focus-visible {
+    transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); outline: none;
+  }
+  .btn-solid { background: var(--ink); color: var(--card); }
+  .btn-solid:hover { background: var(--orange); }
+  .meta {
+    margin-top: 22px; padding-top: 14px; border-top: 1px dashed var(--ink);
+    display: flex; flex-wrap: wrap; gap: 6px 18px;
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; color: var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+  <main class="sheet">
+    <span class="tag">FILE NOT FOUND</span>
+    <div class="code">
+      <b>404</b>
+      <span>ARCHIVE LOOKUP / NO RECORD</span>
+    </div>
+    <h1>这个页面不在档案里</h1>
+    <p class="lead">链接可能已经改名、或者当初就没归档。要么回主页重新翻一遍，要么直接看简历。</p>
+    <div class="rule"></div>
+    <div class="actions">
+      <a class="btn btn-solid" href="/">← 回作品集主页</a>
+      <a class="btn" href="/resume.html">查看简历</a>
+      <a class="btn" href="mailto:shenge.work@gmail.com">写封邮件</a>
+    </div>
+    <div class="meta">
+      <span>N22.54° / E114.06°</span>
+      <span>NO. CPS-2021-0919</span>
+      <span>CHEN PEISHENG · 2026</span>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "陈培胜 · AI 全栈工程师 · 求职作品集",
+  "short_name": "陈培胜作品集",
+  "description": "5 年 Java 后端 + 2 年 AI 全栈工程，Agent 开发 / AI 工程化方向。",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F3EEE2",
+  "theme_color": "#F3EEE2",
+  "icons": [
+    { "src": "favicon-64.png", "sizes": "64x64", "type": "image/png" },
+    { "src": "favicon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

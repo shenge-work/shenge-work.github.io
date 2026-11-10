@@ -1164,6 +1164,46 @@ body.bar-tight .nav.open a { font-size: 17px; padding: 12px 10px; border-bottom:
 .cap-proof { font-size: 13px; line-height: 1.75; text-wrap: pretty; }
 .cap-ref { margin-left: auto; font-size: 10.5px; padding: 1px 6px; white-space: nowrap; flex: none; }
 
+/* 落点标签可点击：作为 a 使用时保持原有标签外形，只加可点的视觉提示 */
+a.cap-ref { color: inherit; text-decoration: none; }
+a.cap-ref:hover, a.cap-ref:focus-visible {
+  background: var(--ink); color: var(--card);
+  outline: none;
+}
+/* 项目卡片上的「线上产品」入口：与公司名同高的小标签，不破坏 meta 行节奏 */
+.proj-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .04em; text-decoration: none; white-space: nowrap;
+  color: var(--card); background: var(--ink);
+  border: 2px solid var(--ink); padding: 3px 8px;
+  transition: background .12s ease, color .12s ease;
+}
+.proj-link:hover, .proj-link:focus-visible {
+  background: var(--orange); border-color: var(--ink); color: var(--card); outline: none;
+}
+/* 项目模态框里的产品入口 */
+.modal-link {
+  display: inline-flex; align-items: center; gap: 6px; margin: 12px 0 4px;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+  text-decoration: none; color: var(--ink); background: var(--card);
+  border: 2px solid var(--ink); padding: 6px 12px;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.modal-link:hover, .modal-link:focus-visible {
+  background: var(--blue); color: var(--card); outline: none;
+}
+/* 数据加载失败提示 */
+.data-error {
+  position: fixed; inset: 0 auto auto 0; z-index: 9999;
+  width: 100%; padding: 14px 20px;
+  display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline;
+  font-family: var(--font-mono); font-size: 13px; line-height: 1.6;
+  background: var(--orange); color: var(--card);
+  border-bottom: 3px solid var(--ink);
+}
+.data-error strong { font-size: 14px; }
+
 /* 工具箱分组 */
 .cloud-title { font-size: 20px; margin-bottom: 12px; }
 .cloud-group { flex: 1 1 100%; }

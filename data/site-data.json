@@ -376,7 +376,8 @@
           "v": "全链路",
           "s": "成本计量与追溯"
         }
-      ]
+      ],
+      "url": "https://comein.cn"
     },
     {
       "no": "P-02",
@@ -423,7 +424,8 @@
       "video": {
         "src": "videos/lessie-demo.mp4",
         "duration": "56s"
-      }
+      },
+      "url": "https://lessie.cn"
     },
     {
       "no": "P-03",
@@ -465,7 +467,8 @@
           "v": "<10%",
           "s": "失联率"
         }
-      ]
+      ],
+      "url": "https://hicreator.ai"
     },
     {
       "no": "P-04",
@@ -635,42 +638,48 @@
         "domain": "ai",
         "ref": "投研工作台",
         "stack": "LangGraph · LangChain · LlamaIndex",
-        "proof": "3 套 Agent 系统 0→1，MCP · A2A 协议"
+        "proof": "3 套 Agent 系统 0→1，MCP · A2A 协议",
+        "refUrl": "https://comein.cn"
       },
       {
         "name": "RAG 与评测治理",
         "domain": "ai",
         "ref": "人脉搜索",
         "stack": "Agentic RAG · Few-Shot · Langfuse",
-        "proof": "评测集作上线闸门，链路可追溯"
+        "proof": "评测集作上线闸门，链路可追溯",
+        "refUrl": "https://lessie.cn"
       },
       {
         "name": "AI 驱动编程",
         "domain": "ai",
         "ref": "本站",
         "stack": "Claude Code · Codex · Cursor",
-        "proof": "需求到部署交由 Coding Agent 驱动"
+        "proof": "需求到部署交由 Coding Agent 驱动",
+        "refUrl": "https://shenge-work.github.io"
       },
       {
         "name": "后端与网关",
         "domain": "eng",
         "ref": "CHANMESH",
         "stack": "Java / Spring 5 年 · Python · Go",
-        "proof": "Java 5 年撑 SaaS；自建 IM 网关"
+        "proof": "Java 5 年撑 SaaS；自建 IM 网关",
+        "refUrl": "https://github.com/shenge-work/im-gateway"
       },
       {
         "name": "数据与中间件",
         "domain": "eng",
         "ref": "KOL 中台",
         "stack": "Milvus · Kafka · Flink · Redis",
-        "proof": "300+ 万达人画像日更，检索链路贯通"
+        "proof": "300+ 万达人画像日更，检索链路贯通",
+        "refUrl": "https://hicreator.ai"
       },
       {
         "name": "前端与交付",
         "domain": "mix",
         "ref": "营销 SaaS",
         "stack": "Vue · UniApp · Electron · K8s",
-        "proof": "多端上线；CI/CD 与 Nexus 私服自建"
+        "proof": "多端上线；CI/CD 与 Nexus 私服自建",
+        "refUrl": "https://hicreator.ai"
       }
     ],
     "toolboxTitle": "工具箱 TOOLBOX",
