@@ -13,7 +13,7 @@
  *   AI_API_KEY       必填，CloudBase「服务端 API Key」（只放平台环境变量，不进代码）
  *   AI_BASE_URL      可选，默认本环境 AI 网关
  *   AI_MODEL         可选，默认 hy3（体验版唯一可套餐抵扣的模型）
- *   ALLOWED_ORIGINS  可选，逗号分隔，默认 https://shenge-work.github.io
+ *   ALLOWED_ORIGINS  可选，逗号分隔，默认 shenge-work.github.io 与 shenge-work.pages.dev（含 *.shenge-work.pages.dev 预览子域）；支持 "*." 前缀通配后缀
  *   LOG_ENABLED      可选，默认 true；置 false 则既不打日志也不落库
  *   LOG_SALT         可选，IP 盐化用
  *   LOG_RETENTION_DAYS 可选，默认 30（懒清理：写库时按 5% 概率触发删除过期行）
@@ -43,9 +43,39 @@ var LOG_RETENTION_DAYS = Number(process.env.LOG_RETENTION_DAYS || 30);
 var LOG_PURGE_GAP_MS = 60 * 60 * 1000;   // 每个实例每小时最多清理一次
 var lastPurgeAt = 0;
 
-var DEFAULT_ORIGINS = ['https://shenge-work.github.io', 'http://localhost:8000', 'http://127.0.0.1:8000'];
+var DEFAULT_ORIGINS = [
+  'https://shenge-work.github.io',
+  'https://shenge-work.pages.dev',
+  '*.shenge-work.pages.dev',   // Cloudflare Pages 预览部署：https://<commit>.shenge-work.pages.dev
+  'http://localhost:8000',
+  'http://127.0.0.1:8000'
+];
 var ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || DEFAULT_ORIGINS.join(','))
   .split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+
+// 白名单匹配：支持精确匹配，以及 "*." 前缀的通配后缀（如 *.shenge-work.pages.dev）
+function isAllowedOrigin(origin) {
+  var o = String(origin || '').trim();
+  if (!o) return false;
+  var host = o.replace(/^https?:\/\//, '');
+  for (var i = 0; i < ALLOWED_ORIGINS.length; i++) {
+    var rule = ALLOWED_ORIGINS[i];
+    if (rule === o) return true;
+    if (rule.indexOf('*.') === 0) {
+      var suffix = rule.slice(1);   // ".shenge-work.pages.dev"
+      if (host.length > suffix.length && host.slice(-suffix.length) === suffix) return true;
+    }
+  }
+  return false;
+}
+
+// 回给浏览器的默认来源必须是具体域名，不能是通配规则
+function fallbackOrigin() {
+  for (var i = 0; i < ALLOWED_ORIGINS.length; i++) {
+    if (ALLOWED_ORIGINS[i].indexOf('*.') !== 0) return ALLOWED_ORIGINS[i];
+  }
+  return '';
+}
 
 var MAX_QUESTION_CHARS = 200;
 var TOP_K = 4;
@@ -321,7 +351,7 @@ function ipHash(ip) {
 }
 
 function corsHeaders(origin) {
-  var allow = ALLOWED_ORIGINS.indexOf(origin) !== -1 ? origin : ALLOWED_ORIGINS[0];
+  var allow = isAllowedOrigin(origin) ? String(origin).trim() : fallbackOrigin();
   return {
     'Access-Control-Allow-Origin': allow,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -427,7 +457,7 @@ exports.main = async function (event) {
   if (method === 'OPTIONS') {
     return { statusCode: 204, headers: corsHeaders(origin), body: '', isBase64Encoded: false };
   }
-  if (ALLOWED_ORIGINS.indexOf(origin) === -1) {
+  if (!isAllowedOrigin(origin)) {
     return reply(403, origin, { ok: false, error: 'origin_denied', message: '来源不在白名单' });
   }
 
