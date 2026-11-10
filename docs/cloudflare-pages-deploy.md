@@ -1,12 +1,39 @@
-# Cloudflare Pages 备用托管（自动构建）
+# Cloudflare Pages 备用托管
 
-GitHub Pages 之外的备用线路，同一套静态文件，`push` 到 `main` 自动构建部署。
-
-## 线上地址
+GitHub Pages 之外的备用线路，同一套静态文件。当前线上地址：
 
 - 作品集主页：https://shenge-work.pages.dev/
 - 在线简历：https://shenge-work.pages.dev/resume.html
-- 预览部署（其他分支 / PR）：`https://<commit-sha>.shenge-work.pages.dev`
+
+## 当前实际形态（2026-11-11）
+
+项目 `shenge-work` 已配置为 GitHub 数据源（`shenge-work/shenge-work.github.io`，生产分支 `main`），但 **Cloudflare 的 GitHub App 尚未授权该仓库**，所以 `push` 不会触发 Cloudflare 自动构建。
+
+实际生效的同步方式有两种：
+
+1. **本机 launchd 定时同步（当前生效）**
+   - 每小时跑一次 `scripts/sync-pages-from-github.sh`
+   - 通过 `api.github.com` 取 `main` 最新 commit，用 `codeload` 下 tar 包，只取静态资源直传 Pages
+   - 幂等：commit 未变则跳过；部署后逐文件比对 md5 一致才记录状态
+   - 日志：`~/Library/Logs/pages-sync.log`、`~/Library/Logs/pages-sync.err.log`
+   - 状态：`~/.local/state/pages-sync/shenge-work.last-commit`
+   - 停用：`launchctl bootout gui/$(id -u)/com.shenge.pages-sync`
+
+2. **手动强制同步**
+   ```bash
+   ./scripts/sync-pages-from-github.sh --force   # 忽略状态，立即按远端 main 部署
+   ./scripts/sync-pages-from-github.sh --check   # 只看远端有无新提交
+   ./scripts/deploy-pages.sh                     # 按本地工作区直传（紧急修复用）
+   ```
+
+## 想要「push 即部署」需做的两步
+
+到 GitHub 给 Cloudflare 的 App 授权本仓库（一次性）：
+
+1. 打开 https://github.com/settings/installations
+2. 找到 **Cloudflare Pages**，点 `Configure` → `Repository access` 选中 `shenge-work.github.io` → `Save`
+
+授权后 push 到 `main` 由 Cloudflare 直接构建，本机定时同步可停掉。
 
 ## 项目配置
 
@@ -20,25 +47,8 @@ GitHub Pages 之外的备用线路，同一套静态文件，`push` 到 `main` �
 
 仓库里的 `functions/`（腾讯云函数源码）、`worker/`、`docs/`、`scripts/` 不进构建产物，只部署前端真正要用的文件。
 
-## 触发方式
-
-- **push 到 `main`** → 自动生产部署
-- **push 到其他分支 / 开 PR** → 自动预览部署，不影响生产
-- 需要手动重跑时，在 Cloudflare 控制台 `Pages → shenge-work → Deployments` 里点 “Retry deployment”
-
 ## 与 GitHub Pages 的关系
 
-- 两边读同一份仓库，内容一致；改完 push 一次，两个站都会更新
+- 两边跑同一份仓库，最终内容一致
 - 统计 / 计数 / AI 问答后端与域名无关，两边共用同一套
 - 已知差异：Pages 默认 pretty URL，`/resume.html` 会 308 跳到 `/resume`；GitHub Pages 保持 `/resume.html`
-
-## 兜底：wrangler 直传
-
-自动构建不可用（Cloudflare 构建排队故障、Git 仓库不可达等）时，用本地脚本直传同一套文件：
-
-```bash
-./scripts/deploy-pages.sh            # 上传并校验线上 md5
-./scripts/deploy-pages.sh --dry-run  # 只看会传哪些文件
-```
-
-直传会用 `wrangler pages deploy` 覆盖生产部署，内容与仓库当前工作区一致，适合紧急修复。
