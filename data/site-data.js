@@ -344,7 +344,7 @@ window.SITE_DATA = {
       "no": "P-01",
       "img": "images/project-1.jpg",
       "imgAlt": "AI 金融投研工作台项目封面——机器人与K线图盾牌插画",
-      "badge": "企业 AI 基建 · 金融投研 · AI Infra后台开发",
+      "badge": "企业 AI 基建 · 金融投研",
       "badgeCls": "tag-orange",
       "company": "进门财经",
       "year": "2026.01 — 2026.07",
@@ -386,7 +386,7 @@ window.SITE_DATA = {
       "no": "P-02",
       "img": "images/project-2.jpg",
       "imgAlt": "AI 人脉搜索引擎项目封面——地球仪与放大镜节点连线插画",
-      "badge": "Multi-Agent · Agentic RAG · Agent工程化",
+      "badge": "Multi-Agent · Agentic RAG",
       "badgeCls": "tag-blue",
       "company": "指数引力",
       "year": "2024.03 — 2025.11",
@@ -433,7 +433,7 @@ window.SITE_DATA = {
       "no": "P-03",
       "img": "images/project-3.jpg",
       "imgAlt": "海外红人营销一体化 SaaS 平台项目封面——摄像机爱心与火箭插画",
-      "badge": "业务 FDE 式落地",
+      "badge": "FDE 式业务落地",
       "badgeCls": "tag-orange",
       "company": "指数引力",
       "year": "2024.03 — 2025.11",
@@ -574,13 +574,15 @@ window.SITE_DATA = {
       "no": "W-02",
       "title": "CareerAgent · 求职工作台",
       "titleEn": "CAREER-AGENT",
-      "desc": "本地服务器部署的求职 Agent 工作台：账号登录 + 行级数据隔离 + PostgreSQL 兼容数据库（PGlite），以岗位为第一公民——简历编辑（A4 实时预览 / 矢量与图片版 PDF）、公司档案、投递追踪（BOSS 聊天采集）、AI 模型转发与本地版本历史，数据全部留在本机。",
+      "desc": "本地优先的 AI 求职 Agent 桌面应用（Windows / macOS 装好即用）：投递追踪、公司调研、简历改写这些杂活交给 AI——按 JD 自动改写简历并导出 PDF、六维公司调研与面试简报、聊天记录归档去重、内推跟进自动提醒；数据存本地 PGlite，只留在本机，换设备走端到端加密同步。",
       "tech": [
         "TypeScript",
         "Node.js",
+        "Electron 桌面端",
         "PGlite / PostgreSQL"
       ],
-      "github": "https://github.com/shenge-work/career-agent"
+      "github": "https://github.com/shenge-work/career-agent",
+      "live": "https://career-agent-3gi.pages.dev/"
     },
     {
       "no": "W-03",
