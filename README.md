@@ -6,6 +6,18 @@ AI 全栈工程师求职个人网站：基于纯原生 HTML / CSS / JavaScript �
 - 作品集主页：https://shenge-work.github.io/
 - 在线简历：https://shenge-work.github.io/resume.html
 
+**备用线路（Cloudflare Pages，同一套静态文件）**
+- 作品集主页：https://shenge-work.pages.dev/
+- 在线简历：https://shenge-work.pages.dev/resume.html
+- 更新方式：项目已配 GitHub 数据源，但 **Cloudflare 的 GitHub App 尚未授权本仓库**，push 暂不会触发自动构建；目前由本机 launchd 每小时跑 `scripts/sync-pages-from-github.sh`，拉 `main` 最新提交直传 Pages
+  - 手动同步：`./scripts/sync-pages-from-github.sh --force`（`--check` 只看有没有新提交）
+  - 按本地工作区直传：`./scripts/deploy-pages.sh`（支持 `--dry-run`）
+  - 构建命令（启用自动构建后使用）：`mkdir -p dist && cp -r index.html resume.html css js data images videos assets favicon-64.png favicon.png dist/`，输出目录 `dist`
+- 想启用「push 即部署」：GitHub → Settings → Applications → Cloudflare Pages → `Configure` → 授权 `shenge-work.github.io` 仓库
+- 详细说明：[docs/cloudflare-pages-deploy.md](docs/cloudflare-pages-deploy.md)
+
+> 注意：Pages 只读取 GitHub 仓库的提交，本地改动必须 push 到 GitHub 才会同步；同步由本机定时任务完成，机器关机时会顺延到下次开机。
+
 ## 页面结构
 
 ### 作品集主页（index.html）
@@ -83,9 +95,13 @@ AI 全栈工程师求职个人网站：基于纯原生 HTML / CSS / JavaScript �
 │   └── site-data.js        # 自动生成的 window.SITE_DATA 快照（勿手改）
 ├── images/                 # 形象照 / 项目图 / 证书 / 学信网二维码
 ├── scripts/sync_site_data.py        # JSON → JS 快照，支持 --check
+├── scripts/sync-pages-from-github.sh  # Cloudflare Pages 同步（api.github.com + 直传，幂等）
+├── scripts/deploy-pages.sh          # Cloudflare Pages 兜底直传（支持 --dry-run）
+├── scripts/pages-sync-daemon.sh     # launchd 包装脚本，补齐 node/npx 后执行同步
 ├── docs/ai-avatar-skins.md          # 3D AI 助手皮肤系统（设计 + 实施 + 迭代）
 ├── docs/observability-and-cms.md    # 教程：统计与内容管理接入
 ├── docs/ai-assistant-survey.md      # AI 简历问答后端（RAG）方案与实施
+├── docs/cloudflare-pages-deploy.md  # Cloudflare Pages 备用托管说明
 ├── worker/                 # 可选：自建 Cloudflare Worker 访客计数
 ├── .pages.yml              # Pages CMS 配置
 ├── .github/workflows/sync-site-data.yml  # JSON 变更后自动重建快照
