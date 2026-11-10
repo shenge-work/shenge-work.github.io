@@ -47,6 +47,18 @@ GitHub Pages 之外的备用线路，同一套静态文件。当前线上地址�
 
 仓库里的 `functions/`（腾讯云函数源码）、`worker/`、`docs/`、`scripts/` 不进构建产物，只部署前端真正要用的文件。
 
+## 跨域（CORS）白名单
+
+页面的 AI 问答走腾讯云 CloudBase 函数 `resume-ai-chat`，它按 `Origin` 做白名单校验（见 `functions/tencent/index.js`），不放行就返回 403 `origin_denied`，浏览器侧报 CORS 错误。
+
+- 平台环境变量 `ALLOWED_ORIGINS`（逗号分隔）**优先于代码默认值**。当前线上已配置为：
+  ```
+  https://shenge-work.github.io,https://shenge-work.pages.dev
+  ```
+  实测两个域名均回显自身 ACAO，外来域名返回 403。
+- 代码默认值已包含 `https://shenge-work.github.io`、`https://shenge-work.pages.dev`，以及通配规则 `*.shenge-work.pages.dev`（覆盖每个 commit 的预览部署 `https://<commit>.shenge-work.pages.dev`）。
+- **通配规则要生效需要重新部署函数代码**：旧的线上包只做精确匹配，而环境变量又是精确列表，所以预览子域目前仍不放行。重传代码后，可直接把环境变量改回不设置（走代码默认值）或显式写入 `*.shenge-work.pages.dev`。
+
 ## 与 GitHub Pages 的关系
 
 - 两边跑同一份仓库，最终内容一致
