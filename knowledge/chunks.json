@@ -241,21 +241,7 @@
     "id": "skills-01",
     "section": "skills",
     "title": "专业技能",
-    "text": "【专业技能】Agent 编排（LangChain · LangGraph · LlamaIndex）（自评 86 分，满分 100）； Java / Spring 生态（JVM 调优 · 并发）（自评 88 分，满分 100）； RAG 检索增强 / LLM 评测体系（自评 84 分，满分 100）； 数据与中间件（MySQL · Redis · ES · MQ）（自评 86 分，满分 100）； Python / Golang（FastAPI · Gin）（自评 84 分，满分 100）； 前端（Vue · UniApp · Electron）（自评 80 分，满分 100）",
-    "url": "index.html#skills"
-  },
-  {
-    "id": "skills-02",
-    "section": "skills",
-    "title": "专业技能",
-    "text": "【专业技能】技能值代表「能独立交付的熟练度」，不做装饰性满格。 持续探索中：A2A 协议、Coding Agent 底层架构。",
-    "url": "index.html#skills"
-  },
-  {
-    "id": "toolbox-01",
-    "section": "skills",
-    "title": "工具箱 TOOLBOX",
-    "text": "【工具箱 TOOLBOX】常用工具清单：Dify、Coze、n8n、MCP / Skill 生态、Milvus、Flink、ElasticSearch、RocketMQ / Kafka、Docker / K8s、QwenPaw / OpenCode、AgentScope、Claude Code / Cursor、Jenkins / Git、AWS SES / SendGrid、Stripe / Paypal",
+    "text": "【专业技能】不设自评分 —— 分数无法被验证，落点可以。 持续探索：A2A 协议、Coding Agent 底层架构。",
     "url": "index.html#skills"
   },
   {
