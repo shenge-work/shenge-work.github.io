@@ -157,7 +157,9 @@
         '<span class="proj-hover-ui" aria-hidden="true"><span class="proj-hover-btn">查看详情 <i>▶</i></span></span></div>' +
         '<div class="proj-body"><div class="proj-meta">' +
         '<span class="proj-co"' + (p.company ? '' : ' hidden') + '>' + esc(p.company || '') + '</span>' +
-        (p.url ? '<a class="proj-link" href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer" aria-label="打开 ' + esc(p.title) + ' 线上产品">线上产品 ↗</a>' : '') +
+        (p.url
+          ? '<a class="proj-link" href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer" aria-label="打开 ' + esc(p.title) + ' 线上产品">线上产品 ↗</a>'
+          : (p.note ? '<span class="proj-note">' + esc(p.note) + '</span>' : '')) +
         '<span class="tag ' + (p.badgeCls || 'tag-orange') + '">' + esc(p.badge) + '</span>' +
         '<span class="proj-year">' + esc(p.year) + '</span></div>' +
         '<h3 class="proj-title">' + esc(p.title) + ' <span class="proj-title-en">' + esc(p.titleEn) + '</span></h3>' +
@@ -390,6 +392,7 @@
     var modalStack = $('modalStack');
     var modalStats = $('modalStats');
     var modalLink = $('modalLink');
+    var modalNote = $('modalNote');
     var lastFocused = null;
 
     /* 实战演示视频：暂停并复位（移除 src + load() 中止缓冲，回到插画封面态） */
@@ -426,6 +429,10 @@
           modalLink.hidden = true;
           modalLink.removeAttribute('href');
         }
+      }
+      if (modalNote) {
+        modalNote.textContent = p.url ? '' : (p.note || '');
+        modalNote.hidden = !(modalNote.textContent);
       }
       modalStats.innerHTML = (p.stats || []).map(function (st) {
         return '<div><strong>' + esc(st.v) + '</strong><span>' + esc(st.s) + '</span></div>';

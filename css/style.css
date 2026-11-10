@@ -1170,6 +1170,12 @@ a.cap-ref:hover, a.cap-ref:focus-visible {
   background: var(--ink); color: var(--card);
   outline: none;
 }
+/* 无公开入口的项目：用一句说明替代链接，避免看起来「该有链接却没有」 */
+.proj-note {
+  font-family: var(--font-mono); font-size: 10.5px; font-weight: 700;
+  letter-spacing: .04em; color: var(--ink-soft);
+  border: 2px dashed currentColor; padding: 3px 8px; white-space: nowrap;
+}
 /* 项目卡片上的「线上产品」入口：与公司名同高的小标签，不破坏 meta 行节奏 */
 .proj-link {
   display: inline-flex; align-items: center; gap: 4px;
@@ -1181,6 +1187,12 @@ a.cap-ref:hover, a.cap-ref:focus-visible {
 }
 .proj-link:hover, .proj-link:focus-visible {
   background: var(--orange); border-color: var(--ink); color: var(--card); outline: none;
+}
+/* 模态框里的同款说明 */
+.modal-note {
+  display: inline-block; margin: 12px 0 4px;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+  color: var(--ink-soft); border: 2px dashed currentColor; padding: 5px 10px;
 }
 /* 项目模态框里的产品入口 */
 .modal-link {
