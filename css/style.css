@@ -31,7 +31,12 @@
 
 /* ── Reset ───────────────────────────────────── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 84px;
+  /* clip 只裁切不产生滚动容器，避免 hidden 让 body 变成横向可滚容器 */
+  overflow-x: clip;
+}
 body {
   background: var(--paper);
   color: var(--ink);
@@ -39,7 +44,7 @@ body {
   font-size: 16px;
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 img { display: block; max-width: 100%; }
 /* hidden 属性权威化：防止作者 display 声明（如 img{display:block}）覆盖 UA 的 [hidden]{display:none} */
@@ -190,12 +195,13 @@ button { font-family: inherit; cursor: pointer; }
 .topbar-inner {
   max-width: 1600px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 clamp(12px, 2vw, 24px);
   height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: clamp(8px, 1.2vw, 20px);
+  min-width: 0;
 }
 .topbar-left { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
 .brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
@@ -218,18 +224,21 @@ button { font-family: inherit; cursor: pointer; }
   max-width: 150px;
   line-height: 1.4;
 }
-.nav { display: flex; gap: 4px; }
+/* 导航字号/内边距随视口线性缩放：10 项导航在 1281–1600 的常见笔记本宽度下
+   也能和左侧品牌、右侧分享/计数器共存，不靠固定断点硬凑 */
+.nav { display: flex; gap: clamp(1px, .2vw, 4px); flex: 0 1 auto; min-width: 0; }
 .nav a {
-  font-size: 14px;
+  font-size: clamp(11px, .9vw, 14px);
   font-weight: 700;
-  padding: 8px 7px;
+  padding: 8px clamp(2px, .44vw, 7px);
   border: 2px solid transparent;
   transition: border-color .15s ease, background .15s ease;
   white-space: nowrap;
+  flex: 0 0 auto;
 }
 .nav a .nav-no {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: clamp(8px, .7vw, 10px);
   color: var(--orange);
   margin-right: 4px;
 }
@@ -242,17 +251,28 @@ button { font-family: inherit; cursor: pointer; }
   padding: 1px 4px; margin-left: 4px; border-radius: 2px;
   vertical-align: 1px; white-space: nowrap;
 }
-@media (min-width: 1110px) and (max-width: 1440px) {
-  .nav { gap: 2px; }
-  .nav a { font-size: 13px; padding: 7px 5px; }
-  .nav-tag { font-size: 8px; }
+/* 1281–1600 中等桌面的顶栏瘦身规则放在文件末尾（须晚于 .status-pill /
+   .hit-counter-head 等基础声明，否则会被同特异性的 display 覆盖）。 */
+
+/* 顶栏空间兜底：字体异常放大、浏览器缩放、翻译导致文案变长时，
+   由 js/main.js 检测溢出后给 body 加 .bar-tight，收起横向导航改用汉堡菜单 */
+body.bar-tight .nav:not(.open) { display: none; }
+body.bar-tight .menu-btn { display: flex; }
+body.bar-tight .nav.open {
+  display: flex;
+  position: fixed;
+  top: 72px;
+  left: 0; right: 0;
+  flex-direction: column;
+  background: var(--paper);
+  border-bottom: var(--border-thick);
+  padding: 10px 24px 20px;
+  gap: 2px;
+  z-index: 99;
 }
-/* 1025–1109：导航项最窄档，保证 10 项在窄桌面不溢出 */
-@media (min-width: 1025px) and (max-width: 1109px) {
-  .nav { gap: 2px; }
-  .nav a { font-size: 12px; padding: 6px 4px; }
-  .nav-no { font-size: 9px; margin-right: 3px; }
-  .nav-tag { font-size: 8px; padding: 1px 3px; margin-left: 3px; }
+body.bar-tight .nav.open a { font-size: 17px; padding: 12px 10px; border-bottom: 2px solid rgba(20,19,17,.12); }
+@media (max-width: 680px) {
+  body.bar-tight .nav.open { top: 60px; padding: 10px 18px 18px; }
 }
 .topbar-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
 /* ── 分享按钮（生成首页长图 + 右下角二维码） ── */
@@ -1166,6 +1186,7 @@ button { font-family: inherit; cursor: pointer; }
   .cap-ref { margin-left: 0; }
 }
 
+
 /* ══════════════ SEC.07 获奖证书 ══════════════ */
 .cert-grid {
   display: grid;
@@ -1644,9 +1665,11 @@ button { font-family: inherit; cursor: pointer; }
     gap: 6px;
     margin-bottom: 14px;
   }
-  .exp-company { font-size: clamp(18px, 5vw, 24px); line-height: 1.3; }
-  .exp-role { font-size: 13.5px; }
-  .exp-time { font-size: 12px; padding: 5px 10px; align-self: flex-start; }
+  .exp-company { font-size: clamp(18px, 5vw, 24px); line-height: 1.3; overflow-wrap: anywhere; }
+  .exp-role { font-size: 13.5px; overflow-wrap: anywhere; }
+  /* 窄屏允许日期长文案换行：nowrap 曾把整张卡片撑出视口约 4px */
+  .exp-head > div { min-width: 0; max-width: 100%; }
+  .exp-time { font-size: 12px; padding: 5px 10px; align-self: flex-start; white-space: normal; max-width: 100%; line-height: 1.5; }
   .exp-points { gap: 8px; }
   .exp-points li { font-size: 14px; padding-left: 22px; }
   .exp-points li::before { font-size: 16px; }
@@ -2050,8 +2073,10 @@ button { font-family: inherit; cursor: pointer; }
 /* ══════════════ SEC.05 个人作品（水平无缝自动滚动） ══════════════ */
 .works-scroller {
   position: relative;
-  width: 100vw;               /* 全幅延伸到页面窗口边缘 */
-  margin-left: calc(50% - 50vw);
+  /* --vw-real 由 js/main.js 写入真实内容视口宽度：Windows 经典滚动条会吃掉
+     约 15px，直接用 100vw 会让全幅区块右缘溢出并被裁切 */
+  width: var(--vw-real, 100vw);
+  margin-left: calc(50% - var(--vw-real, 100vw) * .5);
   overflow: hidden;
   --ws-fade: min(160px, 14vw); /* 两端渐隐宽度：从窗口边缘起，桌面约160px、移动自适应 */
   -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--ws-fade), #000 calc(100% - var(--ws-fade)), transparent 100%);
@@ -2138,4 +2163,19 @@ button { font-family: inherit; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   .works-scroller { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
   .works-track { animation: none; }
+}
+
+/* ══════════════ 中等桌面顶栏瘦身（1281–1600） ══════════════
+   10 项导航 + 品牌 + 分享按钮 + 访问计数器，在 1366 / 1281 这类常见笔记本宽度下
+   原本会互相挤压，右侧计数器被挤出视口裁掉。这里配合 .nav 的视口缩放把两处
+   装饰信息压缩，为整行留出 100px 以上安全余量；≥1601px 大屏保留完整装饰。
+   注意：必须放在文件末尾，晚于 .status-pill / .hit-counter-head 基础声明才生效。 */
+@media (min-width: 1281px) and (max-width: 1600px) {
+  .status-pill { display: none; }
+  /* 计数器标题缩为短标签，数字里程表与状态圆点保留，省下约 100px */
+  .hit-counter-head > span:not(.hit-counter-dot) { font-size: 0; }
+  .hit-counter-head > span:not(.hit-counter-dot)::after { content: 'VISITS'; font-size: 9px; }
+  .hit-counter { padding: 4px 6px 5px; }
+  .nav { gap: 2px; }
+  .nav-tag { font-size: 8px; }
 }

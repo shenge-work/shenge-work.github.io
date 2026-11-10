@@ -898,10 +898,10 @@
       welcome: '你好，我是 CP.AI —— 陈培胜的档案问答助手。<br>后端跑在 <b>CloudBase 云函数</b>上：先用 TF-IDF 在 32 段简历切片里召回相关段落，再交给大模型受约束生成答案，每次回答都会标注依据来源。<br>可以问我项目细节、技术栈、工作经历。',
       quickQuestions: ['主导过哪些 0→1 系统？', 'Agent 架构经验？', '技术栈与方向？', '联系方式？'],
       /* ── 主动性：停留 10 秒仍未开口，就主动把问题递到手边 ── */
-      autoDelay: 10000,             // 触发时刻（毫秒）
-      autoTipAhead: 4000,           // 距触发还剩多久冒小气泡
+      autoDelay: 10000,             // 展开面板的时刻（毫秒）
+      autoTipAhead: 8500,           // 距展开还剩多久就冒自我介绍气泡 → 进页面约 1.5s 即打招呼
       autoCooldown: 30 * 60 * 1000, // 同一台设备 30 分钟内不再自动弹
-      autoTip: '简历看不完？直接问我就行',
+      autoTip: '👋 我是 AI 简历问答助手，点我直接问～',
       autoLead: '我是 CP.AI，陈培胜的档案问答助手。<br>这页塞了 6 套系统、几十条技术细节，翻页挺慢——<b>直接问我更快</b>，回答都带原文出处。<br>不想打字就先点一个：',
       autoPrompts: [
         { q: '你主导过哪些 0→1 的系统？', label: '0→1 系统' },
@@ -1145,15 +1145,43 @@
     aiScheduleAuto();
   }
 
+  /* ══════════════ 视口自适应 ══════════════
+     1) --vw-real：真实内容视口宽度（排除 Windows 经典滚动条），供全幅区块使用
+     2) 顶栏溢出兜底：字体放大 / 浏览器缩放 / 文案变长导致内容仍放不下时，
+        自动收起横向导航、启用汉堡菜单，保证任何屏幕尺寸都不出现横向裁切
+     测量前先移除 .bar-tight，避免紧凑状态自身影响判断而反复抖动。 */
+  function syncResponsiveGuard() {
+    var root = document.documentElement;
+    var bar = document.querySelector('.topbar-inner');
+    root.style.setProperty('--vw-real', root.clientWidth + 'px');
+    if (!bar) return;
+    document.body.classList.remove('bar-tight');
+    if (bar.scrollWidth > bar.clientWidth + 1) {
+      document.body.classList.add('bar-tight');
+      var navEl = document.getElementById('nav');
+      var menuEl = document.getElementById('menuBtn');
+      if (navEl && !navEl.classList.contains('open') && menuEl) {
+        menuEl.classList.remove('open');
+        menuEl.setAttribute('aria-expanded', 'false');
+      }
+    }
+  }
+  syncResponsiveGuard();
+  window.addEventListener('resize', syncResponsiveGuard, { passive: true });
+  window.addEventListener('load', syncResponsiveGuard);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncResponsiveGuard);
+
   /* ══════════════ 启动 ══════════════ */
   loadSiteData().then(function (data) {
     renderSite(data);
     initInteractions();
+    syncResponsiveGuard(); /* 计数器数字位等动态内容渲染后再校一次 */
   }).catch(function (err) {
     /* 双保险：渲染本身异常也不至于白屏 */
     try { console.error('[site-data] 渲染失败：', err); } catch (e) {}
     renderSite(EXAMPLE_DATA);
     initInteractions();
+    syncResponsiveGuard();
   });
 
 })();
