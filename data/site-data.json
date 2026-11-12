@@ -858,5 +858,10 @@
       "resumeFile": "resume.html",
       "resumeDownloadName": "陈培胜-AI全栈工程师-简历.html"
     }
+  },
+  "wall": {
+    "lead": "不想直接联系我，又对我的经历或能力有想法？<strong>写在这里</strong>——留言公开可见，我看到都会回。",
+    "emptyText": "墙上还没有留言，来做第一个写下想法的人 ▶",
+    "closedText": "留言墙暂未开放（存储配置中），有事请走联系方式"
   }
 }

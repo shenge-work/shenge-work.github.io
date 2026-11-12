@@ -79,13 +79,19 @@ tar -xzf "$TARBALL" -C "$TMP/src" --strip-components=1
 
 SITE="$TMP/site"
 mkdir -p "$SITE"
-for item in index.html resume.html css js data images videos assets favicon-64.png favicon.png; do
+for item in index.html resume.html css js data images videos assets favicon-64.png favicon.png functions; do
   if [ ! -e "$TMP/src/$item" ]; then
     echo "✗ 该提交缺少 $item，中止（避免部署出不完整的站点）"
     exit 1
   fi
   cp -R "$TMP/src/$item" "$SITE/"
 done
+# 只带 functions/api（留言墙 / 简历投递），不带 functions/tencent（腾讯云函数源码）
+rm -rf "$SITE/functions/tencent"
+if [ ! -d "$SITE/functions/api" ]; then
+  echo "✗ 该提交缺少 functions/api，中止"
+  exit 1
+fi
 
 FILE_COUNT=$(find "$SITE" -type f | wc -l | tr -d ' ')
 echo "   ${FILE_COUNT} 个文件，$(du -sh "$SITE" | awk '{print $1}')"

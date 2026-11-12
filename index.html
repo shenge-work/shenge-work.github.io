@@ -109,7 +109,8 @@
       <a href="#education" data-sec="education"><span class="nav-no">07</span>教育经历</a>
       <a href="#awards" data-sec="awards"><span class="nav-no">08</span>获奖证书</a>
       <a href="#contact" data-sec="contact"><span class="nav-no">09</span>联系方式</a>
-      <a href="https://shenge-blog.pages.dev" class="nav-blog" target="_blank" rel="noopener noreferrer" title="个人博客"><span class="nav-no">10</span>博客</a>
+      <a href="#wall" data-sec="wall"><span class="nav-no">10</span>留言墙</a>
+      <a href="https://shenge-blog.pages.dev" class="nav-blog" target="_blank" rel="noopener noreferrer" title="个人博客"><span class="nav-no">11</span>博客</a>
     </nav>
     <div class="topbar-right">
       <button class="share-btn" id="shareBtn" title="查看/下载作品集分享卡" aria-label="查看/下载作品集分享卡">分享 ⤴</button>
@@ -322,6 +323,32 @@
   <div class="resume-cta reveal" id="resumeCta"></div>
 </section>
 
+<!-- ══════════════ SEC.10 留言墙 / GUEST WALL ══════════════ -->
+<section class="section section-tint" id="wall">
+  <div class="section-head">
+    <span class="section-no">SEC.10</span>
+    <h2 class="section-title">留言墙 <span class="title-en">GUEST WALL</span></h2>
+    <span class="section-line" aria-hidden="true"></span>
+    <span class="section-coord" aria-hidden="true">SIGNAL//OPEN-FORUM</span>
+  </div>
+  <p class="wall-lead reveal" id="wallLead"></p>
+  <div class="wall-wrap">
+    <form class="wall-form reveal" id="wallForm" novalidate>
+      <div class="wall-form-head">
+        <span class="wall-form-no">POST//NEW</span>
+        <span class="wall-form-hint">匿名可选 · 留言对所有人可见</span>
+      </div>
+      <input class="wall-input" id="wallName" type="text" maxlength="16" placeholder="怎么称呼你？（可留空 = 匿名）" autocomplete="off">
+      <textarea class="wall-input wall-textarea" id="wallText" maxlength="300" rows="4" placeholder="对我的经历或能力有想法？直接写在这里…" required></textarea>
+      <div class="wall-form-foot">
+        <span class="wall-count" id="wallCount" aria-live="polite">0 / 300</span>
+        <button class="wall-submit" type="submit" id="wallSubmit">贴上留言墙 ▶</button>
+      </div>
+    </form>
+    <div class="wall-list reveal" id="wallList" aria-live="polite"></div>
+  </div>
+</section>
+
 <!-- ══════════════ 页脚 / FOOTER ══════════════ -->
 <footer class="footer">
   <div class="footer-inner">
@@ -422,7 +449,7 @@
   <div class="ai-foot" aria-hidden="true">CLOUDBASE 云函数 · 静态 RAG · hy3 // 已接入</div>
 </aside>
 
-<script src="js/main.js?v=20261111d"></script>
+<script src="js/main.js?v=20261113d"></script>
 <script src="js/ai-skins.js?v=20261110d"></script>
 <script src="js/analytics.js" defer></script>
 <script src="js/visitor-count.js" defer></script>

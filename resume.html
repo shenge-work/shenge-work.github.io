@@ -283,6 +283,126 @@ body {
 .btn-solid { background: var(--orange); color: #fff; }
 .btn-blue { background: var(--blue); color: #fff; }
 .btn-green { background: var(--green); color: #fff; }
+.btn-deliver { background: var(--ink); color: #fff; }
+
+/* ── 简历转发弹窗 ── */
+.dl-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 420;
+  background: rgba(20, 19, 17, .55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.dl-overlay.show { display: flex; }
+.dl-panel {
+  position: relative;
+  background: var(--card);
+  border: 4px solid var(--ink);
+  box-shadow: 10px 10px 0 var(--ink);
+  width: min(480px, 100%);
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;           /* 由 #dlForm 内部滚动，头部与提交区固定 */
+  padding: 26px 28px 24px;
+}
+.dl-close {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 36px; height: 36px;
+  border: 2px solid var(--ink);
+  background: var(--card);
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.dl-close:hover { background: var(--orange); color: #fff; }
+.dl-head { margin-bottom: 18px; padding-right: 40px; flex-shrink: 0; }
+.dl-badge {
+  display: inline-block;
+  font-family: var(--font-mono, monospace);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  background: var(--ink);
+  color: #fff;
+  padding: 4px 9px;
+}
+.dl-head h3 {
+  font-size: 24px;
+  font-weight: 900;
+  margin: 10px 0 8px;
+  line-height: 1.25;
+}
+.dl-sub { font-size: 13px; line-height: 1.7; color: var(--ink-soft); }
+.dl-form, .dl-field { display: flex; flex-direction: column; gap: 7px; }
+#dlForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.dl-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--ink);
+}
+.dl-field input, .dl-field textarea {
+  font-family: inherit;
+  font-size: 14px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 10px 12px;
+  width: 100%;
+}
+.dl-field input:focus, .dl-field textarea:focus {
+  outline: 3px solid var(--orange);
+  outline-offset: 2px;
+}
+.dl-field textarea { resize: vertical; min-height: 74px; line-height: 1.7; }
+.dl-required .dl-label::after { content: ' *'; color: var(--orange); }
+/* 提交区：常驻弹窗底部，只有表单字段区滚动，按钮任何屏幕尺寸都可见 */
+.dl-foot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  padding-top: 12px;
+  border-top: 2px solid rgba(20, 19, 17, .14);
+}
+.dl-tip { font-size: 11.5px; color: var(--ink-soft); flex: 1; min-width: 160px; line-height: 1.6; }
+.dl-send { flex-shrink: 0; }
+.dl-send:disabled { opacity: .55; cursor: not-allowed; }
+.dl-alt {
+  flex-shrink: 0;
+  margin-top: 16px;
+  border-top: 2px dashed rgba(20,19,17,.3);
+  padding-top: 14px;
+}
+.dl-alt p { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 10px; }
+@media (max-width: 480px) {
+  .dl-overlay { padding: 10px; }
+  .dl-panel { padding: 20px 18px 14px; max-height: calc(100vh - 20px); }
+  .dl-head { margin-bottom: 12px; }
+  .dl-head h3 { font-size: 20px; }
+  .dl-sub { line-height: 1.6; }
+  #dlForm { gap: 14px; }
+  .dl-field textarea { min-height: 56px; }
+  .dl-foot { flex-direction: column; align-items: stretch; gap: 8px; margin-top: 10px; padding-top: 10px; }
+  .dl-tip { min-width: 0; }
+  .dl-send { width: 100%; }
+}
 
 /* ── 长图预览模态框 ── */
 .lg-overlay {
@@ -614,10 +734,203 @@ body {
   <button class="btn btn-solid" onclick="window.print()">保存为 PDF（彩色）⎙</button>
   <button class="btn btn-blue" onclick="printBW()">打印 PDF（正式黑白）⎙</button>
   <button class="btn btn-green" id="btnLongImage" onclick="exportLongImage(this)">生成长图 ▤</button>
+  <button class="btn btn-deliver" id="btnDeliver" onclick="openDeliver()">发简历到邮箱 ✉</button>
   <a class="btn" href="index.html">← 返回作品集主页</a>
 </div>
 
+<!-- ── 转发弹窗：浏览者填收件人邮箱，把在线简历发给对方（自己 / 同事 / 指定人） ── -->
+<!-- ── 转发弹窗：浏览简历的人填收件人邮箱，把在线简历发到对方邮箱（无需下载附件） ── -->
+<div class="dl-overlay" id="dlOverlay" role="dialog" aria-modal="true" aria-labelledby="dlTitle">
+  <div class="dl-panel">
+    <button class="dl-close" onclick="closeDeliver()" aria-label="关闭弹窗">×</button>
+    <div class="dl-head">
+      <span class="dl-badge">SHARE RESUME</span>
+      <h3 id="dlTitle">把这份简历发到邮箱</h3>
+      <p class="dl-sub">不用下载附件：填收件人邮箱，对方会收到一封含<strong>在线简历直达链接</strong>的邮件。发给自己、转发给同事都行。</p>
+    </div>
+    <form id="dlForm" novalidate>
+      <label class="dl-field dl-required">
+        <span class="dl-label">收件人邮箱（最多 3 个，逗号分隔）</span>
+        <input id="dlTo" type="text" maxlength="360" placeholder="hr@company.com" autocomplete="off" required>
+      </label>
+      <label class="dl-field">
+        <span class="dl-label">你的称呼（可选）</span>
+        <input id="dlName" type="text" maxlength="24" placeholder="如：某某公司 张 HR" autocomplete="off">
+      </label>
+      <label class="dl-field">
+        <span class="dl-label">你的邮箱（可选，填了对方可直接回复你）</span>
+        <input id="dlEmail" type="email" maxlength="120" placeholder="you@company.com" autocomplete="off">
+      </label>
+      <label class="dl-field">
+        <span class="dl-label">附言（可选）</span>
+        <textarea id="dlNote" rows="2" maxlength="500" placeholder="想对收件人说的话，会出现在邮件正文里…"></textarea>
+      </label>
+    </form>
+    <div class="dl-foot">
+      <span class="dl-tip" id="dlTip">邮件由系统发送，收件人点开链接即可查看完整简历</span>
+      <button class="btn btn-solid dl-send" id="dlSend" type="submit" form="dlForm">发送简历 ▶</button>
+    </div>
+    <div class="dl-alt" id="dlAlt" hidden>
+      <p>自动发信暂不可用，改用你的邮箱客户端发送（收件人已填好）：</p>
+      <a class="btn" id="dlMailto" href="#">用邮箱客户端发送 ↗</a>
+    </div>
+  </div>
+</div>
+
 <script>
+/* ── 简历转发（Resend 经 Cloudflare Pages Function /api/deliver 发给访客指定的收件人）──
+   方向：访客 → 收件人（自己 / 同事 / 指定人），不是发给站长。
+   设计要点：
+   · API key 只在 Cloudflare 环境变量里，前端永不接触；
+   · file:// 、函数未配置（503）或域名未验证（recipient_not_verified）→ 自动展示 mailto 兜底；
+   · 发送中防重复点击；成功后关窗 + 提示。 */
+var DL_STATE = { sending: false };
+var DL_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+function dlRecipients() {
+  var raw = document.getElementById('dlTo').value || '';
+  var list = raw.split(/[,;，；\s]+/).map(function (s) { return s.trim().toLowerCase(); }).filter(Boolean);
+  var uniq = [];
+  list.forEach(function (e) { if (uniq.indexOf(e) < 0) uniq.push(e); });
+  return uniq;
+}
+
+function openDeliver() {
+  var o = document.getElementById('dlOverlay');
+  o.classList.add('show');
+  document.getElementById('dlAlt').hidden = true;
+  setTimeout(function () { document.getElementById('dlTo').focus(); }, 60);
+}
+function closeDeliver() {
+  document.getElementById('dlOverlay').classList.remove('show');
+}
+(function () {
+  var overlay = document.getElementById('dlOverlay');
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) closeDeliver();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && overlay.classList.contains('show')) closeDeliver();
+  });
+})();
+
+function buildMailto() {
+  var to = dlRecipients();
+  var name = document.getElementById('dlName').value.trim();
+  var email = document.getElementById('dlEmail').value.trim();
+  var note = document.getElementById('dlNote').value.trim();
+  var subject = '陈培胜 · AI 全栈工程师 · 在线简历' + (name ? '（' + name + ' 转发）' : '');
+  var lines = [
+    '这是一份在线简历，点开即可查看完整内容（无需下载附件）：',
+    '',
+    '简历地址：https://shenge-work.github.io/resume.html',
+    '备用地址：https://shenge-work.pages.dev/resume.html',
+    '',
+    '陈培胜 · AI 全栈工程师 · 5 年全栈 · Agent 开发 / AI 工程化 / 企业 AI 基建',
+    '联系邮箱：shenge.work@gmail.com'
+  ];
+  if (note) lines = lines.concat(['', '—— 转发人附言 ——', note]);
+  if (name || email) lines = lines.concat(['', '转发人：' + [name, email].filter(Boolean).join(' / ')]);
+  return 'mailto:' + encodeURIComponent(to.join(',')) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
+}
+
+/* API 双线路：GitHub Pages 无 Functions，自动改打 Cloudflare Pages（已把 github.io 列入来源白名单）；
+   本地预览只打本机，避免测试时真的发出邮件。 */
+var API_BASES = (function () {
+  var host = location.hostname || '';
+  if (/^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])$/.test(host)) return [''];
+  if (/\.github\.io$/i.test(host)) return ['https://shenge-work.pages.dev'];
+  return ['', 'https://shenge-work.pages.dev'];
+})();
+function apiFetch(path, opts) {
+  var i = 0;
+  var tried = {};
+  function next() {
+    if (i >= API_BASES.length) return Promise.reject(new Error('no_api'));
+    var url = new URL(API_BASES[i++] + path, location.href).href;
+    if (tried[url]) return next();
+    tried[url] = 1;
+    return fetch(url, opts).then(function (r) {
+      var ct = r.headers.get('content-type') || '';
+      if (r.status === 404 || r.status === 405 || ct.indexOf('application/json') < 0) return next();
+      return r.json().then(function (j) { return { ok: r.ok, status: r.status, body: j }; });
+    }, function () { return next(); });
+  }
+  return next();
+}
+
+document.getElementById('dlForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  if (DL_STATE.sending) return;
+  var tip = document.getElementById('dlTip');
+  var to = dlRecipients();
+  var email = document.getElementById('dlEmail').value.trim();
+  var bad = to.filter(function (x) { return !DL_EMAIL_RE.test(x); });
+
+  function fail(msg, focusId) {
+    tip.textContent = msg;
+    tip.style.color = '#C62828';
+    var el = document.getElementById(focusId);
+    if (el) el.focus();
+  }
+
+  if (!to.length) { fail('请填写收件人邮箱——简历会发到这个地址', 'dlTo'); return; }
+  if (to.length > 3) { fail('一次最多发给 3 个收件人，请减少一些', 'dlTo'); return; }
+  if (bad.length) { fail('收件人邮箱格式不正确：' + bad[0], 'dlTo'); return; }
+  if (email && !DL_EMAIL_RE.test(email)) { fail('你的邮箱格式不正确（可留空）', 'dlEmail'); return; }
+
+  tip.textContent = '邮件由系统发送，收件人点开链接即可查看完整简历';
+  tip.style.color = '';
+
+  function showMailtoFallback(msg) {
+    var a = document.getElementById('dlMailto');
+    a.href = buildMailto();
+    document.getElementById('dlAlt').hidden = false;
+    tip.textContent = msg;
+  }
+
+  if (/^file:/.test(location.protocol)) {
+    showMailtoFallback('本地文件模式：请用邮箱客户端发送');
+    return;
+  }
+
+  var btn = document.getElementById('dlSend');
+  DL_STATE.sending = true;
+  btn.disabled = true;
+  btn.textContent = '发送中…';
+  apiFetch('/api/deliver', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      to: to.join(','),
+      name: document.getElementById('dlName').value.trim(),
+      email: email,
+      note: document.getElementById('dlNote').value.trim()
+    })
+  })
+    .then(function (res) {
+      if (res.ok && res.body && res.body.ok) {
+        var sentTo = (res.body.to || to).join('、');
+        closeDeliver();
+        alert('已发送 ✉\n简历已发到：' + sentTo + '\n收件人点开邮件里的链接即可查看完整简历。');
+      } else if (res.body && (res.body.error === 'resend_not_configured' || res.body.error === 'recipient_not_verified')) {
+        showMailtoFallback(res.body.message || '自动发信暂不可用，请用邮箱客户端发送');
+      } else if (res.body && res.body.error === 'rate_limited') {
+        fail(res.body.message || '操作过于频繁，请稍后再试', 'dlTo');
+      } else {
+        fail((res.body && res.body.message) || '发送失败，请稍后再试', 'dlTo');
+      }
+    })
+    .catch(function () {
+      showMailtoFallback('网络异常，可改用邮箱客户端发送');
+    })
+    .then(function () {
+      DL_STATE.sending = false;
+      btn.disabled = false;
+      btn.textContent = '发送简历 ▶';
+    });
+});
+
 /* 黑白打印：临时挂上 bw-print 类再触发打印，结束后自动移除。
    头像换用真实灰度图（images/portrait-bw.jpg）——
    CSS filter 在部分浏览器的真实打印管线中会被丢弃，像素级灰度图在任何打印路径下都可靠；

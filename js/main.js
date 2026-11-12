@@ -30,6 +30,20 @@
   /* ══════════════ 渲染层 ══════════════ */
 
   function $(id) { return document.getElementById(id); }
+
+  /* ── Toast（分享卡、留言墙等场景共用的轻提示） ──
+     注意：必须放在 IIFE 顶层。留言墙 initWall() 与 initInteractions() 是同级函数，
+     若把 showToast 定义在 initInteractions 内部，留言墙调用时会 ReferenceError。 */
+  var toastEl = null;
+  var toastTimer = null;
+  function showToast(msg) {
+    if (!toastEl) toastEl = $('toast');
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2600);
+  }
   function esc(s) { /* 文本转义（字段值默认按纯文本；需 HTML 的字段走 innerHTML） */
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
@@ -278,6 +292,11 @@
       '<div class="resume-cta-text"><strong>' + esc(cta.title) + '</strong><p>' + esc(cta.desc) + '</p></div>' +
       '<a class="btn btn-solid btn-lg" href="' + esc(cta.resumeFile || 'resume.html') + '">' + esc(cta.btnDownload) + ' <span class="btn-arrow" aria-hidden="true">▶</span></a>' +
       '<a class="btn btn-ghost btn-lg" href="' + esc(cta.resumeFile || 'resume.html') + '" target="_blank">' + esc(cta.btnPreview) + '</a>';
+
+    /* ── 留言墙（文案；列表与提交见交互层第 12 节） ── */
+    var wl = d.wall || {};
+    if ($('wallLead')) $('wallLead').innerHTML = wl.lead || '';
+    window.__WALL_TEXT = { empty: wl.emptyText || '', closed: wl.closedText || '' };
   }
 
   /* ══════════════ 交互层（渲染完成后初始化） ══════════════ */
@@ -300,7 +319,7 @@
     window.addEventListener('resize', function () { if (window.innerWidth > 1280) closeMenu(); });
 
     /* ── 2. 导航当前区高亮 ── */
-    var sections = ['about', 'objective', 'education', 'experience', 'projects', 'skills', 'awards', 'contact']
+    var sections = ['about', 'objective', 'education', 'experience', 'projects', 'works', 'skills', 'awards', 'contact', 'wall']
       .map(function (id) { return document.getElementById(id); })
       .filter(Boolean);
     var navLinks = Array.prototype.slice.call(nav.querySelectorAll('a[data-sec]'));
@@ -486,15 +505,7 @@
       if (e.key === 'Escape' && !modal.hidden) closeModal();
     });
 
-    /* ── 7. Toast（分享卡等场景的轻提示） ── */
-    var toast = $('toast');
-    var toastTimer = null;
-    function showToast(msg) {
-      toast.textContent = msg;
-      toast.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2600);
-    }
+    /* ── 7. Toast：已提升到 IIFE 顶层（见 showToast），此处不再重复定义 ── */
 
     /* ── 9. 风格控制台（私人彩蛋：三连击页脚「FILE END — EOF」唤出） ── */
     var NAMES = { archive: 'ARCHIVE', blueprint: 'BLUEPRINT', newsprint: 'NEWSPRINT', noir: 'NOIR' };
@@ -925,6 +936,129 @@
     aiScheduleAuto();
   }
 
+  /* ── 12. 留言墙（Cloudflare Pages Function /api/wall，KV 存储） ──
+     file:// 或 fetch 失败 → 静默降级为「暂未开放」，不影响页面其余部分。 */
+  function initWall() {
+    var form = $('wallForm');
+    if (!form) return;
+    var listEl = $('wallList');
+    var nameEl = $('wallName');
+    var textEl = $('wallText');
+    var countEl = $('wallCount');
+    var submitBtn = $('wallSubmit');
+    var T = window.__WALL_TEXT || {};
+
+    if (/^file:/.test(location.protocol)) { renderClosed(T.closed); return; }
+
+    function escT(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    function fmtTime(ts) {
+      try {
+        var dt = new Date(ts);
+        var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+        return dt.getFullYear() + '.' + pad(dt.getMonth() + 1) + '.' + pad(dt.getDate()) + ' ' + pad(dt.getHours()) + ':' + pad(dt.getMinutes());
+      } catch (e) { return ''; }
+    }
+    function renderItems(messages) {
+      if (!listEl) return;
+      if (!messages || !messages.length) {
+        listEl.innerHTML = '<p class="wall-empty">' + escT(T.empty || '还没有留言') + '</p>';
+        return;
+      }
+      listEl.innerHTML = messages.map(function (m) {
+        return '<article class="wall-item reveal in">' +
+          '<div class="wall-item-head"><span class="wall-item-no">#' + escT(m.id ? m.id.slice(-5) : '') + '</span>' +
+          '<strong class="wall-item-name">' + escT(m.name || '匿名访客') + '</strong>' +
+          '<time class="wall-item-time">' + escT(fmtTime(m.ts)) + '</time></div>' +
+          '<p class="wall-item-text">' + escT(m.text) + '</p>' +
+          '</article>';
+      }).join('');
+    }
+    function renderClosed(text) {
+      if (listEl) listEl.innerHTML = '<p class="wall-empty">' + escT(text || T.closed || '留言墙暂未开放') + '</p>';
+      if (submitBtn) { submitBtn.disabled = true; }
+      if (textEl) textEl.disabled = true;
+    }
+
+    /* API 双线路：GitHub Pages 只有静态文件，/api 不存在 →
+       自动切到 Cloudflare Pages（同一份 functions/api，github.io 已列入来源白名单）。
+       本地预览只打本机，避免测试留言被写进线上。 */
+    var API_BASES = (function () {
+      var host = location.hostname || '';
+      if (/^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])$/.test(host)) return [''];
+      if (/\.github\.io$/i.test(host)) return ['https://shenge-work.pages.dev'];
+      return ['', 'https://shenge-work.pages.dev'];
+    })();
+
+    /* 依次尝试线路；404/405 或非 JSON（静态主机把 /api 当文件返回）视为该线路没有 API */
+    function apiFetch(path, opts) {
+      var i = 0;
+      var tried = {};
+      function next() {
+        if (i >= API_BASES.length) return Promise.reject(new Error('no_api'));
+        var url = new URL(API_BASES[i++] + path, location.href).href;
+        if (tried[url]) return next();
+        tried[url] = 1;
+        return fetch(url, opts).then(function (r) {
+          var ct = r.headers.get('content-type') || '';
+          if (r.status === 404 || r.status === 405 || ct.indexOf('application/json') < 0) return next();
+          return r.json().then(function (j) { return { ok: r.ok, status: r.status, body: j }; });
+        }, function () { return next(); });
+      }
+      return next();
+    }
+
+    apiFetch('/api/wall', { headers: { 'Accept': 'application/json' } })
+      .then(function (res) {
+        var d = res.body;
+        if (d && d.open) renderItems(d.messages);
+        else renderClosed(T.closed);
+      })
+      .catch(function () { renderClosed(T.closed); });
+
+    textEl.addEventListener('input', function () {
+      var len = textEl.value.length;
+      countEl.textContent = len + ' / 300';
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var text = String(textEl.value || '').trim();
+      if (!text) { showToast('先写点什么吧', 'err'); textEl.focus(); return; }
+      if (text.length < 2) { showToast('再多写两个字吧（至少 2 个字）', 'err'); textEl.focus(); return; }
+      var name = String(nameEl.value || '').trim();
+      submitBtn.disabled = true;
+      var old = submitBtn.textContent;
+      submitBtn.textContent = '发送中…';
+      apiFetch('/api/wall', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, text: text })
+      })
+        .then(function (res) {
+          if (res.ok && res.body && res.body.ok) {
+            renderItems(res.body.messages);
+            textEl.value = '';
+            nameEl.value = '';
+            countEl.textContent = '0 / 300';
+            showToast('已贴上留言墙，感谢你的想法 ▶', 'ok');
+          } else {
+            showToast((res.body && res.body.message) || '留言失败，稍后再试', 'err');
+          }
+        })
+        .catch(function () {
+          showToast('网络异常，留言未能发送', 'err');
+        })
+        .then(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = old;
+        });
+    });
+  }
+
   /* ══════════════ 视口自适应 ══════════════
      1) --vw-real：真实内容视口宽度（排除 Windows 经典滚动条），供全幅区块使用
      2) 顶栏溢出兜底：字体放大 / 浏览器缩放 / 文案变长导致内容仍放不下时，
@@ -965,6 +1099,7 @@
     try {
       renderSite(data);
       initInteractions();
+      initWall();
       syncResponsiveGuard(); /* 计数器数字位等动态内容渲染后再校一次 */
     } catch (err) {
       try { console.error('[site-data] 渲染失败：', err); } catch (e) {}
