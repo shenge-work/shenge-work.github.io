@@ -4,13 +4,13 @@
    此 JS 快照作为数据源，保证双击打开也能展示最新数据。 */
 window.SITE_DATA = {
   "meta": {
-    "pageTitle": "陈培胜 CHEN PEISHENG · AI 全栈工程师 · 求职作品集 2026",
-    "description": "陈培胜的个人求职作品集——5 年全栈工程师，Agent 开发 / AI 工程化 / 企业 AI 基建方向。",
+    "pageTitle": "陈培胜 CHEN PEISHENG · AI Agent 工程师 · 求职作品集 2026",
+    "description": "陈培胜的个人求职作品集——AI Agent 工程师，5 年研发经验，Agent 开发 / AI 工程化 / 企业 AI 基建方向。",
     "brandMark": "CP",
-    "brandSub": "CHEN PEISHENG —<br>5年全栈工程师档案",
+    "brandSub": "CHEN PEISHENG —<br>5年 Agent 工程师档案",
     "statusPill": "开放机会 HIRING",
     "footer": {
-      "tagline": "一份来自 5 年全栈工程师的求职档案 · 感谢翻阅到底",
+      "tagline": "一份来自 5 年 Agent 工程师的求职档案 · 感谢翻阅到底",
       "copyright": "© 2026 CHEN PEISHENG",
       "coord": "N22.54° / E114.06°"
     }
@@ -24,23 +24,23 @@ window.SITE_DATA = {
     ],
     "tags": [
       {
-        "text": "5 年全栈工程师",
+        "text": "5 年 Agent 工程师",
         "cls": "tag-orange"
       },
       {
-        "text": "AGENT × FULL-STACK",
+        "text": "AGENT × AGENTIC",
         "cls": "tag-blue"
       }
     ],
     "nameCn": "陈培胜",
     "nameEn": "CHEN PEISHENG",
-    "role": "AI 全栈工程师",
-    "roleEn": "AI FULL-STACK ENGINEER",
-    "bio": "5 年 Java 后端 + 2 年 AI 全栈工程，主导 6 套系统从 0 到 1：潜客 CRM、品牌官网、AI 搜索引擎、海外营销平台与投研工作台。技术决策风格三原则：不停机、可回滚、最小改动。",
+    "role": "AI Agent 工程师",
+    "roleEn": "AI AGENT ENGINEER",
+    "bio": "5 年 Java 后端 + 2 年 AI Agent 工程，主导 6 套系统从 0 到 1：潜客 CRM、品牌官网、AI 搜索引擎、海外营销平台与投研工作台。技术决策风格三原则：不停机、可回滚、最小改动。",
     "ctaProjects": "查看作品",
     "ctaResume": "查看简历",
     "resumeFile": "resume.html",
-    "resumeDownloadName": "陈培胜-AI全栈工程师-简历.html",
+    "resumeDownloadName": "陈培胜-AIAgent工程师-简历.html",
     "statusMeta": "OPEN TO WORK · 随时到岗 · 深圳 / 广州 / 远程",
     "idcard": {
       "photo": "images/portrait.jpg",
@@ -87,13 +87,13 @@ window.SITE_DATA = {
       ]
     }
   },
-  "marquee": "OPEN TO WORK ✦ AI 全栈工程师 ✦ MULTI-AGENT ✦ RAG 检索增强 ✦ MCP / SKILL 生态 ✦ JAVA → PYTHON / TS ✦ 企业 AI 基建 ✦ 评测体系 ✦ ",
+  "marquee": "OPEN TO WORK ✦ AI Agent 工程师 ✦ MULTI-AGENT ✦ RAG 检索增强 ✦ MCP / SKILL 生态 ✦ JAVA → PYTHON / TS ✦ 企业 AI 基建 ✦ 评测体系 ✦ ",
   "about": {
     "photo": "images/portrait.jpg",
     "photoAlt": "陈培胜——橙色连帽卫衣与黑框眼镜的半身插画肖像",
     "photoNo": "PHOTO NO.001",
     "stamp": "已审核<br>VERIFIED",
-    "lead": "你好，我是<strong>陈培胜</strong>。一个把「从 0 到 1，再做到 N」当正事来办的全栈工程师。",
+    "lead": "你好，我是<strong>陈培胜</strong>。一个把「从 0 到 1，再做到 N」当正事来办的 AI Agent 工程师。",
     "paragraphs": [
       "工程路从港企周生生起步：近两年 Java 后端深耕，独立负责多渠道潜客 CRM 与香港帝舵官网核心模块；后来到红杉投资的 AI 创业公司担任创始团队研发，主导 lessie.cn 人脉搜索引擎与 hicreator.ai 营销平台从零跑通到商业闭环。",
       "现在专注 AI 工程化：垂直领域 Agent 编排、二开通用 Agent 基座（QwenPaw / OpenCode）、Tool / MCP / Skill 统一扩展体系、多租户云沙箱，再用 Flink 搭起 AI 网关实时计费链路。写代码之外也立规矩：不停机、可回滚、最小改动。"
@@ -125,14 +125,14 @@ window.SITE_DATA = {
     "cards": [
       {
         "tag": "意向岗位 POSITION",
-        "role": "AI 全栈工程师",
-        "roleSub": "AI FULL-STACK ENGINEER · AGENT 方向",
+        "role": "AI Agent 工程师",
+        "roleSub": "AI AGENT ENGINEER · 企业 AI 基建方向",
         "desc": "Agent 开发与 AI 工程化：企业 AI 基建、Harness 架构、评测体系，也写前后端与数据链路，让模型真正跑进业务。",
         "cls": "obj-main"
       },
       {
         "tag": "备选方向 ALT",
-        "roleSm": "Agent 工程师 / AI 应用开发",
+        "roleSm": "AI 应用开发工程师",
         "desc": "Multi-Agent 编排、RAG 检索增强、LLM 评测平台与 Tool 生态建设。"
       },
       {
@@ -185,7 +185,7 @@ window.SITE_DATA = {
       ],
       "notes": [
         "主修：软件工程核心课程体系——数据结构 · 数据库原理 · 计算机网络 · 软件工程 · 操作系统",
-        "在校获国家励志奖学金（国家级）与校级奖学金；毕业后从 Java 后端起步，一路跨栈至 AI 全栈工程。"
+        "在校获国家励志奖学金（国家级）与校级奖学金；毕业后从 Java 后端起步，一路跨栈至 AI Agent 工程。"
       ]
     },
     "sides": [
@@ -209,7 +209,7 @@ window.SITE_DATA = {
   "experience": [
     {
       "company": "进门财经 · 深圳进门财经科技股份有限公司",
-      "role": "机构金融投研 SaaS · AI全栈开发工程师",
+      "role": "机构金融投研 SaaS · Agent 工程师",
       "time": "2026.01 — 2026.07（组织架构调整，团队缩编）",
       "points": [
         "搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现<strong>多租户云沙箱</strong>隔离环境，完成发布依赖管理、日志上报与 Agent / Skill 全生命周期管控。",
@@ -241,7 +241,7 @@ window.SITE_DATA = {
     },
     {
       "company": "Lessie · 深圳指数引力科技有限公司",
-      "role": "AI全栈开发工程师 · 创始团队成员（红杉投资 AI 初创）",
+      "role": "Agent 工程师 · 创始团队成员（红杉投资 AI 初创）",
       "time": "2024.03 — 2025.11",
       "points": [
         "主导 lessie.cn AI 人脉搜索引擎：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构 + RAG 策略注入，搜索精准度提升 <strong>30%</strong>、单次找人成本降低 <strong>80%</strong>、目标定位时间缩短 <strong>60%</strong>。",
@@ -348,12 +348,12 @@ window.SITE_DATA = {
       "badgeCls": "tag-orange",
       "company": "进门财经",
       "year": "2026.01 — 2026.07",
-      "yearDetail": "2026.01 — 2026.07 · 进门财经 · AI全栈开发工程师",
+      "yearDetail": "2026.01 — 2026.07 · 进门财经 · Agent 工程师",
       "title": "comein.cn",
       "titleEn": "AI 金融投研工作台",
       "modalTitle": "comein.cn — AI 金融投研工作台（Agent 基座 · 云沙箱）",
       "desc": "合规 Agent 投研闭环平台：Agent 基座、多租户云沙箱、工具生态、模型计费与 Skill 治理。",
-      "modalDesc": "面向券商、上市公司及机构投资者构建合规安全的 Agent 投研闭环平台，覆盖 Agent 基座、云沙箱、工具生态、模型计费、多渠道触达和 Skill 治理等核心能力。",
+      "modalDesc": "面向券商研究所、上市公司及机构投资者等多类投研主体，构建合规、安全、可扩展的智能投研信息闭环。项目以 QwenPaw / OpenClaw 为通用 Agent 场景基座，整合多渠道消息接入、外部工具调用、模型服务、云电脑沙箱及计费体系，为专业投资者提供信息整合、研究协同、机会洞察与智能决策支持。",
       "points": [
         "搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现多租户云沙箱隔离环境，完成发布依赖管理、日志上报、数据预处理与 Agent / Skill 全生命周期管控；",
         "设计 MCP / Skill 统一能力扩展体系，标准化能力注册、发现、调用、权限与版本流程，兼容 MCP 协议与外部 API，支持多模态能力接入，降低工具接入成本；",
@@ -396,7 +396,7 @@ window.SITE_DATA = {
       "titleEn": "AI 人脉搜索引擎",
       "modalTitle": "lessie.cn — AI 人脉搜索引擎",
       "desc": "企业级人才搜索平台：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构，将传统「找人」流程标准化、自动化。",
-      "modalDesc": "面向「找人」场景的企业级人才搜索平台：LangChain + LangGraph 编排 Supervisor / Search / Review 多层级 ReAct 协作的 Multi-Agent 架构，将依赖人脉与手动检索的找人流程标准化、自动化，全球范围精准定位目标人物并完成初步联络。搜索精准度提升 30%、成本降低 80%、目标人物定位时间缩短 60%。",
+      "modalDesc": "一款定位为「找人」场景的多 Agent 协作架构企业级人才搜索平台。旨在把传统依赖人脉、手动检索的「找人」流程标准化、自动化，帮助用户在全球范围快速精准定位目标人物，并完成初步联络，大幅降低搜索与沟通的时间成本。",
       "points": [
         "开发 Search Agent：调研 Apollo / LinkedIn / Upfluence / Modash 等 10+ 数据源 API，抽象统一搜索接口，实现多平台调用封装、搜索参数生成与工具智能路由；通过 Standardizer 将各源异构字段收敛为统一人物 Schema，支撑多源结果融合与排序；",
         "构建 Review Agent 质量评审系统：基于 ReAct 架构从内容相关性、数据指标匹配度、Web Search 事实校验等维度对候选人评分排序；以 analyzer / result_manager 分层基类 + 策略模式落地，多轮 Prompt Engineering 校准评分口径，支撑 B2B 与 KOL 两套垂类评审逻辑快速扩展；",
@@ -444,7 +444,7 @@ window.SITE_DATA = {
       "titleEn": "海外红人营销一体化 SaaS 平台",
       "modalTitle": "hicreator.ai — 海外红人营销一体化 SaaS 平台",
       "desc": "一站式 AI 网红营销自动化系统：大模型与多模态数据实现品牌与创作者全链路闭环。",
-      "modalDesc": "一站式 AI 网红营销自动化系统：通过大模型与多模态数据分析，实现品牌与创作者全链路闭环管理，运营效率提升 40%、履约率高达 80%。",
+      "modalDesc": "基于人工智能技术研发的一站式网红营销自动化系统，专注于解决品牌与全球内容创作者（KOL/KOC）高效匹配、协作及管理的核心痛点。通过整合多模态数据分析与自动化流程，实现从创作者筛选、智能谈判、合同执行到关系维护的全链路闭环管理。",
       "points": [
         "FDE 式端到端落地：深入红人营销业务，把模糊诉求拆解为可执行流程，用 Grok LLM + Agent 工作流将「客户→项目→合同→审批→付款→结算」串联成自动化闭环；",
         "搭建 IM 通信平台，打通 TikTok（RPA 机器人）、WhatsApp 及邮件发信渠道与风险检测评估，支撑达人筛选、批量邀约、合同管理、样品履约自动化；",
@@ -860,7 +860,7 @@ window.SITE_DATA = {
       "btnDownload": "查看简历",
       "btnPreview": "在线预览",
       "resumeFile": "resume.html",
-      "resumeDownloadName": "陈培胜-AI全栈工程师-简历.html"
+      "resumeDownloadName": "陈培胜-AIAgent工程师-简历.html"
     }
   },
   "wall": {

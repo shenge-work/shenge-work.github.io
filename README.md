@@ -1,6 +1,6 @@
 # 陈培胜 · 求职作品集（CHEN PEISHENG Portfolio）
 
-AI 全栈工程师求职个人网站：基于纯原生 HTML / CSS / JavaScript 构建，无任何第三方依赖，通过 **GitHub Pages** 免费托管。包含作品集主页与在线简历页，全面展示个人优势、工作经历、项目作品、专业技能与联系方式。
+AI Agent 工程师求职个人网站：基于纯原生 HTML / CSS / JavaScript 构建，无任何第三方依赖，通过 **GitHub Pages** 免费托管。包含作品集主页与在线简历页，全面展示个人优势、工作经历、项目作品、专业技能与联系方式。
 
 **在线访问**
 - 作品集主页：https://shenge-work.github.io/
@@ -35,7 +35,7 @@ AI 全栈工程师求职个人网站：基于纯原生 HTML / CSS / JavaScript �
 
 ### 在线简历（resume.html）
 单页 ATS 友好简历，主要区块：
-- **个人优势**：全栈复合背景、0→1 系统建设能力、Agent 工程化专精
+- **个人优势**：跨语言复合背景、0→1 系统建设能力、Agent 工程化专精
 - **工作经历**：进门财经（AI 投研工作台）、Lessie（AI 人脉搜索引擎）、房极客（房地产 SaaS）、丰速（电商 SaaS）、周生生（CRM 平台）
 - **项目经历**：comein.cn AI 投研工作台、lessie.cn AI 人脉搜索引擎、hicreator.ai 海外红人营销 SaaS（项目标题可点击直达官网）
 - **专业技能**：Agent/Harness、AI 驱动编程、数据与中间件、后端、前端、DevOps 六大分类（掌握层级两行式，ATS 友好）
@@ -152,7 +152,7 @@ python3 -m http.server 8000
 
 ## 作者
 
-**陈培胜** · AI 全栈工程师 · 广东深圳
+**陈培胜** · AI Agent 工程师 · 广东深圳
 
 - GitHub：https://github.com/shenge-work
 - 作品集：https://shenge-work.github.io

@@ -173,15 +173,15 @@ function buildEmail(d) {
 
   return '' +
 '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#F3EEE2;">' +
-'<div style="display:none;max-height:0;overflow:hidden;">陈培胜的在线简历：AI 全栈工程师，5 年经验，点击即可查看。</div>' +
+'<div style="display:none;max-height:0;overflow:hidden;">陈培胜的在线简历：AI Agent 工程师，5 年经验，点击即可查看。</div>' +
 '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F3EEE2;padding:28px 12px;"><tr><td align="center">' +
 '<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">' +
 
 /* 头条 */
 '<tr><td style="background:#141311;color:#FFFCF4;padding:14px 18px;border:4px solid #141311;">' +
 '<span style="font:bold 13px/1 \'Courier New\',monospace;letter-spacing:.18em;color:#FF5A1E;">ONLINE&nbsp;RESUME</span>' +
-'<div style="font:900 22px/1.2 \'PingFang SC\',\'Microsoft YaHei\',sans-serif;margin-top:6px;color:#FFFCF4;">陈培胜 · AI 全栈工程师</div>' +
-'<div style="font:13px/1.6 \'PingFang SC\',\'Microsoft YaHei\',sans-serif;color:#CFC7B6;margin-top:4px;">5 年全栈 · Agent 开发 / AI 工程化 / 企业 AI 基建</div>' +
+'<div style="font:900 22px/1.2 \'PingFang SC\',\'Microsoft YaHei\',sans-serif;margin-top:6px;color:#FFFCF4;">陈培胜 · AI Agent 工程师</div>' +
+'<div style="font:13px/1.6 \'PingFang SC\',\'Microsoft YaHei\',sans-serif;color:#CFC7B6;margin-top:4px;">5 年研发 · Agent 开发 / AI 工程化 / 企业 AI 基建</div>' +
 '</td></tr>' +
 
 /* 说明 */
@@ -217,7 +217,7 @@ function buildEmail(d) {
 
 function buildSubject(d) {
   const by = d.name ? '（' + d.name + ' 转发）' : '';
-  return '陈培胜 · AI 全栈工程师 · 在线简历' + by;
+  return '陈培胜 · AI Agent 工程师 · 在线简历' + by;
 }
 
 export async function onRequestOptions({ request, env }) {

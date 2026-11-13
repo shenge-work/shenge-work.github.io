@@ -2,57 +2,50 @@
   {
     "id": "me-01",
     "section": "about",
-    "title": "陈培胜 · AI 全栈工程师",
-    "text": "【陈培胜 · AI 全栈工程师】你好，我是陈培胜。 一个把「从 0 到 1，再做到 N」当正事来办的全栈工程师。 5 年 Java 后端 + 2 年 AI 全栈工程，主导 6 套系统从 0 到 1：潜客 CRM、品牌官网、AI 搜索引擎、海外营销平台与投研工作台。 技术决策风格三原则：不停机、可回滚、最小改动。 工程路从港企周生生起步：近两年 Java 后端深耕，独立负责多渠道潜客 CRM 与香港帝舵官网核心模块； 后来到红杉投资的 AI 创业公司担任创始团队研发，主导 lessie.cn 人脉搜索引擎与 hicreator.ai 营销平台从零跑通到商业闭环。",
+    "title": "陈培胜 · AI Agent 工程师",
+    "text": "【陈培胜 · AI Agent 工程师】你好，我是陈培胜。 一个把「从 0 到 1，再做到 N」当正事来办的 AI Agent 工程师。 5 年 Java 后端 + 2 年 AI Agent 工程，主导 6 套系统从 0 到 1：潜客 CRM、品牌官网、AI 搜索引擎、海外营销平台与投研工作台。 技术决策风格三原则：不停机、可回滚、最小改动。 工程路从港企周生生起步：近两年 Java 后端深耕，独立负责多渠道潜客 CRM 与香港帝舵官网核心模块； 后来到红杉投资的 AI 创业公司担任创始团队研发，主导 lessie.cn 人脉搜索引擎与 hicreator.ai 营销平台从零跑通到商业闭环。",
     "url": "index.html#about"
   },
   {
     "id": "me-02",
     "section": "about",
-    "title": "陈培胜 · AI 全栈工程师",
-    "text": "【陈培胜 · AI 全栈工程师】现在专注 AI 工程化：垂直领域 Agent 编排、二开通用 Agent 基座（QwenPaw / OpenCode）、Tool / MCP / Skill 统一扩展体系、多租户云沙箱，再用 Flink 搭起 AI 网关实时计费链路。 写代码之外也立规矩：不停机、可回滚、最小改动。 意向岗位 POSITION：AI 全栈工程师 Agent 开发与 AI 工程化：企业 AI 基建、Harness 架构、评测体系，也写前后端与数据链路，让模型真正跑进业务。",
+    "title": "陈培胜 · AI Agent 工程师",
+    "text": "【陈培胜 · AI Agent 工程师】现在专注 AI 工程化：垂直领域 Agent 编排、二开通用 Agent 基座（QwenPaw / OpenCode）、Tool / MCP / Skill 统一扩展体系、多租户云沙箱，再用 Flink 搭起 AI 网关实时计费链路。 写代码之外也立规矩：不停机、可回滚、最小改动。 意向岗位 POSITION：AI Agent 工程师 Agent 开发与 AI 工程化：企业 AI 基建、Harness 架构、评测体系，也写前后端与数据链路，让模型真正跑进业务。 备选方向 ALT：AI 应用开发工程师 Multi-Agent 编排、RAG 检索增强、LLM 评测平台与 Tool 生态建设。",
     "url": "index.html#about"
   },
   {
     "id": "me-03",
     "section": "about",
-    "title": "陈培胜 · AI 全栈工程师",
-    "text": "【陈培胜 · AI 全栈工程师】备选方向 ALT：Agent 工程师 / AI 应用开发 Multi-Agent 编排、RAG 检索增强、LLM 评测平台与 Tool 生态建设。 期望城市 CITY：深圳 · 广州 · 远程 坐标深圳，接受远程 / 混合办公，跨城面试随时安排。 到岗时间 START：随时到岗 当前处于开放期，流程顺利即可入职，交接零负担。 其他 OTHER：不停机 · 可回滚 · 最小改动 我的技术决策三原则，也是我对团队交付质量的承诺。",
+    "title": "陈培胜 · AI Agent 工程师",
+    "text": "【陈培胜 · AI Agent 工程师】期望城市 CITY：深圳 · 广州 · 远程 坐标深圳，接受远程 / 混合办公，跨城面试随时安排。 到岗时间 START：随时到岗 当前处于开放期，流程顺利即可入职，交接零负担。 其他 OTHER：不停机 · 可回滚 · 最小改动 我的技术决策三原则，也是我对团队交付质量的承诺。",
     "url": "index.html#about"
   },
   {
     "id": "edu-01",
     "section": "education",
     "title": "中山大学新华学院 · 软件工程（2017.09 — 2021.06）",
-    "text": "【中山大学新华学院 · 软件工程（2017.09 — 2021.06）】主修：软件工程核心课程体系——数据结构 · 数据库原理 · 计算机网络 · 软件工程 · 操作系统 在校获国家励志奖学金（国家级）与校级奖学金； 毕业后从 Java 后端起步，一路跨栈至 AI 全栈工程。 奖学金：国家励志奖学金（国家级）+ 校级奖学金——本科期间的两次「外部认证」。 跨栈路径：从 Java 微服务到 Python / TypeScript：语言只是工具，工程方法论可以平移。 学习方式：习惯「读源码 + 二开轮子」：二开 QwenPaw / OpenCode Agent 基座，日常 Vibe Coding（Claude Code / Codex / Cursor）。",
+    "text": "【中山大学新华学院 · 软件工程（2017.09 — 2021.06）】主修：软件工程核心课程体系——数据结构 · 数据库原理 · 计算机网络 · 软件工程 · 操作系统 在校获国家励志奖学金（国家级）与校级奖学金； 毕业后从 Java 后端起步，一路跨栈至 AI Agent 工程。 奖学金：国家励志奖学金（国家级）+ 校级奖学金——本科期间的两次「外部认证」。 跨栈路径：从 Java 微服务到 Python / TypeScript：语言只是工具，工程方法论可以平移。 学习方式：习惯「读源码 + 二开轮子」：二开 QwenPaw / OpenCode Agent 基座，日常 Vibe Coding（Claude Code / Codex / Cursor）。",
     "url": "index.html#education"
   },
   {
     "id": "exp-01-01",
     "section": "experience",
-    "title": "进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Java 开发工程师（2026.01 — 2026.07（组织架构调整，团队缩编））",
-    "text": "【进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Java 开发工程师（2026.01 — 2026.07（组织架构调整，团队缩编））】搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现多租户云沙箱隔离环境，完成发布依赖管理、日志上报与 Agent / Skill 全生命周期管控。 设计 MCP / Skill 统一能力扩展体系：能力注册、发现、调用、权限与版本全流程标准化，兼容 MCP 协议与外部 API，支持多模态能力接入。 设计多租户 AI 资源精细化计费链路（费率转换 / 实时预扣 / 离线扣费 / 账单校准 / 补偿机制），模型调用成本实时计量、全程可追溯。",
-    "url": "index.html#experience"
-  },
-  {
-    "id": "exp-01-02",
-    "section": "experience",
-    "title": "进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Java 开发工程师（2026.01 — 2026.07（组织架构调整，团队缩编））",
-    "text": "【进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Java 开发工程师（2026.01 — 2026.07（组织架构调整，团队缩编））】自研分布式 IM 网关：一套接入层统一承接飞书 / 企微 / 钉钉 / 微信 / QQ 五端消息，支撑多副本扩缩容与滚动发布不丢消息。",
+    "title": "进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Agent 工程师（2026.01 — 2026.07（组织架构调整，团队缩编））",
+    "text": "【进门财经 · 深圳进门财经科技股份有限公司｜机构金融投研 SaaS · Agent 工程师（2026.01 — 2026.07（组织架构调整，团队缩编））】搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现多租户云沙箱隔离环境，完成发布依赖管理、日志上报与 Agent / Skill 全生命周期管控。 设计 MCP / Skill 统一能力扩展体系：能力注册、发现、调用、权限与版本全流程标准化，兼容 MCP 协议与外部 API，支持多模态能力接入。 设计多租户 AI 资源精细化计费链路（费率转换 / 实时预扣 / 离线扣费 / 账单校准 / 补偿机制），模型调用成本实时计量、全程可追溯。 自研分布式 IM 网关：统一承接飞书 / 企微 / 钉钉 / 微信 / QQ 五端消息，支撑多副本扩缩容与滚动发布不丢消息。",
     "url": "index.html#experience"
   },
   {
     "id": "exp-02-01",
     "section": "experience",
-    "title": "Lessie · 深圳指数引力科技有限公司｜AI 全栈工程师 · 创始团队成员（红杉投资 AI 初创）（2024.03 — 2025.11）",
-    "text": "【Lessie · 深圳指数引力科技有限公司｜AI 全栈工程师 · 创始团队成员（红杉投资 AI 初创）（2024.03 — 2025.11）】主导 lessie.cn AI 人脉搜索引擎：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构 + RAG 策略注入，搜索精准度提升 30%、单次找人成本降低 80%、目标定位时间缩短 60%。 0→1 自建海外邮件群发系统，集成 AWS / SendGrid / 自建 SMTP，支撑月均 50 万+ 有效触达，送达率稳定在 95% 以上。 设计 dataworks 数仓同步链路，完成 300+ 万网红画像与视频数据日更； 借助 Dify 实现聊天上下文管理与 AI 智能议价。",
+    "title": "Lessie · 深圳指数引力科技有限公司｜Agent 工程师 · 创始团队成员（红杉投资 AI 初创）（2024.03 — 2025.11）",
+    "text": "【Lessie · 深圳指数引力科技有限公司｜Agent 工程师 · 创始团队成员（红杉投资 AI 初创）（2024.03 — 2025.11）】主导 lessie.cn AI 人脉搜索引擎：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构 + RAG 策略注入，搜索精准度提升 30%、单次找人成本降低 80%、目标定位时间缩短 60%。 0→1 自建海外邮件群发系统，集成 AWS / SendGrid / 自建 SMTP，支撑月均 50 万+ 有效触达，送达率稳定在 95% 以上。 设计 dataworks 数仓同步链路，完成 300+ 万网红画像与视频数据日更； 借助 Dify 实现聊天上下文管理与 AI 智能议价。",
     "url": "index.html#experience"
   },
   {
     "id": "exp-02-02",
     "section": "experience",
-    "title": "Lessie · 深圳指数引力科技有限公司｜AI 全栈工程师 · 创始团队成员（红杉投资 AI 初创）（2024.03 — 2025.11）",
-    "text": "【Lessie · 深圳指数引力科技有限公司｜AI 全栈工程师 · 创始团队成员（红杉投资 AI 初创）（2024.03 — 2025.11）】研发群控 RPA 机器人，实现自动注册 / 养号、风险检测、群发私信等自动化流程。",
+    "title": "Lessie · 深圳指数引力科技有限公司｜Agent 工程师 · 创始团队成员（红杉投资 AI 初创）（2024.03 — 2025.11）",
+    "text": "【Lessie · 深圳指数引力科技有限公司｜Agent 工程师 · 创始团队成员（红杉投资 AI 初创）（2024.03 — 2025.11）】研发群控 RPA 机器人，实现自动注册 / 养号、风险检测、群发私信等自动化流程。",
     "url": "index.html#experience"
   },
   {
@@ -87,14 +80,14 @@
     "id": "proj-p01-01",
     "section": "projects",
     "title": "comein.cn AI 金融投研工作台｜进门财经（2026.01 — 2026.07）",
-    "text": "【comein.cn AI 金融投研工作台｜进门财经（2026.01 — 2026.07）】合规 Agent 投研闭环平台：Agent 基座、多租户云沙箱、工具生态、模型计费与 Skill 治理。 面向券商、上市公司及机构投资者构建合规安全的 Agent 投研闭环平台，覆盖 Agent 基座、云沙箱、工具生态、模型计费、多渠道触达和 Skill 治理等核心能力。 搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现多租户云沙箱隔离环境，完成发布依赖管理、日志上报、数据预处理与 Agent / Skill 全生命周期管控；",
+    "text": "【comein.cn AI 金融投研工作台｜进门财经（2026.01 — 2026.07）】合规 Agent 投研闭环平台：Agent 基座、多租户云沙箱、工具生态、模型计费与 Skill 治理。 面向券商研究所、上市公司及机构投资者等多类投研主体，构建合规、安全、可扩展的智能投研信息闭环。 项目以 QwenPaw / OpenClaw 为通用 Agent 场景基座，整合多渠道消息接入、外部工具调用、模型服务、云电脑沙箱及计费体系，为专业投资者提供信息整合、研究协同、机会洞察与智能决策支持。 搭建 QwenPaw / OpenCode 集成与通用 Agent 基座，实现多租户云沙箱隔离环境，完成发布依赖管理、日志上报、数据预处理与 Agent / Skill 全生命周期管控；",
     "url": "index.html#projects"
   },
   {
     "id": "proj-p01-02",
     "section": "projects",
     "title": "comein.cn AI 金融投研工作台｜进门财经（2026.01 — 2026.07）",
-    "text": "【comein.cn AI 金融投研工作台｜进门财经（2026.01 — 2026.07）】设计 MCP / Skill 统一能力扩展体系，标准化能力注册、发现、调用、权限与版本流程，兼容 MCP 协议与外部 API，支持多模态能力接入，降低工具接入成本； 设计多租户 AI 资源精细化计费：费率转换、实时预扣、离线扣费、账单校准与补偿机制，实现模型调用成本实时计量、链路追溯； 自研分布式 IM 网关：一套接入层统一承接飞书 / 企微 / 钉钉 / 微信 / QQ 五端消息，支撑多副本扩缩容与滚动发布不丢消息。",
+    "text": "【comein.cn AI 金融投研工作台｜进门财经（2026.01 — 2026.07）】设计 MCP / Skill 统一能力扩展体系，标准化能力注册、发现、调用、权限与版本流程，兼容 MCP 协议与外部 API，支持多模态能力接入，降低工具接入成本； 设计多租户 AI 资源精细化计费：费率转换、实时预扣、离线扣费、账单校准与补偿机制，实现模型调用成本实时计量、链路追溯； 自研分布式 IM 网关：统一承接飞书 / 企微 / 钉钉 / 微信 / QQ 五端消息，支撑多副本扩缩容与滚动发布不丢消息。",
     "url": "index.html#projects"
   },
   {
@@ -108,7 +101,7 @@
     "id": "proj-p02-01",
     "section": "projects",
     "title": "lessie.cn AI 人脉搜索引擎｜指数引力（2024.03 — 2025.11）",
-    "text": "【lessie.cn AI 人脉搜索引擎｜指数引力（2024.03 — 2025.11）】企业级人才搜索平台：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构，将传统「找人」流程标准化、自动化。 面向「找人」场景的企业级人才搜索平台：LangChain + LangGraph 编排 Supervisor / Search / Review 多层级 ReAct 协作的 Multi-Agent 架构，将依赖人脉与手动检索的找人流程标准化、自动化，全球范围精准定位目标人物并完成初步联络。 搜索精准度提升 30%、成本降低 80%、目标人物定位时间缩短 60%。",
+    "text": "【lessie.cn AI 人脉搜索引擎｜指数引力（2024.03 — 2025.11）】企业级人才搜索平台：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构，将传统「找人」流程标准化、自动化。 一款定位为「找人」场景的多 Agent 协作架构企业级人才搜索平台。 旨在把传统依赖人脉、手动检索的「找人」流程标准化、自动化，帮助用户在全球范围快速精准定位目标人物，并完成初步联络，大幅降低搜索与沟通的时间成本。",
     "url": "index.html#projects"
   },
   {
@@ -150,14 +143,21 @@
     "id": "proj-p03-01",
     "section": "projects",
     "title": "hicreator.ai 海外红人营销一体化 SaaS 平台｜指数引力（2024.03 — 2025.11）",
-    "text": "【hicreator.ai 海外红人营销一体化 SaaS 平台｜指数引力（2024.03 — 2025.11）】一站式 AI 网红营销自动化系统：大模型与多模态数据实现品牌与创作者全链路闭环。 一站式 AI 网红营销自动化系统：通过大模型与多模态数据分析，实现品牌与创作者全链路闭环管理，运营效率提升 40%、履约率高达 80%。 FDE 式端到端落地：深入红人营销业务，把模糊诉求拆解为可执行流程，用 Grok LLM + Agent 工作流将「客户→项目→合同→审批→付款→结算」串联成自动化闭环； 搭建 IM 通信平台，打通 TikTok（RPA 机器人）、WhatsApp 及邮件发信渠道与风险检测评估，支撑达人筛选、批量邀约、合同管理、样品履约自动化；",
+    "text": "【hicreator.ai 海外红人营销一体化 SaaS 平台｜指数引力（2024.03 — 2025.11）】一站式 AI 网红营销自动化系统：大模型与多模态数据实现品牌与创作者全链路闭环。 基于人工智能技术研发的一站式网红营销自动化系统，专注于解决品牌与全球内容创作者（KOL/KOC）高效匹配、协作及管理的核心痛点。 通过整合多模态数据分析与自动化流程，实现从创作者筛选、智能谈判、合同执行到关系维护的全链路闭环管理。 FDE 式端到端落地：深入红人营销业务，把模糊诉求拆解为可执行流程，用 Grok LLM + Agent 工作流将「客户→项目→合同→审批→付款→结算」串联成自动化闭环；",
     "url": "index.html#projects"
   },
   {
     "id": "proj-p03-02",
     "section": "projects",
     "title": "hicreator.ai 海外红人营销一体化 SaaS 平台｜指数引力（2024.03 — 2025.11）",
-    "text": "【hicreator.ai 海外红人营销一体化 SaaS 平台｜指数引力（2024.03 — 2025.11）】自建 KOL 达人数据库 + SEO 引流标准化 Toolkit：构建达人画像、商品类目、市场规则、合规话术等垂直领域知识库； 开发浏览器插件，在 YouTube / IG / TikTok / X / FB 达人主页浮窗展示入库、拉黑、粉丝与项目信息。 量化结果：+40% 运营效率提升； 80% 履约率； <10% 失联率。 技术栈：Spring Boot / Cloud · MyBatis · MySQL · Redis · RocketMQ · LLM · MCP · Skill · WebDriver。",
+    "text": "【hicreator.ai 海外红人营销一体化 SaaS 平台｜指数引力（2024.03 — 2025.11）】搭建 IM 通信平台，打通 TikTok（RPA 机器人）、WhatsApp 及邮件发信渠道与风险检测评估，支撑达人筛选、批量邀约、合同管理、样品履约自动化； 自建 KOL 达人数据库 + SEO 引流标准化 Toolkit：构建达人画像、商品类目、市场规则、合规话术等垂直领域知识库； 开发浏览器插件，在 YouTube / IG / TikTok / X / FB 达人主页浮窗展示入库、拉黑、粉丝与项目信息。",
+    "url": "index.html#projects"
+  },
+  {
+    "id": "proj-p03-03",
+    "section": "projects",
+    "title": "hicreator.ai 海外红人营销一体化 SaaS 平台｜指数引力（2024.03 — 2025.11）",
+    "text": "【hicreator.ai 海外红人营销一体化 SaaS 平台｜指数引力（2024.03 — 2025.11）】量化结果：+40% 运营效率提升； 80% 履约率； <10% 失联率。 技术栈：Spring Boot / Cloud · MyBatis · MySQL · Redis · RocketMQ · LLM · MCP · Skill · WebDriver。",
     "url": "index.html#projects"
   },
   {
@@ -213,7 +213,7 @@
     "id": "work-w02-01",
     "section": "works",
     "title": "CareerAgent · 求职工作台｜CAREER-AGENT",
-    "text": "【CareerAgent · 求职工作台｜CAREER-AGENT】本地服务器部署的求职 Agent 工作台：账号登录 + 行级数据隔离 + PostgreSQL 兼容数据库（PGlite），以岗位为第一公民——简历编辑（A4 实时预览 / 矢量与图片版 PDF）、公司档案、投递追踪（BOSS 聊天采集）、AI 模型转发与本地版本历史，数据全部留在本机。 技术栈：TypeScript； Node.js； PGlite / PostgreSQL。",
+    "text": "【CareerAgent · 求职工作台｜CAREER-AGENT】本地优先的 AI 求职 Agent 桌面应用（Windows / macOS 装好即用）：投递追踪、公司调研、简历改写这些杂活交给 AI——按 JD 自动改写简历并导出 PDF、六维公司调研与面试简报、聊天记录归档去重、内推跟进自动提醒； 数据存本地 PGlite，只留在本机，换设备走端到端加密同步。 技术栈：TypeScript； Node.js； Electron 桌面端； PGlite / PostgreSQL。 在线地址：https://career-agent-3gi.pages.dev/。",
     "url": "index.html#works"
   },
   {
@@ -248,21 +248,7 @@
     "id": "skills-01",
     "section": "skills",
     "title": "专业技能",
-    "text": "【专业技能】Agent 编排（LangChain · LangGraph · LlamaIndex）（自评 86 分，满分 100）； Java / Spring 生态（JVM 调优 · 并发）（自评 88 分，满分 100）； RAG 检索增强 / LLM 评测体系（自评 84 分，满分 100）； 数据与中间件（MySQL · Redis · ES · MQ）（自评 86 分，满分 100）； Python / Golang（FastAPI · Gin）（自评 84 分，满分 100）； 前端（Vue · UniApp · Electron）（自评 80 分，满分 100）",
-    "url": "index.html#skills"
-  },
-  {
-    "id": "skills-02",
-    "section": "skills",
-    "title": "专业技能",
-    "text": "【专业技能】技能值代表「能独立交付的熟练度」，不做装饰性满格。 持续探索中：A2A 协议、Coding Agent 底层架构。",
-    "url": "index.html#skills"
-  },
-  {
-    "id": "toolbox-01",
-    "section": "skills",
-    "title": "工具箱 TOOLBOX",
-    "text": "【工具箱 TOOLBOX】常用工具清单：Dify、Coze、n8n、MCP / Skill 生态、Milvus、Flink、ElasticSearch、RocketMQ / Kafka、Docker / K8s、QwenPaw / OpenCode、AgentScope、Claude Code / Cursor、Jenkins / Git、AWS SES / SendGrid、Stripe / Paypal",
+    "text": "【专业技能】不设自评分 —— 分数无法被验证，落点可以。 持续探索：A2A 协议、Coding Agent 底层架构。",
     "url": "index.html#skills"
   },
   {
@@ -276,7 +262,7 @@
     "id": "contact-01",
     "section": "contact",
     "title": "联系方式",
-    "text": "【联系方式】EMAIL / 邮箱：shenge.work@gmail.com； GITHUB / 代码仓库：github.com/shenge-work； BASE / 常驻：广东省深圳市。 如需电话沟通或约面试，请先发邮件，他会回复提供。",
+    "text": "【联系方式】EMAIL / 邮箱：shenge.work@gmail.com； GITHUB / 代码仓库：github.com/shenge-work； BASE / 常驻：广东省深圳市； BLOG / 博客：shenge-blog.pages.dev。 如需电话沟通或约面试，请先发邮件，他会回复提供。",
     "url": "index.html#contact"
   }
 ]

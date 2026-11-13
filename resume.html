@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>陈培胜 · AI 全栈工程师 · 求职简历</title>
+<title>陈培胜 · AI Agent 工程师 · 求职简历</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-64.png">
 <link rel="apple-touch-icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,13 +11,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap"></noscript>
 <link rel="stylesheet" href="css/fonts.css?v=20261111a">
-<meta name="description" content="陈培胜的网页版简历：5 年 Java 后端 + 2 年 AI 全栈工程，Agent 开发 / AI 工程化方向，支持打印导出 PDF。">
+<meta name="description" content="陈培胜的网页版简历：5 年 Java 后端 + 2 年 AI Agent 工程，Agent 开发 / AI 工程化方向，支持打印导出 PDF。">
 <meta name="theme-color" content="#F3EEE2">
 <link rel="canonical" href="https://shenge-work.github.io/resume.html">
 <meta property="og:type" content="profile">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:title" content="陈培胜 · AI 全栈工程师 · 求职简历">
-<meta property="og:description" content="5 年 Java 后端 + 2 年 AI 全栈工程，Agent 开发 / AI 工程化方向，可直接打印为 PDF。">
+<meta property="og:title" content="陈培胜 · AI Agent 工程师 · 求职简历">
+<meta property="og:description" content="5 年 Java 后端 + 2 年 AI Agent 工程，Agent 开发 / AI 工程化方向，可直接打印为 PDF。">
 <meta property="og:url" content="https://shenge-work.github.io/resume.html">
 <meta property="og:image" content="https://shenge-work.github.io/images/%E9%99%88%E5%9F%B9%E8%83%9C-%E4%BD%9C%E5%93%81%E9%9B%86-%E5%88%86%E4%BA%AB%E5%8D%A1-%E6%96%B9%E5%BD%A2.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -77,7 +77,9 @@ body {
   letter-spacing: .02em;
   text-shadow: 3px 3px 0 rgba(255, 90, 30, .8);
 }
-.head-role { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; letter-spacing: .06em; margin-top: 4px; }
+/* 姓名与意向岗位同一行：岗位字号取姓名（42px）的一半 */
+.head-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 14px; }
+.head-role { font-family: var(--font-mono); font-size: 21px; font-weight: 700; letter-spacing: .03em; line-height: 1.2; margin: 0; }
 .head-role em { font-style: normal; color: var(--blue); }
 .head-meta {
   font-family: var(--font-mono);
@@ -85,6 +87,7 @@ body {
   font-weight: 700;
   line-height: 2;
   color: var(--ink-soft);
+  margin-top: 5px;            /* 与「姓名/岗位」行的间距，对齐 meta 内部行距 */
 }
 .head-meta b { color: var(--ink); }
 /* 头部链接：悬停高亮 + 点击跳转（打印时呈现纯文本样式） */
@@ -161,6 +164,16 @@ body {
   flex-wrap: wrap;
 }
 .item-title { font-size: 16px; font-weight: 900; }
+/* 项目定位引言：竖线引用样式 */
+.proj-lead {
+  display: flex;
+  gap: 6px;
+  margin: 4px 0 2px;
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+}
+.proj-lead-bar { color: var(--orange); font-weight: 900; flex-shrink: 0; }
 .item-title span { font-weight: 500; color: var(--ink-soft); font-size: 13.5px; margin-left: 8px; }
 .item-time { font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; color: var(--blue); white-space: nowrap; }
 .pts { margin-top: 6px; }
@@ -527,6 +540,7 @@ body {
 }
 @media (max-width: 620px) {
   .head-name { font-size: 32px; }
+  .head-role { font-size: 16px; }
   .kv { grid-template-columns: 1fr; }
   .sheet-head { padding: 20px; }
   .sec { padding: 18px 20px; }
@@ -543,10 +557,13 @@ body {
   <header class="sheet-head">
     <div class="avatar"><img src="images/portrait.jpg" alt="陈培胜的个人形象照"></div>
     <div class="head-main">
-      <h1 class="head-name">陈培胜</h1>
-      <p class="head-role">AI Agent 工程师 / AI 全栈工程师 / 后端开发工程师 / Java 开发工程师</p>
+      <div class="head-line">
+        <h1 class="head-name">陈培胜</h1>
+        <p class="head-role">AI Agent 工程师 / AI 应用开发工程师</p>
+      </div>
       <div class="head-meta">
-        <p><b>经验</b> 5 年　<b>坐标</b> 广东深圳　<b>到岗</b> 随时 · 已离职　<b>电话/微信</b> +86 180 2283 4605　<b>邮箱</b> <a class="link" href="mailto:shenge.work@gmail.com">shenge.work@gmail.com</a></p>
+        <p><b>工作经验</b> 5年　<b>年龄</b> 29 岁　<b>坐标</b> 广东深圳　<b>到岗</b> 随时 · 已离职</p>
+        <p><b>电话/微信</b> +86 180 2283 4605　<b>邮箱</b> <a class="link" href="mailto:shenge.work@gmail.com">shenge.work@gmail.com</a></p>
         <p><b>作品集</b> <a class="link" href="https://shenge-work.github.io" target="_blank" rel="noopener noreferrer">shenge-work.github.io</a>　<b>GitHub</b> <a class="link" href="https://github.com/shenge-work" target="_blank" rel="noopener noreferrer">github.com/shenge-work</a></p>
       </div>
     </div>
@@ -563,7 +580,7 @@ body {
     <div class="sec-title"><span class="sec-no">02</span><h2>工作经历</h2><span class="sec-line"></span></div>
     <div class="item">
       <div class="item-head">
-        <p class="item-title">深圳进门财经科技股份有限公司<span> 机构金融投研 SaaS</span><span>AI全栈开发</span></p>
+        <p class="item-title">深圳进门财经科技股份有限公司<span> 机构金融投研 SaaS</span><span>Agent 工程师</span></p>
         <span class="item-time">2026.01 — 07（组织架构调整，团队缩编）</span>
       </div>
       <ul class="pts">
@@ -572,13 +589,13 @@ body {
     </div>
     <div class="item">
       <div class="item-head">
-        <p class="item-title">深圳指数引力科技有限公司<span> 网红营销 SaaS（红杉投资）</span><span>AI全栈开发 · 创始团队成员</span></p>
+        <p class="item-title">深圳指数引力科技有限公司<span> 网红营销 SaaS（红杉投资）</span><span>Agent 工程师</span></p>
         <span class="item-time">2024.03 — 2025.11</span>
       </div>
       <ul class="pts">
         <li>主导 AI 人脉搜索引擎：Supervisor / Search / Review 多层级 ReAct Multi-Agent 架构，<strong>搜索精准度提升 30%、找人成本降低 80%、定位耗时缩短 60%</strong></li>
         <li>主导红人营销 SaaS 研发：FDE 式定制业务流程，Grok LLM + Agent 工作流串联「客户→合同→付款→结算」，<strong>实现客户到结算的全流程自动化闭环</strong></li>
-        <li>0→1 搭建海外触达体系：邮件群发系统（AWS / SendGrid / 自建 SMTP 统一驱动）+ 群控 RPA 自动注册 / 养号 / 私信群发，<strong>月均 50 万+ 有效触达、替代人工规模化运营</strong></li>
+        <li>0→1 搭建海外触达体系：邮件群发系统（AWS / SendGrid / 自建 SMTP 统一驱动）+ 邮箱 IP / 域名 AI 自动化预热，<strong>月均 50 万+ 有效触达、替代人工规模化运营</strong></li>
         <li>搭建达人数据库飞轮体系：dataworks 数仓同步第三方平台达人画像与粉丝数据，合作过程人工标注 + 自动化沉淀优质达人，自动淘汰留存高质量达人，<strong>沉淀 300+ 万网红画像与视频数据日更、以高质量达人库提升合作效率</strong></li>
       </ul>
     </div>
@@ -602,14 +619,11 @@ body {
     </div>
     <div class="item">
       <div class="item-head">
-        <p class="item-title">周生生（中国）商业有限公司<span> 珠宝品牌自营数字化</span><span>Java 开发 · 高级程序员职称</span></p>
+        <p class="item-title">周生生（中国）商业有限公司<span> 珠宝品牌自营数字化</span><span>Java 开发</span></p>
         <span class="item-time">2021.09 — 2023.06</span>
       </div>
       <ul class="pts">
         <li>负责多渠道潜客 CRM 平台研发，整合大陆、港澳台线上线下销售线索，<strong>日活 10W+、销售转化率提升 70%</strong></li>
-        <li>搭建门店预约体验流程与预约限额体系，设计分地区业务分层与跨境敏感数据过滤 / 定期清除机制，<strong>预约到店率提升 40%</strong></li>
-        <li>基于 JBPM 编排财务差异审批流程，任务自动分配并处理超时 / 驳回异常，<strong>保障财务审批全流程闭环、替代人工流转</strong></li>
-        <li>搭建供应商 API 网关（鉴权 / 额度 / 监控）与 Redash BI 多维看板，<strong>支撑供应商管理与经营可视化</strong></li>
         <li>参与香港帝舵官网研发，负责会员体系、订单支付与对账、库存同步模块，<strong>打通品牌官网会员、交易、库存一体的线上销售链路</strong></li>
       </ul>
     </div>
@@ -623,9 +637,11 @@ body {
         <p class="item-title"><a href="https://comein.cn" target="_blank" rel="noopener noreferrer">comein.cn（进门财经）</a> <span>AI 金融投研工作台 · Agent 基座 / 云沙箱 / 计费 · AI Infra后台开发</span></p>
         <span class="item-time">2026.01 — 07</span>
       </div>
+      <p class="proj-lead"><span class="proj-lead-bar">｜</span><span>面向券商研究所、上市公司及机构投资者等多类投研主体，构建合规、安全、可扩展的智能投研信息闭环</span></p>
       <ul class="pts">
         <li><strong>Agent 基座</strong>：基于 QwenPaw / OpenCode 二次开发构建通用 Agent 基座，实现多租户云沙箱隔离执行与 Agent / Skill 全生命周期管控（创建 → 发布 → 下线）</li>
         <li><strong>能力扩展体系</strong>：设计 MCP / Skill 统一扩展规范，标准化注册、发现、调用、权限与版本管理，同时兼容 MCP 协议与外部 API，让新工具以配置化方式接入而非逐个硬编码</li>
+        <li><strong>Skill Hub 技能中心</strong>：把分散在各 Agent 的工具能力收敛成统一技能库，提供技能上架与审核、分类检索、版本与权限管理、调用量与成功率统计；Skill 以配置化方式挂载到不同 Agent 与租户，配合云沙箱隔离运行与资源配额，<strong>新能力上线只需配置、无需改代码，能力复用与交付效率同步提升</strong></li>
         <li><strong>成本与可观测</strong>：基于 Flink 实时消费腾讯云 AI 网关日志，设计多租户 AI 资源精细化计费链路（实时预扣 / 离线扣费 / 账单校准），日志落库即计量，做到成本实时计量与全链路追溯，支撑资源计费可信可审计</li>
         <li><strong>消息基建</strong>：自研分布式 IM 网关，统一承接飞书 / 企微 / 钉钉 / 微信 / QQ 五端消息，支持多副本扩缩容与滚动发布不丢消息</li>
       </ul>
@@ -635,11 +651,13 @@ body {
         <p class="item-title"><a href="https://lessie.cn" target="_blank" rel="noopener noreferrer">lessie.cn（指数引力）</a> <span>AI 人脉搜索引擎 · Multi-Agent / Agentic RAG · Agent工程化</span></p>
         <span class="item-time">2024.03 — 2025.11</span>
       </div>
+      <p class="proj-lead"><span class="proj-lead-bar">｜</span><span>一款智能代理搜索引擎，运用 Agent 技术实现即时“找人”，快速定位全球目标人物并初步联络，提升找人效率</span></p>
       <ul class="pts">
         <li><strong>多智能体架构</strong>：设计 Supervisor / Search / Review 多层级 ReAct Multi-Agent，用状态机 + 共享上下文消除任务冲突；Context Engineering（压缩 / 分层缓存 / 增量更新）平衡信息完整性与响应稳定性，显著提升搜索精准度、降低找人成本与目标定位耗时</li>
         <li><strong>检索与数据融合</strong>：Search Agent 封装 Apollo / LinkedIn / Upfluence / Modash 等 10+ 数据源，Standardizer 统一人物 Schema 支撑多源融合排序；Review Agent 做相关性 / 指标匹配 / 事实校验多维质量评审，以策略模式支撑 B2B 与 KOL 双垂类</li>
         <li><strong>自学习 RAG</strong>：RAG Few-Shot 策略（LangSmith 回流 + LlamaIndex + Milvus）动态注入，让检索策略随评测样本持续迭代</li>
-        <li><strong>评测与会话</strong>：LLM / 工具 / 业务三级埋点经 Kafka 落数仓支撑模型选型；SSE 逐字输出配合 interrupt / resume 实现长任务中断恢复</li>
+        <li><strong>评测体系</strong>：LLM / 工具 / 业务三级埋点经 Kafka 落数仓，把线上调用沉淀成可复用的评测样本集；结合 LangSmith / Langfuse 追踪覆盖响应质量、工具调用成功率与业务达成率，<strong>支撑模型选型与 Prompt / Agent 策略迭代，版本效果可量化对比</strong></li>
+        <li><strong>流式会话</strong>：SSE 逐字输出降低首字等待、让推理过程可见；会话状态以 Checkpoint 持久化，配合 interrupt / resume 实现长任务中断恢复与断线重连，<strong>长任务失败可从中断点续跑，不必整段重来</strong></li>
       </ul>
     </div>
     <div class="item">
@@ -647,9 +665,10 @@ body {
         <p class="item-title"><a href="https://hicreator.ai" target="_blank" rel="noopener noreferrer">hicreator.ai（指数引力）</a> <span>海外红人营销一体化 SaaS 平台 · 业务 FDE 式落地</span></p>
         <span class="item-time">2024.03 — 2025.11</span>
       </div>
+      <p class="proj-lead"><span class="proj-lead-bar">｜</span><span>一站式 AI 网红营销自动化系统，通过大模型与多模态数据分析，实现品牌与创作者全链路闭环管理</span></p>
       <ul class="pts">
         <li><strong>业务流程 Agent 化</strong>：以 FDE 方式与业务各角色对齐诉求、定制标准作业流程，用 Grok LLM + Agent 工作流串联「客户 → 项目 → 合同 → 审批 → 付款 → 结算」自动化闭环，替代线下人工流转</li>
-        <li><strong>触达体系</strong>：搭建 IM 通信平台打通 TikTok（WebDriver RPA）/ WhatsApp / 邮件渠道与风险检测评估；0→1 自建海外邮件群发系统（Resend / AWS SES / SendGrid 统一驱动 + 队列分片限流，LLM 生成营销内容自动调优策略），支撑月均 50 万+ 有效触达；研发群控 RPA 机器人实现自动注册 / 养号、风险检测与私信群发自动化</li>
+        <li><strong>触达体系</strong>：搭建 IM 通信平台打通 TikTok（WebDriver RPA）/ WhatsApp / 邮件渠道与风险检测评估；0→1 自建海外邮件群发系统（Resend / AWS SES / SendGrid 统一驱动 + 队列分片限流，LLM 生成营销内容自动调优策略），支撑月均 50 万+ 有效触达；配套邮箱 IP / 域名 AI 自动化预热与发送风险检测，保障发信信誉与送达率</li>
         <li><strong>数据与知识库</strong>：设计 dataworks 数仓同步链路实现 300+ 万网红画像与视频数据日更；自建 KOL 达人数据库与 SEO 引流 Toolkit（达人画像、商品类目、市场规则、合规话术垂直知识库），浏览器插件在 YouTube / IG / TikTok / X / FB 达人主页浮窗展示入库 / 拉黑 / 粉丝与项目信息</li>
         <li><strong>商业化闭环</strong>：自建支付中台集成 Stripe，覆盖会员订阅、优惠券、退款对账与风控；用户增长裂变与奖励任务 T+1 结算，PostHog 全链路追踪回溯</li>
       </ul>
@@ -661,46 +680,38 @@ body {
     <div class="sec-title"><span class="sec-no">04</span><h2>专业技能</h2><span class="sec-line"></span></div>
     <div class="skill-cats">
       <div class="skill-cat">
-        <p class="skill-cat-name">Agent / Harness</p>
+        <p class="skill-cat-name">Agent 框架</p>
         <div>
-          <p class="skill-row-main"><em>Multi-Agent 协作编排</em><small>（Supervisor / ReAct / 状态机）</small> · <b>Agentic RAG</b><small>（Few-Shot 自学习检索）</small> · <b>Tool Calling</b> · <b>MCP / A2A 协议</b> · <b>LLM 评测体系</b> · <b>Context Engineering</b> · <em>通用 Agent 基座二开</em><small>（QwenPaw / OpenCode）</small> · <b>多租户云沙箱隔离执行</b> · <b>Tool / MCP / Skill 统一扩展体系</b> · <b>Agent / Skill 全生命周期管控</b></p>
-          <p class="skill-row-sub">LangChain / LangGraph / LlamaIndex / Langsmith / Langfuse · 多轮对话任务拆解与角色分配 · SSE 流式会话与 interrupt / resume 长任务恢复 · 发布依赖管理与日志上报 · AI 资源精细化计费与链路追溯 · 多租户权限与资源隔离</p>
+          <p class="skill-row-main"><em>LangGraph</em><small>（精通 · 状态机 / 断点持久化 / 多 Agent 协作）</small> · <em>LangChain</em><small>（精通 · 工具链与链路编排）</small> · <em>LlamaIndex</em><small>（熟练 · 检索索引与 RAG 管道）</small> · <b>LangSmith / Langfuse</b><small>（熟练 · 追踪、评测与样本回流）</small></p>
+          <p class="skill-row-sub">Agent 范式：Supervisor / ReAct / 层级协作（精通）· Agentic RAG Few-Shot 自学习检索（熟练）· Context Engineering（熟练）· Tool Calling（精通）· MCP / A2A 协议（熟练 · 服务端开发与工具接入）· 多轮任务拆解与角色分配（熟练）</p>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <p class="skill-cat-name">Agent 工程化</p>
+        <div>
+          <p class="skill-row-main"><em>通用 Agent 基座二开</em><small>（熟练 · QwenPaw / OpenCode）</small> · <b>多租户云沙箱隔离执行</b> · <b>Tool / MCP / Skill 统一扩展体系</b> · <b>Agent / Skill 全生命周期管控</b></p>
+          <p class="skill-row-sub">LLM 评测体系（精通 · LLM / 工具 / 业务三级埋点与模型选型）· SSE 流式会话与 interrupt / resume 长任务恢复（熟练）· AI 资源精细化计费与链路追溯（熟练）· 多租户权限与资源隔离（熟练）· 发布依赖管理与日志上报</p>
         </div>
       </div>
       <div class="skill-cat">
         <p class="skill-cat-name">AI 驱动编程</p>
         <div>
-          <p class="skill-row-main"><em class="em-b">Claude Code / Codex / Cursor</em><small>（深度使用）</small> · <b>Vibe Coding 高效开发模式</b></p>
+          <p class="skill-row-main"><em class="em-b">Claude Code / Codex / Cursor</em><small>（熟练 · 日常开发主力）</small> · <b>Vibe Coding 高效开发模式</b></p>
           <p class="skill-row-sub">熟悉主流 Coding Agent 底层架构 · 从开发到部署全流程工程化落地</p>
         </div>
       </div>
       <div class="skill-cat">
         <p class="skill-cat-name">数据与中间件</p>
         <div>
-          <p class="skill-row-main"><b>Milvus</b><small>（向量检索）</small> · <b>Kafka</b> · <b>Flink</b> · <b>Redis</b> · <b>Elasticsearch</b> · <b>MySQL / PostgreSQL</b></p>
-          <p class="skill-row-sub">RAG 检索链路与实时数据管道建设 · 缓存 / 消息队列场景化集成 · 实时采集与离线分析</p>
+          <p class="skill-row-main"><b>Milvus</b><small>（向量检索）</small> · <b>Kafka</b> · <b>Flink</b> · <b>Redis</b> · <b>PostgreSQL</b> · <b>MySQL</b> · <b>Elasticsearch</b></p>
+          <p class="skill-row-sub">RAG 检索链路与实时数据管道建设 · 缓存 / 消息队列场景化集成 · Agent 评测与会话埋点落仓</p>
         </div>
       </div>
       <div class="skill-cat">
-        <p class="skill-cat-name">后端</p>
+        <p class="skill-cat-name">开发语言</p>
         <div>
-          <p class="skill-row-main"><b>Python</b><small>（Agent 主力）</small> · <b>TypeScript / Node</b> · <em>Java</em><small>（主干 5 年）</small> · <b>Golang</b></p>
-          <p class="skill-row-sub">Java 生态 5 年主干：Spring Boot / Cloud / MyBatis 全家桶企业级实战，支撑 CRM / ERP / 电商 SaaS 系统落地</p>
-          <p class="skill-row-sub">按场景选型：后端 Java、AI 层 Python、高并发微服务工程基本功</p>
-        </div>
-      </div>
-      <div class="skill-cat">
-        <p class="skill-cat-name">前端</p>
-        <div>
-          <p class="skill-row-main"><em class="em-b">Vue / Vuetify</em><small>（企业级 Web 管理系统）</small> · <b>UniApp</b><small>（App 安卓 / iOS 与小程序）</small> · <b>Electron</b><small>（桌面端应用）</small></p>
-          <p class="skill-row-sub">Vue2 / Vue3 / Vue4 · Web / 移动端 / 小程序 / 桌面端多端开发经验</p>
-        </div>
-      </div>
-      <div class="skill-cat">
-        <p class="skill-cat-name">DevOps</p>
-        <div>
-          <p class="skill-row-main"><b>Docker</b> · <em>Kubernetes</em><small>（kubectl 命令与部署脚本）</small> · <b>Jenkins</b><small>（独立搭建 CI / CD）</small> · <b>Nexus</b><small>（独立建设私服）</small> · <b>Git</b></p>
-          <p class="skill-row-sub">持续集成流水线与制品库 0→1 自建 · 容器化构建交付 · K8s 集群命令行运维实操</p>
+          <p class="skill-row-main"><b>Python</b><small>（Agent 层主力）</small> · <em>Java</em><small>（主干 3 年）</small> · <b>TypeScript / Node</b><small>（服务与工具链）</small> · <b>Golang</b><small>（网关类服务）</small></p>
+          <p class="skill-row-sub">Agent 服务的接口设计、鉴权与限流、异步任务与消息驱动编排 · Java 生态 5 年工程基本功支撑高并发服务落地</p>
         </div>
       </div>
     </div>
@@ -716,7 +727,7 @@ body {
       </div>
       <ul class="pts">
         <li>主修 线性代数 · 数据结构与算法 · 数据库原理 · 计算机网络 · 计算机组成原理 · 软件工程导论</li>
-        <li>大四实习前端，毕业后从 Java 后端起步，近两年跨栈至 Python / TypeScript 与 AI 全栈工程</li>
+        <li>大四实习前端，毕业后从 Java 后端起步，近两年跨栈至 Python / TypeScript 与 AI Agent 工程</li>
       </ul>
       <div class="edu-verify">
         <div class="edu-verify-text">
@@ -819,14 +830,14 @@ function buildMailto() {
   var name = document.getElementById('dlName').value.trim();
   var email = document.getElementById('dlEmail').value.trim();
   var note = document.getElementById('dlNote').value.trim();
-  var subject = '陈培胜 · AI 全栈工程师 · 在线简历' + (name ? '（' + name + ' 转发）' : '');
+  var subject = '陈培胜 · AI Agent 工程师 · 在线简历' + (name ? '（' + name + ' 转发）' : '');
   var lines = [
     '这是一份在线简历，点开即可查看完整内容（无需下载附件）：',
     '',
     '简历地址：https://shenge-work.github.io/resume.html',
     '备用地址：https://shenge-work.pages.dev/resume.html',
     '',
-    '陈培胜 · AI 全栈工程师 · 5 年全栈 · Agent 开发 / AI 工程化 / 企业 AI 基建',
+    '陈培胜 · AI Agent 工程师 · 5 年研发 · Agent 开发 / AI 工程化 / 企业 AI 基建',
     '联系邮箱：shenge.work@gmail.com'
   ];
   if (note) lines = lines.concat(['', '—— 转发人附言 ——', note]);
@@ -1024,7 +1035,7 @@ function closeLongImagePreview() {
 function downloadLongImage() {
   var blob = lgState.blob;
   if (!blob) return;
-  var fileName = '陈培胜-AI全栈工程师-简历长图.png';
+  var fileName = '陈培胜-AIAgent工程师-简历长图.png';
   /* file:// 协议（本地双击打开）下浏览器会忽略 a.download，导致文件名乱、无扩展名；
      改用系统保存对话框（File System Access API），命名与 PNG 类型完全可控 */
   if (location.protocol === 'file:' && window.showSaveFilePicker) {
