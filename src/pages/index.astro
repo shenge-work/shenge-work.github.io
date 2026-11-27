@@ -9,22 +9,11 @@
 import ThemeGuard from '../components/ThemeGuard.astro';
 import { SITE } from '../features/index/data';
 import AiShell from '../features/ai/AiShell';
+import { sectionRules, peopleVisible } from '../lib/section-visibility';
 
-/* 板块可见性 & 编号（main.js syncSectionLayout 的构建期等价） */
+/* 板块可见性 & 编号：共用判定（src/lib/section-visibility.ts，fork 空数据一律收起） */
 const d = SITE;
-const len = (x?: unknown[]) => (Array.isArray(x) ? x.length : 0);
-const RULES: Record<string, boolean> = {
-  about: true,
-  experience: len(d.experience) > 0,
-  projects: len(d.projects) > 0,
-  works: len(d.works) > 0,
-  skills: len(d.skills?.rows) > 0,
-  education: !!(d.education && d.education.main && d.education.main.school),
-  awards: len(d.awards?.certs) + len(d.awards?.list) > 0,
-  objective: len(d.objective?.cards) > 0,
-  contact: len(d.contact?.cards) > 0,
-  wall: true,
-};
+const RULES: Record<string, boolean> = sectionRules(d);
 const ORDER = ['about', 'experience', 'projects', 'works', 'skills', 'education', 'awards', 'objective', 'contact', 'wall'];
 const LABELS: Record<string, string> = {
   about: '关于我', experience: '工作经历', projects: '项目作品', works: '个人作品',
@@ -51,6 +40,7 @@ import peopleRaw from '@data/people.json';
 const people = (peopleRaw as { people?: Array<{ name?: string; site?: string; role?: string; reason?: string; initial?: string }>; meta?: { footerCount?: number } });
 const peopleList = ((people.people) || []).filter((p) => p && p.name && p.site);
 const peopleMax = people.meta?.footerCount || 4;
+const showPeople = peopleVisible(people);
 ---
 
 <!doctype html>
@@ -658,7 +648,7 @@ const peopleMax = people.meta?.footerCount || 4;
 <!-- ══════════════ 页脚 / FOOTER ══════════════ -->
 <footer class="footer">
   <!-- 推荐的人：数据源 data/people.json → data/people.js；名单为空时整节隐藏 -->
-  <section class="footer-people" id="footerPeople" hidden={peopleList.length === 0} aria-labelledby="peopleTitle">
+  <section class="footer-people" id="footerPeople" hidden={!showPeople} aria-labelledby="peopleTitle">
     <div class="fp-head">
       <h2 class="fp-title" id="peopleTitle">推荐的人 <span class="fp-en">RECOMMENDS</span></h2>
       <p class="fp-note">我认可其作品与判断的同行 · 不是友情链接栏</p>

@@ -5,6 +5,17 @@
 
 ## 2026-11-28
 
+### 变更
+- **空数据板块自动隐藏（fork 兼容）**：主页各板块改用统一判定 `src/lib/section-visibility.ts`——
+  数组非空还不够，空对象数组也算无数据，整节连同导航一起收起、编号自动重排；构建期
+  `index.astro` 与运行时 `main.js` 同口径。三个重点：个人作品 `works` 无数据隐藏整节；
+  GitHub 贡献热力图在 `total=0` / 无 `days` / 无 `username` 时整块不展示，**不再回退到
+  原作者 GitHub 地址**；页脚推荐人名单为空时整节隐藏。
+- `work/portfolio.html` 案例页在缺 `detailId=portfolio` 作品或 `work-details.json` 条目时
+  渲染空状态页，不再 `throw` 阻断 fork 后的全站构建。
+- `index.html`（旧链）works 板块默认 hidden、滚动布局计算后移到可见性判定之后，避免
+  hidden 状态下量出 0 宽度。
+
 ### 修复
 - **AI 指路小票文案重复**（BUG-01 / TODO T35）：`js/ai-stage-link.js` 前缀由「▶ 去看看」改为「▶ 指路」，
   避免与 ROUTES 的 `name` 开头「去…」叠加成「去看看去看联系方式」；6 条路由全部生效，

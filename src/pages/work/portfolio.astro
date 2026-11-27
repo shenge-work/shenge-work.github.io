@@ -9,36 +9,46 @@ import PortfolioShell from '../../components/work/PortfolioShell';
 import workDetails from '@data/work-details.json';
 
 // ── 数据装配（真相源 import，不复制不改写）──
-const detail = workDetails.works.portfolio;
-if (!detail) throw new Error('work-details.json 缺少 works.portfolio');
+// fork 兼容：没有作品数据时渲染空状态页，不 throw 阻断全站构建。
+const detail = (workDetails as { works?: Record<string, unknown> }).works?.portfolio;
 import siteData from '@data/site-data.json';
-const meta = (siteData.works as Array<{ title: string; titleEn: string; no: string; detailId?: string }>)
-  .find((w) => w.detailId === 'portfolio');
-if (!meta) throw new Error('site-data.json works 数组缺少 detailId=portfolio 条目');
+const meta = (Array.isArray(siteData.works) ? siteData.works : [])
+  .find((w: { detailId?: string }) => w && w.detailId === 'portfolio');
+const hasCase = !!(detail && meta);
 
 const canonical = Astro.site ? new URL('work/portfolio.html', Astro.site).href : 'https://chenpeisheng.cn/work/portfolio.html';
 ---
 <SiteShell
-  title={`${meta.title} · 作品案例 | 陈培胜`}
-  description={detail.tagline}
+  title={hasCase ? `${meta!.title} · 作品案例 | 陈培胜` : '作品案例 · 暂无内容'}
+  description={hasCase ? detail!.tagline : '该作品集尚未配置案例内容'}
   canonical={canonical}
 >
-  <PortfolioShell
-    client:load
-    meta={{ title: meta.title, titleEn: meta.titleEn, no: meta.no }}
-    detail={{
-      tagline: detail.tagline,
-      role: detail.role,
-      period: detail.period,
-      status: detail.status,
-      heroMetrics: detail.heroMetrics,
-    }}
-    buildInfo={{
-      dataPath: 'data/work-details.json + data/site-data.json',
-      builtAt: new Date().toISOString().slice(0, 10),
-      engine: 'astro-ssg',
-    }}
-  />
+  {hasCase ? (
+    <PortfolioShell
+      client:load
+      meta={{ title: meta!.title, titleEn: meta!.titleEn, no: meta!.no }}
+      detail={{
+        tagline: detail!.tagline,
+        role: detail!.role,
+        period: detail!.period,
+        status: detail!.status,
+        heroMetrics: detail!.heroMetrics,
+      }}
+      buildInfo={{
+        dataPath: 'data/work-details.json + data/site-data.json',
+        builtAt: new Date().toISOString().slice(0, 10),
+        engine: 'astro-ssg',
+      }}
+    />
+  ) : (
+    <div class="pf-shell">
+      <p class="pf-no">WORK//CASE · EMPTY</p>
+      <h1 class="pf-title">作品案例</h1>
+      <p class="pf-tagline">该作品集尚未配置案例内容。</p>
+      <p class="pf-meta">Fork 本仓库后，在 data/site-data.json 的 works 中加入 detailId=portfolio 的条目，并补齐 data/work-details.json 的 works.portfolio 即可展示。</p>
+      <a href="/">← 返回主页</a>
+    </div>
+  )}
 </SiteShell>
 
 <style is:global>

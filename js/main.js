@@ -62,6 +62,24 @@
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
+  /* 板块可见性：与 src/lib/section-visibility.ts 等价的内联实现（fork 空数据一律收起）。
+     数组非空还不够——空对象数组也算无数据；改动请同步 TS 版与其单测。 */
+  function filled(v) { return v != null && String(v).trim().length > 0; }
+  function hasRows(list, key) {
+    return (Array.isArray(list) ? list : []).some(function (row) {
+      return row && typeof row === 'object' && !Array.isArray(row) && filled(row[key]);
+    });
+  }
+  function worksVisible(d) { return hasRows(d && d.works, 'title') || hasRows(d && d.works, 'no'); }
+  function contribVisible(c) {
+    return !!(c && Number(c.total) > 0 && Array.isArray(c.days) && c.days.length && filled(c.username));
+  }
+  function peopleListVisible(p) {
+    return (Array.isArray(p && p.people) ? p.people : []).some(function (row) {
+      return row && typeof row === 'object' && filled(row.name) && filled(row.site);
+    });
+  }
+
   function renderSite(d) {
     window.__SITE_DATA__ = d;
     /* ── 全局 meta ── */
@@ -90,8 +108,10 @@
         var grid = $('peopleGrid');
         if (!box || !grid) return;
         function paint(P) {
-          var list = ((P && P.people) || []).filter(function (p) { return p && p.name && p.site; });
-          if (!list.length) { box.hidden = true; grid.innerHTML = ''; return; }
+          var list = ((P && P.people) || []).filter(function (p) {
+            return p && typeof p === 'object' && filled(p.name) && filled(p.site);
+          });
+          if (!list.length || !peopleListVisible(P)) { box.hidden = true; grid.innerHTML = ''; return; }
           var max = (P.meta && P.meta.footerCount) || 4;
           grid.innerHTML = list.slice(0, max).map(function (p, i) {
             var initial = String(p.initial || p.name).slice(0, 1).toUpperCase();
@@ -288,17 +308,8 @@
     var _worksSet = '<div class="works-set">' + _worksCards + '</div>';
     var _wGrid = $('worksGrid');
     _wGrid.innerHTML = _worksSet + '<div class="works-set" aria-hidden="true">' + _worksCards + '</div>';
-    /* 恒定速度：滚动时长 = 单组宽度 / 速度(px/s)，随内容多少自适应 */
-    var _wSet = _wGrid.firstElementChild;
-    if (_wSet) {
-      _wGrid.style.setProperty('--scroll-duration', (_wSet.getBoundingClientRect().width / 110).toFixed(2) + 's');
-    }
-    /* 卡片对齐内容安全区：偏移 = 板块左缘到窗口 + 板块左内边距（随宽度自适应） */
-    var _wSec = document.getElementById('works');
-    if (_wSec) {
-      var _wPad = _wSec.getBoundingClientRect().left + parseFloat(getComputedStyle(_wSec).paddingLeft);
-      _wGrid.style.setProperty('--ws-pad', Math.max(0, Math.round(_wPad)) + 'px');
-    }
+    /* 布局计算由 layoutWorks() 在板块可见性判定后执行：
+       hidden 板块宽度为 0，过早计算会得到 0s / 0px。 */
 
     /* ── 专业技能 ── */
     var sk = d.skills || {};
@@ -390,7 +401,9 @@
      统计行另取 data/contributions.json（Actions 每日用 GraphQL 拉取，前端
      不碰 token）；拿不到就只隐藏统计，不影响图。 */
   function renderGhSkeleton(box, username) {
-    var user = String(username || 'shenge-work');
+    /* fork 场景没有本人 GitHub 账号时绝不展示——不回退到原作者地址 */
+    var user = String(username || '').trim();
+    if (!user) { box.hidden = true; box.innerHTML = ''; return; }
     box.innerHTML =
       '<div class="gh-head">' +
         '<span class="gh-label">GITHUB ACTIVITY · 近一年提交</span>' +
@@ -441,9 +454,8 @@
         return res.json();
       })
       .then(function (data) {
-        var total = Number(data && data.total) || 0;
-        var days = data && Array.isArray(data.days) ? data.days.length : 0;
-        if (!data || total <= 0 || !days) { box.hidden = true; box.innerHTML = ''; return; }
+        /* 无提交 / 无日期 / 无 GitHub 账号 → 整块不展示（含地址），不摆空架子 */
+        if (!contribVisible(data)) { box.hidden = true; box.innerHTML = ''; return; }
         renderGhSkeleton(box, data.username);
         renderGhStats(box, data);
       })
@@ -456,17 +468,18 @@
      数据为空就不摆空架子：整节隐藏、导航同步收起，剩下板块的
      SEC.xx 与导航编号按 DOM 顺序重排，避免出现 SEC.01/03/05 的断档。 */
   function syncSectionLayout(d) {
-    var len = function (arr) { return Array.isArray(arr) ? arr.length : 0; };
+    /* 数据与 src/lib/section-visibility.ts 的 sectionRules 同口径：空对象数组也收起 */
     var RULES = {
       about: true,
-      experience: len(d.experience) > 0,
-      projects: len(d.projects) > 0,
-      works: len(d.works) > 0,
-      skills: len(d.skills && d.skills.rows) > 0,
-      education: !!(d.education && d.education.main && d.education.main.school),
-      awards: len(d.awards && d.awards.certs) + len(d.awards && d.awards.list) > 0,
-      objective: len(d.objective && d.objective.cards) > 0,
-      contact: len(d.contact && d.contact.cards) > 0,
+      experience: hasRows(d.experience, 'company') || hasRows(d.experience, 'role'),
+      projects: hasRows(d.projects, 'title') || hasRows(d.projects, 'no'),
+      works: worksVisible(d),
+      skills: hasRows(d.skills && d.skills.rows, 'name') || hasRows(d.skills && d.skills.bars, 'label'),
+      education: !!(d.education && d.education.main && filled(d.education.main.school)),
+      awards: hasRows(d.awards && d.awards.certs, 'title') || hasRows(d.awards && d.awards.list, 'name'),
+      objective: hasRows(d.objective && d.objective.cards, 'role') ||
+        hasRows(d.objective && d.objective.cards, 'roleSm') || hasRows(d.objective && d.objective.cards, 'desc'),
+      contact: hasRows(d.contact && d.contact.cards, 'value'),
       wall: true,
     };
     var navLinks = Array.prototype.slice.call(document.querySelectorAll('#nav a[data-sec]'));
@@ -499,6 +512,21 @@
         if (navNo) navNo.textContent = no;
       }
     });
+  }
+
+  /* 个人作品滚动布局：板块可见后量宽度，避免 hidden 时算成 0 */
+  function layoutWorks() {
+    var grid = $('worksGrid');
+    var sec = document.getElementById('works');
+    if (!grid || !sec || sec.hidden) return;
+    var set = grid.firstElementChild;
+    /* 恒定速度：滚动时长 = 单组宽度 / 速度(px/s)，随内容多少自适应 */
+    if (set) {
+      grid.style.setProperty('--scroll-duration', (set.getBoundingClientRect().width / 110).toFixed(2) + 's');
+    }
+    /* 卡片对齐内容安全区：偏移 = 板块左缘到窗口 + 板块左内边距（随宽度自适应） */
+    var pad = sec.getBoundingClientRect().left + parseFloat(getComputedStyle(sec).paddingLeft);
+    grid.style.setProperty('--ws-pad', Math.max(0, Math.round(pad)) + 'px');
   }
 
   /* ══════════════ 交互层（渲染完成后初始化） ══════════════ */
@@ -2141,6 +2169,7 @@
     try {
       renderSite(data);
       syncSectionLayout(data);
+      layoutWorks();
       initInteractions();
       initWall();
       initContributions();

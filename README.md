@@ -357,6 +357,14 @@ python3 scripts/sync_site_data.py --check
 9. **按需关掉别人的服务**：不用的微信登录 / TTS / Worker 检索留空即可，代码均有降级；`KB_WORKER_URL` 不配时走 D1 词面 + 关键词兜底。
 10. **手机号与 PDF**：仓库里的简历页/PDF 只有占位号。`/resume` 由中间件从 D1 注入真号码；投递用的真实 PDF 用 `node scripts/make-cloud-pdf.mjs --put` 生成并上传 KV（键 `resume:pdf`），`/api/resume-pdf` 下发、`/api/deliver` 发信时优先用它。
 
+**空数据板块自动隐藏**：主页各板块按数据自动收起，fork 后没有对应内容不必删代码——把 `data/site-data.json` 里相应数组留空（或只放空对象）即可，整节连同导航项一起消失、后续编号自动重排。三处特例：
+
+- **个人作品**（`works`）：空数组 / 空对象数组 → SEC.04 整节隐藏；
+- **GitHub 贡献热力图**：`data/contributions.json` 的 `total=0`、无 `days` 或**无你的 `username`** → 整块不展示（不会回退到原作者的 GitHub 地址）；
+- **页脚推荐的人**：`data/people.json` 的 `people` 留空 → 整节隐藏。
+
+判定逻辑集中在 `src/lib/section-visibility.ts`（构建期与运行时 `js/main.js` 同口径），`work/portfolio.html` 案例页在缺数据时渲染空状态页而非构建报错。
+
 完整步骤与表结构说明见 [docs/cloudflare-rag-admin-plan.md](docs/cloudflare-rag-admin-plan.md)。
 
 ### 预览环境（可选但建议）
