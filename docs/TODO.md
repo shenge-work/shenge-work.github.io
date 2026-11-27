@@ -780,7 +780,34 @@ network-requests；四主题视觉对比 12/12 不回归（字体渲染差异属
   全部 `true`，**每页字体请求 1 个（503 KB）**，零 4xx、零 JS 报错；首屏截图与分片版逐像素一致。
 - `node --test tests/*.test.mjs` 313 通过；`pnpm test` 26 通过；`pnpm lint` 干净。
 
-**线上验收（2026-11-28 部署后）**：见文末「T25 线上复测」小节。
+**线上验收（2026-11-28 部署后，达标）**：Lighthouse mobile（模拟 4G，普通 Android Chrome UA
+绕 `isBlockedUA`）连测三轮 → **LCP 3.9s / 2.6s / 3.5s，score 71 / 84 / 76**，全部低于 5s 验收线；
+`fonts.googleapis` / `fonts.gstatic.com` 请求 **0 个**，字体每页 1 个请求（504 KB）；
+TBT 205–238ms、CLS 0.001。基线对照：T25 之前 22.7s / score 59。
+
+| 阶段 | LCP（mobile） | score | 备注 |
+|---|---|---|---|
+| T25 之前 | 22.7s | 59 | Google Fonts 境外两跳 |
+| 分片版 | 13.0s | 65 | 字体 25 请求 / 1266 KB，被数据否掉 |
+| 单文件子集 | 10.4s | 63 | 字体 1 请求 / 504 KB |
+| 头像重压 + `setPhoto` | 7.8–8.0s | 67 / 71 | 还差 COS 二次加载 |
+| 头像不走 CDN | 2.9–8.6s | 60–81 | COS 头像请求消失，波动来自 TTFB |
+| 首屏去掉 `.reveal` | **2.6–3.9s** | **71–84** | 达标 |
+
+**第三层根因（2026-11-28 收尾定位）**：前面两条改完后 LCP 仍 7.8s，用 Playwright 同时 hook
+`HTMLImageElement.src` setter 与 `Element.prototype.setAttribute` 追踪线上，日志给出两处独立元凶：
+
+1. **`js/asset-cdn.js:84` 的 `rewriteDOM()`** —— 它把页面静态标签的 `src` 逐个改写成 COS 地址，
+   `setAttribute` 不走 `src` setter，所以 `main.js` 里的 `artKey` 判断被完全绕过：首屏头像又去
+   COS 拉了一次 264 KB 原图。修法：`rewriteDOM` 对 `#idcardPhoto` / `#aboutPhoto` 直接跳过
+   （首屏头像已压到 38 KB，同源直取比再走一次跨域 DNS+TLS+RTT 更快）。
+2. **首屏英雄区整块 `.reveal`** —— `hero-*` 文本与 `hero-right` 档案卡初始 `opacity: 0`，要等
+   `main.js` 的 IntersectionObserver 加 `.in` 再走 0.6s transition 才可见，等于把首屏可见时间
+   绑在 JS 水合之后；Lighthouse 的 LCP 元素恰好是卡里的头像，`elementRenderDelay` 因此长期
+   1.5s+。修法：`index.astro` 与旧链 `index.html` 的首屏区块去掉 `reveal` 类（首屏本来就在视口内，
+   不需要滚动触发），滚动区动画保持原样。这一条把 LCP 从 3.9–8.6s 的波动区间压到稳定的 2.6–3.9s。
+
+剩余的唯一大头是 **TTFB（800ms±）**，属 Cloudflare 边缘到国内的网络距离，不在本次改动范围。
 
 **顺手修掉的 LCP 真瓶颈（字体不是唯一原因）**：线上复测发现 Lighthouse 的 LCP 元素是
 `img#idcardPhoto`（首屏「人才档案终端」里的插画头像），不是 heroBio 文本。链路是：

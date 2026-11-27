@@ -6,6 +6,16 @@
 ## 2026-11-28
 
 ### 变更
+- **LCP 收尾：首屏头像不再被 CDN 改写**（`js/asset-cdn.js`）。`rewriteDOM()` 会用
+  `setAttribute` 把页面静态 `img[src]` 逐个换成 COS 地址，绕过 `main.js` 里 `artKey()` 的
+  「同一张图不重复替换」判断，首屏头像因此又跨域拉了一次 264 KB 原图并重绘。现对
+  `#idcardPhoto` / `#aboutPhoto` 跳过改写（头像已压到 38 KB，同源直取更快）；
+  其余静态资源照旧走 CDN。
+- **首屏英雄区去掉 `.reveal` 渐入**（`src/pages/index.astro`、旧链 `index.html`）。
+  `hero-*` 文本与 `hero-right` 档案卡初始 `opacity: 0`，要等 `main.js` 的 IntersectionObserver
+  加 `.in` 再走 0.6s transition，等于把首屏可见时间绑定到 JS 水合之后，Lighthouse LCP 的
+  `elementRenderDelay` 长期 1.5s+。首屏本就在视口内，直接去掉该类；滚动区渐入保留。
+  线上 mobile LCP 从 7.8–8.0s 降到 **2.6–3.9s（score 71–84）**，达到 T25 的 < 5s 验收线。
 - **中文字体本地化（T25，性能主优化项）**：不再向 `fonts.googleapis.com` / `fonts.gstatic.com`
   取 Noto Sans SC。中间试过「镜像 Google 的 101 个 unicode-range 分片」，线上 Lighthouse 证明
   首屏仍要下 25 片 / 1.2 MB（LCP 22.7s→13.0s，不达标），改为**按站点实际用字做单文件子集**：
