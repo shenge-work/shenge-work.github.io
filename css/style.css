@@ -141,6 +141,21 @@ button { font-family: inherit; cursor: pointer; }
 
 /* ── 区块头（档案柜标签语言）────────────────── */
 .section { padding: 96px 24px; max-width: var(--wrap); margin: 0 auto; }
+
+/* ── 视口外渲染优化：浏览器跳过屏外板块的布局与绘制 ──
+   · hero 用 .hero、推荐人用 .footer-people，均不带 .section，天然不受影响；
+   · works 的滚动时长依赖首组卡片实测宽度，屏外跳过会量出 0，必须排除；
+   · :target 强制渲染锚点落点，避免 intrinsic-size 占位导致跳转定位偏移；
+   · contain-intrinsic-size 两级写法：老浏览器退回固定值，不塌陷；
+     带 auto 的新浏览器会记住上次真实高度，二次滚动后尺寸精确。 */
+@supports (content-visibility: auto) {
+  .section:not(#works) {
+    content-visibility: auto;
+    contain-intrinsic-size: 900px;
+    contain-intrinsic-size: auto 900px;
+  }
+  .section:target { content-visibility: visible; }
+}
 .section-tint {
   position: relative;
   max-width: none;

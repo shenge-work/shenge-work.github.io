@@ -210,7 +210,7 @@
       '<div class="edu-card reveal">' +
         '<div class="edu-card-head"><span class="edu-years">' + esc(em.time) + '</span>' +
         '<span class="tag ' + (em.tagCls || 'tag-orange') + '">' + esc(em.tag) + '</span></div>' +
-        '<div class="edu-brand">' + (em.logo ? '<img class="edu-logo" src="' + esc(em.logo) + '" alt="' + esc(em.school) + ' 校徽">' : '') +
+        '<div class="edu-brand">' + (em.logo ? '<img class="edu-logo" src="' + esc(em.logo) + '" alt="' + esc(em.school) + ' 校徽" loading="lazy" decoding="async">' : '') +
         '<div class="edu-brand-txt"><h3 class="edu-school">' + schoolName + '</h3>' + schoolGo + '</div></div>' +
         '<p class="edu-major">' + esc(em.major) + ' <span class="edu-en">' + esc(em.majorEn) + '</span></p>' +
         '<div class="edu-stats">' + (em.stats || []).map(function (s) {
@@ -265,7 +265,7 @@
     window.__PROJECTS__ = d.projects || [];
     $('projGrid').innerHTML = window.__PROJECTS__.map(function (p, i) {
       return '<article class="proj-card reveal" data-proj="' + i + '" tabindex="0" role="button" aria-label="查看项目 ' + esc(p.title) + ' 的详情">' +
-        '<div class="proj-media"><img src="' + esc(p.img) + '" alt="' + esc(p.imgAlt) + '" width="640" height="360">' +
+        '<div class="proj-media"><img src="' + esc(p.img) + '" alt="' + esc(p.imgAlt) + '" width="640" height="360" loading="lazy" decoding="async">' +
         '<span class="proj-no" aria-hidden="true">' + esc(p.no) + '</span>' +
         '<span class="proj-hover-ui" aria-hidden="true"><span class="proj-hover-btn">查看详情 <i>▶</i></span></span></div>' +
         '<div class="proj-body"><div class="proj-meta">' +
@@ -358,7 +358,7 @@
     var aw = d.awards || {};
     $('certGrid').innerHTML = (aw.certs || []).map(function (c, i) {
       return '<figure class="cert-card reveal">' +
-        '<div class="cert-media"><img src="' + esc(c.img) + '" alt="' + esc(c.alt) + '" width="620" height="446">' +
+        '<div class="cert-media"><img src="' + esc(c.img) + '" alt="' + esc(c.alt) + '" width="620" height="446" loading="lazy" decoding="async">' +
         '<span class="cert-stamp ' + (c.stampCls || '') + '" aria-hidden="true">' + esc(c.stamp || 'CERT-0' + (i + 1)) + '</span></div>' +
         '<figcaption><strong>' + esc(c.title) + '</strong><span>' + esc(c.sub) + '</span></figcaption></figure>';
     }).join('');

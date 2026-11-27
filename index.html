@@ -206,7 +206,7 @@
         <div class="idcard idcard-main">
           <div class="idcard-head">
             <div class="idcard-photo">
-              <img id="idcardPhoto" src="" alt="" width="480" height="480">
+              <img id="idcardPhoto" src="" alt="" width="480" height="480" fetchpriority="high" decoding="async">
               <span class="idcard-photo-frame" aria-hidden="true"></span>
             </div>
             <div class="idcard-head-info">
@@ -250,7 +250,7 @@
   <div class="about-grid">
     <div class="about-photo-wrap reveal">
       <div class="about-photo">
-        <img id="aboutPhoto" src="" alt="" width="500" height="500">
+        <img id="aboutPhoto" src="" alt="" width="500" height="500" loading="lazy" decoding="async">
       </div>
       <div class="stamp stamp-verified" aria-hidden="true" id="aboutStamp"></div>
       <span class="about-photo-no" aria-hidden="true" id="aboutPhotoNo"></span>
@@ -539,11 +539,9 @@
 <script src="js/ai-voice-cloud.js?v=20261125b"></script>
 <script src="js/ai-panel-ux.js?v=20261118a"></script>
 <script src="js/ai-stage-link.js?v=20261121b"></script>
-<script src="data/company-profiles.js?v=20261125g"></script>
-<script src="js/cp-panorama.js?v=20261125g" defer></script>
-<script src="js/company-social.js?v=20261125g" defer></script>
-<script src="js/secure-access.js?v=20261125s1" defer></script>
-<script src="js/company-profile.js?v=20261125s1" defer></script>
+<!-- 公司档案 5 个脚本（约 271KB）改按需加载：滚到工作经历板块或 hover 徽章时才拉，
+     深链 #company= / 点击兜底由 js/company-lazy.js 处理 -->
+<script src="js/company-lazy.js?v=20261128a" defer></script>
 <script src="js/analytics.js?v=20261119b" defer></script>
 <script src="js/visitor-count.js" defer></script>
 </body>

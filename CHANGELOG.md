@@ -21,6 +21,13 @@
 - **Fork 复刻补齐**：新增 [docs/fork-cloud-parity.md](docs/fork-cloud-parity.md)，明确本地云函数代码
   备份范围、6 处必改云端资源 ID、KV/Vectorize 创建命令、数据统计边界与自检清单；
   `.env.example` 补 `DELIVER_FROM` 与四类发件身份说明，README Fork 指南同步补齐。
+- **首屏渲染优化（局部渲染）**：三层落地——
+  ① 视口隔离：屏外 `.section` 加 `content-visibility:auto` + `contain-intrinsic-size`（works 因宽度测量
+  排除、`:target` 锚点强制渲染兜底）；
+  ② 公司档案脚本按需加载：新增 `js/company-lazy.js`（<2KB），5 个脚本共 271KB 改由「滚到工作经历 /
+  hover 徽章 / `#company=` 深链 / 点击兜底」触发，首屏本地脚本由 **551KB 降到 284KB（-48%）**；
+  ③ 图片懒加载：LCP 形象照改 `fetchpriority=high`、其余视口外图片加 `loading=lazy` + `decoding=async`。
+  新增 `tests/company-lazy.test.mjs` 7 项；`secure-access.test.mjs` 适配加载器接线方式。
 
 ### 修复
 - **AI 指路小票文案重复**（BUG-01 / TODO T35）：`js/ai-stage-link.js` 前缀由「▶ 去看看」改为「▶ 指路」，

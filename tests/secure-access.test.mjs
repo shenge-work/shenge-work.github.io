@@ -321,7 +321,12 @@ test('前端通用组件与公司档案已接线，且签名 URL 不落本地存
 
   for (const f of ['index.html', 'company.html', 'templates/resume.template.html', 'resume.html']) {
     const html = readFileSync(new URL('../' + f, import.meta.url), 'utf8');
-    assert.match(html, /js\/secure-access\.js/, f + ' 未引入通用组件');
+    /* 首页把公司档案 5 个脚本改为按需加载：由 company-lazy.js 注入 secure-access，
+       其余页面仍直接引入。两种接线方式都算「已接入通用组件」。 */
+    const wired = /js\/secure-access\.js/.test(html) ||
+      (/company-lazy\.js/.test(html) &&
+        readFileSync(new URL('../js/company-lazy.js', import.meta.url), 'utf8').includes('js/secure-access.js'));
+    assert.ok(wired, f + ' 未引入通用组件（直接或经加载器）');
     assert.match(html, /css\/secure-access\.css/, f + ' 未引入组件样式');
   }
   const build = readFileSync(new URL('../scripts/pages-build.sh', import.meta.url), 'utf8');
