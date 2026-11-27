@@ -159,28 +159,28 @@ const showPeople = peopleVisible(people);
   <div class="hero-inner">
     <!-- 左：姓名排版 + 定位 + 简介 + 按钮 -->
     <div class="hero-left">
-      <p class="hero-eyebrow reveal" id="heroTags">
+      <p class="hero-eyebrow" id="heroTags">
         {(h.tags || []).map((t) => <span class={`tag ${t.cls || 'tag-orange'}`}>{t.text}</span>)}
       </p>
       <h1 class="hero-name">
-        <span class="hero-name-cn reveal" id="heroNameCn">{h.nameCn}<i class="glitch-layer glitch-blue" aria-hidden="true">{h.nameCn}</i><i class="glitch-layer glitch-orange" aria-hidden="true">{h.nameCn}</i></span>
-        <span class="hero-name-en reveal" aria-hidden="true" id="heroNameEn">{h.nameEn}</span>
+        <span class="hero-name-cn" id="heroNameCn">{h.nameCn}<i class="glitch-layer glitch-blue" aria-hidden="true">{h.nameCn}</i><i class="glitch-layer glitch-orange" aria-hidden="true">{h.nameCn}</i></span>
+        <span class="hero-name-en" aria-hidden="true" id="heroNameEn">{h.nameEn}</span>
       </h1>
-      <p class="hero-role reveal" id="heroRole">{h.role} <span class="role-slash">/</span> <span class="role-en" set:html={nbsp(h.roleEn)} /></p>
-      <p class="hero-bio reveal" id="heroBio">{h.bio}</p>
-      <div class="hero-cta reveal" id="heroCta">
+      <p class="hero-role" id="heroRole">{h.role} <span class="role-slash">/</span> <span class="role-en" set:html={nbsp(h.roleEn)} /></p>
+      <p class="hero-bio" id="heroBio">{h.bio}</p>
+      <div class="hero-cta" id="heroCta">
         <a class="btn btn-solid" href="#projects">{h.ctaProjects || '作品'} <span class="btn-arrow" aria-hidden="true">▶▶</span></a>
         <a class="btn btn-ghost" href="jd.html">{h.ctaJd || 'JD 匹配'} <span class="btn-arrow" aria-hidden="true">▶</span></a>
         <a class="btn btn-ghost" href={h.resumeFile || 'resume.html'}>{h.ctaResume || '简历'} <span class="btn-arrow" aria-hidden="true">▶</span></a>
       </div>
-      <p class="hero-meta reveal">
+      <p class="hero-meta">
         <i class="lamp lamp-green"></i>
         <span id="heroStatus">{h.statusMeta}</span>
       </p>
     </div>
 
     <!-- 右：立体人才档案卡（签名元素） -->
-    <div class="hero-right reveal">
+    <div class="hero-right">
       <div class="idcard-stack" aria-hidden="true">
         <div class="idcard idcard-back-2"></div>
         <div class="idcard idcard-back-1"></div>
