@@ -78,6 +78,9 @@
     var scope = root || document;
     var nodes = scope.querySelectorAll('img[src], video[src], source[src], link[rel~="icon"][href]');
     Array.prototype.forEach.call(nodes, function (el) {
+      /* 首屏头像不换 CDN：图片已压到 38 KB（480×480 q78），同源直取比再走一次
+         跨域 DNS+TLS+RTT 更快；它也是 Lighthouse 里 LCP 的元素，换域会多一轮重绘。 */
+      if (el.id === 'idcardPhoto' || el.id === 'aboutPhoto') return;
       var attr = el.hasAttribute('src') ? 'src' : 'href';
       var cur = el.getAttribute(attr);
       var next = of(cur);
