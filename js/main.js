@@ -51,6 +51,18 @@
   /* ══════════════ 渲染层 ══════════════ */
 
   function $(id) { return document.getElementById(id); }
+  /* 头像「作品名」：去掉目录/扩展名/尺寸后缀后比较。
+     HTML 里预置的是本地优化版图片（images/portrait.jpg），D1 数据里可能是腾讯云 COS 上的
+     同一张原图；若按字面比较域名会再发一次跨域请求并重绘，把 LCP 拖到十秒级。 */
+  function artKey(u) {
+    return String(u || '').split('?')[0].split('/').pop()
+      .replace(/\.[a-z0-9]+$/i, '').replace(/-\d{2,4}(w)?$/i, '');
+  }
+  function setPhoto(el, url, alt) {
+    if (!el) return;
+    if (url && artKey(url) !== artKey(el.getAttribute('src'))) el.src = url;
+    if (alt) el.alt = alt;
+  }
 
   /* ── API 线路（问答 / 语音 / 留言墙 / JD 共用）──
      注意：必须放在 IIFE 顶层。initInteractions() 与 initWall() 是同级函数，
@@ -177,8 +189,7 @@
       '<a class="btn btn-ghost" href="' + esc(h.resumeFile || 'resume.html') + '">' + esc(h.ctaResume || '简历') + ' <span class="btn-arrow" aria-hidden="true">▶</span></a>';
     $('heroStatus').textContent = h.statusMeta || '';
     var ic = h.idcard || {};
-    $('idcardPhoto').src = ic.photo || '';
-    $('idcardPhoto').alt = (h.nameCn || '') + '的个人形象照';
+    setPhoto($('idcardPhoto'), ic.photo, (h.nameCn || '') + '的个人形象照');
     $('idcardTitle').innerHTML = esc(ic.titleCn || '') + '<br><span>' + esc(ic.titleEn || '').replace(/ /g, '&nbsp;') + '</span>';
     $('idcardNo').textContent = ic.no || '';
     $('idcardStatus').textContent = ic.status || '';
@@ -193,8 +204,7 @@
 
     /* ── 关于我 ── */
     var ab = d.about || {};
-    $('aboutPhoto').src = ab.photo || '';
-    $('aboutPhoto').alt = ab.photoAlt || '';
+    setPhoto($('aboutPhoto'), ab.photo, ab.photoAlt || '');
     $('aboutPhotoNo').textContent = ab.photoNo || '';
     $('aboutStamp').innerHTML = ab.stamp || '';
     $('aboutLead').innerHTML = ab.lead || '';

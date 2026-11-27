@@ -898,5 +898,65 @@ window.SITE_DATA = {
     "replyHintText": "回复与评论同样只在这台设备可见 · 回到本设备刷新即可看到新回复",
     "replyCountText": "{n} 条对话",
     "newReplyText": "站长回复了你 ▲"
+  },
+  "guide": {
+    "enabled": true,
+    "mode": "caption",
+    "maxPerSession": 4,
+    "globalCooldownMs": 25000,
+    "sectionCooldownMs": 60000,
+    "dwellMs": 1800,
+    "settleMs": 350,
+    "holdMs": 9000,
+    "scripts": [
+      {
+        "id": "G03",
+        "section": "experience",
+        "trigger": {
+          "type": "section-dwell",
+          "dwellMs": 1800
+        },
+        "priority": 50,
+        "title": "工作经历 · 四家公司",
+        "speech": "工作经历一共四段，从周生生到进门财经。每段公司名都能点开公司档案，里面有业务、融资和团队背景。任职佐证材料，包括离职证明，也归档在对应档案里，需要申请解锁后查看。",
+        "caption": "四家公司档案可点开；离职证明归档在对应档案，需申请解锁。",
+        "cta": {
+          "label": "看进门财经档案",
+          "action": "company:comein"
+        }
+      },
+      {
+        "id": "G06",
+        "section": "education",
+        "trigger": {
+          "type": "section-dwell",
+          "dwellMs": 1800
+        },
+        "priority": 50,
+        "title": "教育经历 · 学校档案",
+        "speech": "教育是中山大学新华学院，软件工程，2021 届全日制统招。点学校名能进学校档案，课程表、在校经历和获奖都在那里。学历验证码默认加锁，提交申请、我批准后才对当前设备开放。",
+        "caption": "学校档案含课程表、在校经历与获奖；学历验证码需申请、批准后解锁。",
+        "cta": {
+          "label": "打开学校档案",
+          "action": "school:xinhua"
+        }
+      },
+      {
+        "id": "G08",
+        "section": "contact",
+        "trigger": {
+          "type": "section-dwell",
+          "dwellMs": 1800
+        },
+        "priority": 50,
+        "title": "联系方式 · 直接聊",
+        "speech": "看到这里，如果觉得岗位匹配，最省事的是点邮箱发一封简短意向，附上 JD 我会更快回复。拿不准也可以先做一次 JD 匹配，带着结果来聊。",
+        "caption": "附上 JD 发一封简短意向，我会更快回复。",
+        "cta": {
+          "label": "发邮件",
+          "action": "mailto"
+        }
+      }
+    ]
   }
 };

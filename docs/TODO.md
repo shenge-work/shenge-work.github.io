@@ -782,6 +782,18 @@ network-requests；四主题视觉对比 12/12 不回归（字体渲染差异属
 
 **线上验收（2026-11-28 部署后）**：见文末「T25 线上复测」小节。
 
+**顺手修掉的 LCP 真瓶颈（字体不是唯一原因）**：线上复测发现 Lighthouse 的 LCP 元素是
+`img#idcardPhoto`（首屏「人才档案终端」里的插画头像），不是 heroBio 文本。链路是：
+HTML 预置 `images/portrait.jpg`（**264 KB**，480×480 原图）→ `main.js` 用 D1 里的
+COS 原图地址再发一次跨域请求 → 图片重新解码重绘，LCP 被推到 10.4s。两处改动：
+
+1. `images/portrait.jpg` 用 `sips` 重压（480×480、JPEG q78）**264 KB → 38 KB**，文件名不变，
+   所有引用（HTML / `main.js` / `gender-switch.js` / `school-profiles.js`）零改动；
+2. `js/main.js` 新增 `artKey()` / `setPhoto()`：比较「作品名」（去目录、扩展名、尺寸后缀），
+   D1 给的是同一张图的 COS 地址时**不再覆盖 `src`**，省掉一次跨域请求和二次重绘；
+   后台真的换了头像（作品名不同）时仍按原逻辑替换。旧链 `index.html` 的
+   `aboutPhoto` 空 `src` 一并补成默认图（空 src 会被浏览器当成当前页面 URL 请求）。
+
 ### 3.22 T26 · React 迁移收尾观察（2026-11-26 登记，观察期至 12-03）
 
 M0–M5 已全部完成并生产切换（线上 React 版运行中，`REACT_MIGRATED_PAGES=none` 为回退开关）。

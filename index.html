@@ -19,6 +19,8 @@
 <link rel="stylesheet" href="css/ai-panel-ux.css?v=20261118a">
 <!-- 角色 ↔ 面板语义联动：说话音波 / 指路小票 / 落点描边 -->
 <link rel="stylesheet" href="css/ai-stage-link.css?v=20261121b">
+<!-- 桌宠行为导览：字幕卡 / 安静模式 / 移动端底条（P0 只出字幕，不自动发声） -->
+<link rel="stylesheet" href="css/guide-tour.css?v=20261128a">
 <!-- 公司档案（SEC.03 徽章 + 抽屉）：与 resume.html 共用，数据源 data/company-profiles.js -->
 <link rel="stylesheet" href="css/company-profile.css?v=20261128b">
 <link rel="stylesheet" href="css/secure-access.css?v=20261125s1">
@@ -247,7 +249,7 @@
   <div class="about-grid">
     <div class="about-photo-wrap reveal">
       <div class="about-photo">
-        <img id="aboutPhoto" src="" alt="" width="500" height="500" loading="lazy" decoding="async">
+        <img id="aboutPhoto" src="images/portrait.jpg" alt="" width="500" height="500" loading="lazy" decoding="async">
       </div>
       <div class="stamp stamp-verified" aria-hidden="true" id="aboutStamp"></div>
       <span class="about-photo-no" aria-hidden="true" id="aboutPhotoNo"></span>
@@ -536,6 +538,9 @@
 <script src="js/ai-voice-cloud.js?v=20261125b"></script>
 <script src="js/ai-panel-ux.js?v=20261118a"></script>
 <script src="js/ai-stage-link.js?v=20261121b"></script>
+<!-- 桌宠行为导览：纯决策层 + DOM 编排层，P0 三条板块级字幕，绝不自动滚动/发声 -->
+<script src="js/guide-core.js?v=20261128a"></script>
+<script src="js/guide-tour.js?v=20261128a" defer></script>
 <!-- 公司档案 5 个脚本（约 271KB）改按需加载：滚到工作经历板块或 hover 徽章时才拉，
      深链 #company= / 点击兜底由 js/company-lazy.js 处理 -->
 <script src="js/company-lazy.js?v=20261128a" defer></script>

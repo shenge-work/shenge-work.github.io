@@ -1,0 +1,175 @@
+/* ════════════════════════════════════════════════════════════
+   桌宠行为导览 · 字幕卡视觉层（guide-tour.css）P0
+   --------------------------------------------------------------
+   · 卡片贴在 #aiStage 上方，独立浮层，不改角色本身
+   · z-index 148：高于角色/页面内容，低于指路票(151)、
+     AI 面板与公司档案抽屉(320)，不遮挡正在阅读的正文
+   · 移动端桌宠隐藏时降级为底部横条，避开安全区
+   依赖：css/style.css 的 --ink / --card / --paper / --orange
+   ════════════════════════════════════════════════════════════ */
+
+.cp-guide-card {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 148;
+  width: min(300px, calc(100vw - 24px));
+  box-sizing: border-box;
+  padding: 10px 11px 11px;
+  font-family: var(--font-sans, inherit);
+  text-align: left;
+  color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--orange);
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity .22s ease, transform .22s ease;
+}
+.cp-guide-card.is-on {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.cp-guide-card[aria-hidden="true"] { pointer-events: none; }
+
+/* 小尖角：指向下面的角色 */
+.cp-guide-card::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 9px;
+  height: 9px;
+  background: var(--card);
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.cp-guide-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.cp-guide-no {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  line-height: 1.45;
+  color: var(--ink);
+  opacity: .72;
+}
+.cp-guide-x {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: 800;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink);
+  cursor: pointer;
+}
+.cp-guide-x:hover { background: var(--orange); }
+
+.cp-guide-caption {
+  margin: 0 0 9px;
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+
+.cp-guide-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.cp-guide-card button {
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.cp-guide-cta {
+  flex: 1 1 auto;
+  min-width: 108px;
+  padding: 6px 8px;
+  color: var(--card);
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--orange);
+}
+.cp-guide-cta:hover { background: var(--orange); color: var(--ink); }
+.cp-guide-listen,
+.cp-guide-quiet {
+  padding: 5px 6px;
+  color: var(--ink);
+  background: var(--paper, var(--card));
+  border: 1px solid var(--ink);
+}
+.cp-guide-listen:hover,
+.cp-guide-quiet:hover { background: var(--orange); }
+
+/* 皮肤菜单里的开关：沿用菜单排版，不新增浮动按钮 */
+.cp-guide-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(0, 0, 0, .25);
+}
+.cp-guide-toggle > span {
+  margin-right: auto;
+  font-size: 11px;
+  font-weight: 800;
+}
+.cp-guide-toggle button {
+  padding: 3px 7px;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink);
+  cursor: pointer;
+}
+.cp-guide-toggle button.is-active {
+  color: var(--card);
+  background: var(--ink);
+}
+
+/* 移动端：桌宠本体隐藏，字幕卡贴底成横条，不盖输入框 */
+@media (max-width: 899px) {
+  .cp-guide-card {
+    left: 8px !important;
+    right: 8px;
+    top: auto !important;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-width: none;
+    padding: 8px 9px;
+    box-shadow: 2px -2px 0 var(--orange);
+  }
+  .cp-guide-card::after { display: none; }
+  .cp-guide-caption { display: none; }
+  .cp-guide-no { font-size: 10px; }
+  .cp-guide-listen,
+  .cp-guide-quiet { display: none; }
+  .cp-guide-cta { min-width: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cp-guide-card {
+    transition: none;
+    transform: none;
+  }
+  .cp-guide-card.is-on { transform: none; }
+}
