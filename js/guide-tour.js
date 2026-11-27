@@ -147,7 +147,9 @@
       card.classList.remove('is-on');
       card.setAttribute('aria-hidden', 'true');
       var node = card;
-      hideTimer = setTimeout(function () { if (node.parentNode) node.remove(); }, 260);
+      /* 用独立计时器清理节点：showCard 会重置 hideTimer，
+         若共用一个计时器，快速切换时旧卡会永远留在 DOM 里 */
+      setTimeout(function () { if (node.parentNode) node.remove(); }, 260);
     }
     if (reason === 'dismiss' || reason === 'quiet' || reason === 'cta') {
       document.body.classList.remove('cp-guide-active');
@@ -238,7 +240,6 @@
     });
 
     var hold = Number(config.holdMs) || 9000;
-    if (hideTimer) clearTimeout(hideTimer);
     hideTimer = setTimeout(function () { hideCard('timeout'); }, hold);
 
     session.shownIds.push(script.id);
