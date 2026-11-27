@@ -415,12 +415,13 @@
     window.__WALL_TEXT = Object.assign({ empty: wl.emptyText || '', closed: wl.closedText || '' }, wl);
   }
 
-  /* ══════════════ GitHub 贡献蛇图 ══════════════
-     一张图同时具备：Platane/snk 生成的 53×7 贡献网格（格子按贡献着色 +
-     蛇身游走动画），月份/星期坐标轴由 scripts/inject_svg_axes.py 直接注入
-     SVG，共享同一 viewBox 坐标系，缩放时永远对齐。
-     统计行另取 data/contributions.json（Actions 每日用 GraphQL 拉取，前端
-     不碰 token）；拿不到就只隐藏统计，不影响图。 */
+  /* ══════════════ GitHub 贡献蛇图（实时数据） ══════════════
+     一张图同时具备：Platane/snk 生成的 53×7 网格 + 蛇身游走动画，月份/星期
+     坐标轴由 scripts/inject_svg_axes.py 注入 SVG，共享同一 viewBox 坐标系。
+     SVG 本身由 Actions 每天重生成（蛇的路径依赖当日数据），但格子颜色改用
+     /api/contributions 现拉的 GitHub 公开日历数据重绘：把 SVG 里烘焙好的旧
+     格子删掉，按 weeks 坐标插入新格子，蛇身动画原样保留。
+     接口不可用时退回 data/contributions.json 静态快照，不摆空架子。 */
   function renderGhSkeleton(box, username) {
     /* fork 场景没有本人 GitHub 账号时绝不展示——不回退到原作者地址 */
     var user = String(username || '').trim();
@@ -460,8 +461,57 @@
       '<span><strong>' + (data.total || 0) + '</strong> 次贡献</span>' +
       '<span>当前连续 <strong>' + (data.currentStreak || 0) + '</strong> 天</span>' +
       '<span>最长连续 <strong>' + (data.longestStreak || 0) + '</strong> 天</span>' +
+      ((data.source === 'live' || data.source === 'cache')
+        ? '<span class="gh-live-tag">LIVE · ' + esc(String(data.updatedAt || '').slice(5, 16).replace('T', ' ')) + ' UTC</span>' : '') +
       (range.from && range.to ? '<span class="gh-range">' + esc(range.from) + ' — ' + esc(range.to) + '</span>' : '');
     stats.hidden = false;
+  }
+
+  /* 把蛇图 SVG 里烘焙的旧格子换成实时格子；蛇身 rect.s 保留在最上层继续动。 */
+  function applyLiveGrid(box, data) {
+    if (!data || !Array.isArray(data.weeks) || !data.weeks.length ||
+        typeof DOMParser === 'undefined' || typeof XMLSerializer === 'undefined') return;
+    var imgs = box.querySelectorAll('.gh-snake img');
+    Array.prototype.forEach.call(imgs, function (img) {
+      var src = img.getAttribute('src');
+      if (!src) return;
+      fetch(src + '&live=' + Date.now(), { cache: 'no-cache', credentials: 'same-origin' })
+        .then(function (res) { return res.ok ? res.text() : null; })
+        .then(function (text) {
+          if (!text) return;
+          var doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+          if (doc.querySelector('parsererror') || !doc.documentElement) return;
+          var root = doc.documentElement;
+          var stale = root.querySelectorAll('rect.c');
+          for (var i = 0; i < stale.length; i += 1) {
+            stale[i].parentNode.removeChild(stale[i]);
+          }
+          var ns = 'http://www.w3.org/2000/svg';
+          var anchor = root.querySelector('rect.s');
+          data.weeks.forEach(function (week, col) {
+            (week || []).forEach(function (cell, row) {
+              if (!cell) return;
+              var rect = doc.createElementNS(ns, 'rect');
+              rect.setAttribute('class', 'c');
+              rect.setAttribute('x', String(2 + 16 * col));
+              rect.setAttribute('y', String(2 + 16 * row));
+              rect.setAttribute('rx', '2');
+              rect.setAttribute('ry', '2');
+              rect.setAttribute('style', 'fill:var(--c' + (Number(cell.level) || 0) + ')');
+              if (anchor) root.insertBefore(rect, anchor);
+              else root.appendChild(rect);
+            });
+          });
+          var holder = document.createElement('div');
+          holder.innerHTML = new XMLSerializer().serializeToString(root);
+          var svg = holder.firstChild;
+          if (!svg || svg.nodeName.toLowerCase() !== 'svg') return;
+          svg.setAttribute('class', (img.getAttribute('class') || '') + ' gh-live');
+          svg.setAttribute('aria-hidden', 'true');
+          img.parentNode.replaceChild(svg, img);
+        })
+        .catch(function () { /* SVG 拿不到就保留原图，不影响统计行 */ });
+    });
   }
 
   function initContributions() {
@@ -470,9 +520,9 @@
     /* 视口预取：贡献图在页面底部，首屏就发请求纯属浪费；滚到联系板块前 600px 再取。
        骨架由 renderGhSkeleton 负责，取数期间盒子保持 hidden，不会露出空架子。 */
     whenNearViewport($('contact'), function () {
-      /* 云端数据优先：data/contributions.json 才是真相源；total=0 或无数据时整块隐藏，
-         不展示别人的蛇图 / 旧快照。 */
-      fetch('data/contributions.json?v=' + Date.now(), { cache: 'no-cache', credentials: 'same-origin' })
+      /* 线上优先走 /api/contributions（现拉 GitHub，5 分钟缓存）；
+         GitHub Pages 没有 Functions 或接口挂了才退回静态快照。 */
+      fetch('/api/contributions?v=' + Date.now(), { cache: 'no-cache', credentials: 'same-origin' })
         .then(function (res) {
           if (!res.ok) throw new Error('HTTP ' + res.status);
           return res.json();
@@ -482,9 +532,22 @@
           if (!contribVisible(data)) { box.hidden = true; box.innerHTML = ''; return; }
           renderGhSkeleton(box, data.username);
           renderGhStats(box, data);
+          applyLiveGrid(box, data);
         })
         .catch(function () {
-          box.hidden = true; box.innerHTML = '';
+          fetch('data/contributions.json?v=' + Date.now(), { cache: 'no-cache', credentials: 'same-origin' })
+            .then(function (res) {
+              if (!res.ok) throw new Error('HTTP ' + res.status);
+              return res.json();
+            })
+            .then(function (data) {
+              if (!contribVisible(data)) { box.hidden = true; box.innerHTML = ''; return; }
+              renderGhSkeleton(box, data.username);
+              renderGhStats(box, data);
+            })
+            .catch(function () {
+              box.hidden = true; box.innerHTML = '';
+            });
         });
     }, 600);
   }

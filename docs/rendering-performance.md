@@ -60,7 +60,7 @@
 
 ### 4. 远程数据视口预取（2026-11-28 追加）
 
-留言墙（`/api/wall`，D1 查询）与 GitHub 贡献图（`data/contributions.json`）都在页面最底部，
+留言墙（`/api/wall`，D1 查询）与 GitHub 贡献图（`/api/contributions`，现拉公开日历 + 5 分钟缓存）都在页面最底部，
 原先首屏就发请求。新增通用 helper `whenNearViewport(el, run, margin)`（`js/main.js`）：
 
 - 元素距视口超过 600px 时挂 `IntersectionObserver`，滚到前 600px 才触发请求，

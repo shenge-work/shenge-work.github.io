@@ -19,6 +19,7 @@ import { onRequestGet as verifyApproveGet, onRequestPost as verifyApprovePost } 
 import { onRequestGet as secureAssetGet } from '../functions/api/secure-asset.js';
 import { onRequestGet as challengeGet, onRequestOptions as challengeOpt } from '../functions/api/challenge.js';
 import { onRequestGet as greetingGet, onRequestOptions as greetingOpt } from '../functions/api/greeting.js';
+import { onRequestGet as contributionsGet } from '../functions/api/contributions.js';
 
 /* ── /api/admin/**（M1 起本地联调后台，与线上同一套 handlers/SQL）── */
 import * as admStats from '../functions/api/admin/stats.js';
@@ -250,6 +251,9 @@ http.createServer(async (req, res) => {
     if (p === '/api/greeting') {
       const r = req.method === 'OPTIONS' ? await handler(greetingOpt, req) : await handler(greetingGet, req);
       return send(res, r);
+    }
+    if (p === '/api/contributions') {
+      return send(res, await handler(contributionsGet, req));
     }
     if (p === '/api/deliver') {
       const r = req.method === 'POST' ? await handler(deliverPost, req) : await handler(deliverOpt, req);

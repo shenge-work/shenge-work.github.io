@@ -730,49 +730,57 @@ network-requests；四主题视觉对比 12/12 不回归（字体渲染差异属
 **注意**：首页同时存在 `?v=` 缓存串与 `manifest.json` 等本地资产，改动走 `css/fonts.css` 时
 记得升 `?v=`（M3-B 桥接脚本约束：Astro 会把非 `is:inline` 的 stylesheet 打包合并，保持模板内联引用方式）。
 
-#### 落地记录（2026-11-28，已完成）
+#### 落地记录（2026-11-28，已完成；第一版被实测数据否掉，第二版定稿）
 
-**做法**：没有按方案 1 做「按站点用字子集化」，改成**整份镜像 Google 的可变字体分片**（更稳、零缺字）：
+**第一版：镜像 Google 的 unicode-range 分片（已废弃，保留作教训）**
 
-- 数据源 `https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900`，返回 **101 个
-  `@font-face`**（同一可变字体按 unicode-range 切成的 woff2 分片，`font-weight: 100 900`）。
-- 分片全部下载到 `fonts/noto-sans-sc/`（**4.3 MB / 101 个文件**，单个 30–90 KB，远低于 Pages 25 MiB 上限），
-  文件名为 `noto-sans-sc.<N>.woff2`；CSS 生成到 `css/noto-sans-sc.css`（103 KB，gzip 后约 20 KB）。
-- **`unicode-range` 原样保留**：浏览器只为页面实际出现的字符下载命中分片，首屏实测只拉 24–25 片、
-  共约百 KB 级，而不是一次下完整套；`font-display: swap` 语义不变。
-- 之所以不做「站点用字子集化」：单文件虽只有 1 个请求，但访客贴进 JD 的任意汉字（公司名、专业术语）
-  会缺字回退到 PingFang，视觉不统一；分片方案保留与 Google 完全一致的字形覆盖，成本是多几个同源小请求
-  （Cloudflare 走 HTTP/2 多路复用，代价很小）。
+- 数据源 `css2?family=Noto+Sans+SC:wght@100..900`，返回 101 个按字形切的 woff2 分片；
+  全部下载到 `fonts/noto-sans-sc/`（4.3 MB），生成 `css/noto-sans-sc.css`（保留 `unicode-range`）。
+- 本地验证一切正常：三页字体全部命中、零 4xx、排版零变化。
+- **线上 Lighthouse mobile 打脸**：LCP 22.7s → **13.0s**（score 59 → 65），但字体请求
+  **25 个 / 1266 KB**。首页中文文案横跨 25 个 unicode-range 片，4G 下等于现下 1.2 MB，
+  字体到达太晚 → `font-display: swap` 的二次重绘把 LCP 推后。**结论：分片方案解决不了
+  LCP，因为首屏用字密度决定了命中片数。**
+
+**第二版（定稿）：按站点实际用字做单文件子集**
+
+- 扫全站（`dist` 全部 HTML/JS/CSS/JSON + `data` + `js` + `css` + `templates` + `functions` +
+  `src` 源码，含 `\uXXXX` 转义）收集站点实际用字 → **1872 个码位**（CJK 1688）。
+- 源文件取 google/fonts 仓库的可变字体 `NotoSansSC[wght].ttf`（17.8 MB，走
+  `api.github.com` 的 blob 接口 —— `raw.githubusercontent.com` 在本机网络不可达）；
+  `pyftsubset --flavor=woff2 --layout-features=* --no-hinting` 出 **`fonts/noto-sans-sc-subset.woff2`
+  503 KB**，保留 `wght 100–900` 变体轴，一个文件覆盖全站所有字重。
+- 每页 head 加 `<link rel="preload" as="font" type="font/woff2" crossorigin>`，字体与 CSS
+  并行开始下载，不用等 CSSOM。
+- 生僻字兜底：访客输入 / AI 生成文本里不在子集的字（实测只有 `▸✉✦◈↺↻` 这类符号和个别汉字）
+  回退字体栈里的 PingFang SC / 微软雅黑 —— 这些字形**原本 Google 版也没有**，视觉与改前一致。
+- 结果：`fonts/noto-sans-sc/` 101 片（4.3 MB）整套删除，dist 从 57 MB 降到 **53 MB**。
 
 **改到的地方**：
 
 | 位置 | 改动 |
 |---|---|
-| `css/noto-sans-sc.css` | 新增，101 个 `@font-face` 指 `/fonts/noto-sans-sc/*.woff2` |
-| `fonts/noto-sans-sc/` | 新增 101 个 woff2 分片 |
-| `src/pages/{index,jd,company,school}.astro` | 删 `preconnect` + Google CSS link + `noscript` 双份，换成 `<link rel="stylesheet" href="/css/noto-sans-sc.css">` |
-| `src/layouts/SiteShell.astro` | 补同一条（作品案例页 `/work/portfolio` 一并收口） |
+| `fonts/noto-sans-sc-subset.woff2` | 新增，503 KB 单文件可变字体子集 |
+| `css/noto-sans-sc.css` | 新增，一个 `@font-face`（`font-weight: 100 900`，`font-display: swap`） |
+| `src/pages/{index,jd,company,school}.astro`、`src/layouts/SiteShell.astro` | 删 `preconnect` + Google CSS link + `noscript` 双份；换成 `preload` + 本地 CSS |
 | 旧链 `index.html` / `jd.html` / `company.html` / `school.html` / `resume.html` / `variants/agent-2026.html` / `templates/resume.template.html` / `functions/lib/resume-template.js` | 同上（简历长图 / 邮件模板也吃同一套） |
-| `scripts/pages-build.sh` | 静态资源白名单加 `fonts`；⑥ 硬校验加 `css/noto-sans-sc.css` 与分片 `.4` |
-| `scripts/fetch_noto_fonts.py` | 新增可重跑生成器（`--check` 只校验分片齐全），字体升级时跑一次即可 |
+| `scripts/build-noto-subset.py` | 新增可重跑生成器：取源字体 → 扫用字 → pyftsubset；`--check` 只校验子集覆盖 |
+| `scripts/pages-build.sh` | 静态白名单加 `fonts`；⑥ 硬校验加 `css/noto-sans-sc.css` 与子集文件 |
 
 **顺带修掉的构建故障**：`pages-build.sh:179/184` 的 `"… $src（替代旧产物）"` —— 变量名后面紧跟全角
-「（」，bash 把全角字节算进变量名，`set -u` 下报 `src…: unbound variable`，整站构建在混排段直接失败。
-改成 `${src}` 显式边界。（这是本次提交前工作区已有的未提交改动带进来的，不是旧脚本问题。）
+「（」，bash 把全角字节算进变量名，`set -u` 下报 `src…: unbound variable`，整站构建在混排段直接失败
+（这也解释了 11-28 那批「已完成待部署」的改动为何一直没上线）。改成 `${src}` 显式边界。
 
-**校验结果**：
+**校验结果（本地）**：
 
-- `scripts/fetch_noto_fonts.py --check`：101 引用 / 0 缺失；重跑生成幂等。
-- `bash scripts/pages-build.sh`：363 文件 / 57 MB，产物含 `dist/fonts/noto-sans-sc/`（101 片）与
-  `dist/css/noto-sans-sc.css`；`dist/index.html` 里 `fonts.googleapis` 命中数 **0**。
-- Playwright（系统 Chrome，390×844）：`/`、`/resume`、`/jd` 三页 `document.fonts.check('Noto Sans SC')`
-  全部 `true`、`document.fonts` 里有 Noto 记录；首屏字体请求 24 / 25 / 16 个，**全部 200，零 4xx**，
-  页面零 JS 报错；截图排版与改前一致（标题字重、行高、断行无变化）。
-- 唯一保留的 `gstatic` 引用是 3D `model-viewer` 的 Draco 解码器（`assets/skins/vendor/model-viewer.min.js`
-  内置默认地址），与字体无关，后台 CSP 已白名单该域。
+- `python3 scripts/build-noto-subset.py --check`：子集 cmap 1872 码位，站点用字缺失 14 个（全是
+  字体本身没有的符号，回退系统字体）。
+- `bash scripts/pages-build.sh`：264 文件 / **53 MB**；`dist/index.html` 里 `fonts.googleapis` 命中 **0**。
+- Playwright（系统 Chrome，390×844）：`/`、`/jd`、`/resume` 三页 `document.fonts.check('Noto Sans SC')`
+  全部 `true`，**每页字体请求 1 个（503 KB）**，零 4xx、零 JS 报错；首屏截图与分片版逐像素一致。
+- `node --test tests/*.test.mjs` 313 通过；`pnpm test` 26 通过；`pnpm lint` 干净。
 
-**线上验收（部署后补）**：Lighthouse mobile 跑 `chenpeisheng.cn`，对比 pre-T25 的 62 分基线看
-LCP / FCP 与 `network-requests` 里是否还有境外字体域。
+**线上验收（2026-11-28 部署后）**：见文末「T25 线上复测」小节。
 
 ### 3.22 T26 · React 迁移收尾观察（2026-11-26 登记，观察期至 12-03）
 

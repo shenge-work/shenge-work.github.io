@@ -195,7 +195,7 @@ Cloudflare Pages → Settings → Variables and Secrets 配置（Secret 类型�
 
 **常用可选**
 
-`RESEND_API_KEY` / `RESEND_FROM`（邮件）、`TURNSTILE_SECRET`（人机校验）、`KB_WORKER_URL` + `KB_TOKEN`（语义检索）、`ALLOWED_ORIGINS`、`MAIN_SITE_URL`、`TTS_ENDPOINT`、`WECHAT_*`（微信登录）、`WALL_ADMIN_TOKEN`（应急删除）。
+`RESEND_API_KEY` / `RESEND_FROM`（邮件）、`TURNSTILE_SECRET`（人机校验）、`KB_WORKER_URL` + `KB_TOKEN`（语义检索）、`ALLOWED_ORIGINS`、`MAIN_SITE_URL`、`TTS_ENDPOINT`、`WECHAT_*`（微信登录）、`WALL_ADMIN_TOKEN`（应急删除）、`GH_LOGIN`（贡献图查询的 GitHub 登录名，默认 `shenge-work`；fork 后改成自己的）。
 
 **资源绑定**（不是环境变量，需在控制台创建）
 
@@ -329,7 +329,7 @@ npx wrangler d1 execute portfolio-db --remote --file=db/migrations/<file>.sql
 | [`test.yml`](.github/workflows/test.yml)                     | `functions/**`、`tests/**`、PR | 语法检查 + `node --test` + 兜底知识库/快照幂等 |
 | [`content-build.yml`](.github/workflows/content-build.yml)   | 数据 / 模板 / 生成物变更              | 生成物与数据逐字一致、结构校验、两页预算              |
 | [`sync-site-data.yml`](.github/workflows/sync-site-data.yml) | `site-data.json` 变更          | 重建 `data/site-data.js` 快照         |
-| [`contributions.yml`](.github/workflows/contributions.yml)   | 定时                           | 更新页脚 GitHub 贡献热力图数据               |
+| [`contributions.yml`](.github/workflows/contributions.yml)   | 定时                           | 每天重生成页脚蛇图 SVG（格子颜色由 `/api/contributions` 实时数据覆盖） |
 
 本地等价命令：
 
@@ -361,7 +361,7 @@ python3 scripts/sync_site_data.py --check
 **空数据板块自动隐藏**：主页各板块按数据自动收起，fork 后没有对应内容不必删代码——把 `data/site-data.json` 里相应数组留空（或只放空对象）即可，整节连同导航项一起消失、后续编号自动重排。三处特例：
 
 - **个人作品**（`works`）：空数组 / 空对象数组 → SEC.04 整节隐藏；
-- **GitHub 贡献热力图**：`data/contributions.json` 的 `total=0`、无 `days` 或**无你的 `username`** → 整块不展示（不会回退到原作者的 GitHub 地址）；
+- **GitHub 贡献热力图**：`/api/contributions` 现拉 GitHub 公开日历（5 分钟 KV 缓存），不可用才回退 `data/contributions.json`；两者都没有贡献 / 无 `days` 或**无你的 `username`** → 整块不展示（不会回退到原作者的 GitHub 地址）；
 - **页脚推荐的人**：`data/people.json` 的 `people` 留空 → 整节隐藏。
 
 判定逻辑集中在 `src/lib/section-visibility.ts`（构建期与运行时 `js/main.js` 同口径），`work/portfolio.html` 案例页在缺数据时渲染空状态页而非构建报错。

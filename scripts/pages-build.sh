@@ -119,11 +119,12 @@ for f in index.html resume.html jd.html company.html school.html 404.html \
          functions/api/greeting.js functions/api/admin/greeting.js \
          functions/api/admin/voice.js functions/api/admin/voice/preview.js \
          functions/lib/site-content.js functions/api/admin/site-content.js \
+         functions/lib/contributions.js functions/api/contributions.js \
          functions/lib/kb-sync.js functions/api/admin/kb.js \
          functions/lib/resume-inject.js functions/lib/resume-pdf.js functions/api/resume-pdf.js \
          css/secure-access.css js/secure-access.js functions/api/secure-asset.js \
          functions/lib/secure-access.js functions/lib/secure-assets.js \
-         css/noto-sans-sc.css fonts/noto-sans-sc/noto-sans-sc.4.woff2 \
+         css/noto-sans-sc.css fonts/noto-sans-sc-subset.woff2 \
                  'functions/data/[file].js' data/fallback/site-data.js data/fallback/people.js \
          functions/_middleware.js robots.txt manifest.json work/portfolio.html; do
   if [ ! -f "$OUT/$f" ]; then

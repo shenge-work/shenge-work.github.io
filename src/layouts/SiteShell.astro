@@ -23,7 +23,8 @@ const canonicalHref = canonical ?? SITE;
     <link rel="canonical" href={canonicalHref} />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-64.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
-    <link rel="stylesheet" href="/css/noto-sans-sc.css" />
+    <link rel="preload" href="/fonts/noto-sans-sc-subset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/noto-sans-sc.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
   </head>
   <body>

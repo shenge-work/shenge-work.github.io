@@ -1480,16 +1480,17 @@ a.cap-ref:hover, a.cap-ref:focus-visible {
 .gh-stats { display: flex; gap: 22px; flex-wrap: wrap; align-items: baseline; font-size: 13px; color: var(--ink-soft); margin-bottom: 14px; }
 .gh-stats strong { color: var(--ink); font-family: var(--font-display); font-size: 19px; font-weight: 900; margin-right: 2px; }
 .gh-range { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); }
+.gh-live-tag { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .06em; color: var(--green); border: 1px solid currentColor; padding: 1px 5px; }
 .gh-activity [hidden] { display: none !important; }
 
 /* GitHub 贡献蛇图：53×7 网格 + 游走动画 + 注入的月份/星期坐标轴。
-   明/暗两张按皮肤切换，坐标轴颜色已写进各自 SVG。 */
+   实时数据会把 img 换成同源内联 svg，两套节点都按皮肤切换。 */
 .gh-snake { margin: 6px 0 2px; }
-.gh-snake img { width: 100%; height: auto; display: block; }
-.gh-snake img.gh-snake-dark { display: none; }
-[data-theme="noir"] .gh-snake img.gh-snake-light { display: none; }
-[data-theme="noir"] .gh-snake img.gh-snake-dark { display: block; }
-.gh-snake.gone, .gh-snake img.gone { display: none; }
+.gh-snake img, .gh-snake svg { width: 100%; height: auto; display: block; }
+.gh-snake .gh-snake-dark { display: none; }
+[data-theme="noir"] .gh-snake .gh-snake-light { display: none; }
+[data-theme="noir"] .gh-snake .gh-snake-dark { display: block; }
+.gh-snake.gone, .gh-snake .gone { display: none; }
 
 .resume-cta {
   border: var(--border-thick);

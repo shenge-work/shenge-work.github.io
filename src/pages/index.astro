@@ -53,10 +53,11 @@ const showPeople = peopleVisible(people);
   <link rel="icon" type="image/png" sizes="512x512" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
   <meta name="description" content={d.meta?.description} />
-  <link rel="stylesheet" href="/css/noto-sans-sc.css" />
+  <link rel="preload" href="/fonts/noto-sans-sc-subset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/noto-sans-sc.css" />
   <!-- 等宽英文字体本地自托管，不依赖境外 CDN -->
   <link rel="stylesheet" href="css/fonts.css?v=20261111a" />
-  <link rel="stylesheet" href="css/style.css?v=20261125g" />
+  <link rel="stylesheet" href="css/style.css?v=20261128a" />
   <link rel="stylesheet" href="css/ai-skins.css?v=20261125a" />
   <link rel="stylesheet" href="css/ai-voice.css?v=20261118b" />
   <!-- 面板窗口层：放大 / 还原 / 一步关闭，样式放最后以便覆盖基础面板规则 -->
@@ -586,7 +587,7 @@ const showPeople = peopleVisible(people);
       );
     })}
   </div>
-  <!-- GitHub 贡献热力图：数据来自 data/contributions.json（Actions 每日刷新），加载失败整块隐藏 -->
+  <!-- GitHub 贡献热力图：统计与格子走 /api/contributions 实时拉取，接口不可用时退回 data/contributions.json -->
   <div class="gh-activity" id="ghActivity" hidden></div>
   <div class="resume-cta reveal" id="resumeCta">
     <div class="resume-cta-text"><strong>{cta.title}</strong><p>{cta.desc}</p></div>
@@ -755,7 +756,7 @@ const showPeople = peopleVisible(people);
 <script is:inline src="js/asset-cdn.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script is:inline>window.CP_AI_REACT = 1; /* M3-B：main.js 第 11 节短路，面板由 React 岛接管 */</script>
-<script is:inline src="js/main.js?v=20261127c"></script>
+<script is:inline src="js/main.js?v=20261128a"></script>
 <script is:inline src="js/ai-skins.js?v=20261125h"></script>
 <script is:inline src="js/gender-switch.js?v=20261125b"></script>
 <script is:inline src="js/ai-voice.js?v=20261125b"></script>

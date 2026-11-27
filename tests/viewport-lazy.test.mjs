@@ -18,8 +18,13 @@ test('存在通用视口预取 helper，且有无 IO 降级', () => {
 test('贡献图请求被视口预取包裹，观察联系板块', () => {
   const seg = main.slice(main.indexOf('function initContributions'), main.indexOf('板块可见性', main.indexOf('function initContributions')));
   assert.match(seg, /whenNearViewport\(\$\('contact'\)/);
-  assert.match(seg, /data\/contributions\.json/);
+  assert.match(seg, /\/api\/contributions/);
+  assert.match(seg, /data\/contributions\.json/); // 接口不可用时回退静态快照
+  assert.match(seg, /applyLiveGrid/);
   assert.match(seg, /renderGhSkeleton/);
+  // 实时网格重绘：删掉蛇图里烘焙的旧格子，蛇身 rect.s 留在最上层继续动
+  assert.match(main, /querySelectorAll\('rect\.c'\)/);
+  assert.match(main, /root\.querySelector\('rect\.s'\)/);
 });
 
 test('留言墙首次请求被视口预取包裹，观察 wall 板块', () => {
