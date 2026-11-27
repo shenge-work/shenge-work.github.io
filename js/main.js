@@ -495,8 +495,7 @@
       else a.hidden = false;
     });
     /* 重排导航编号 + SEC 编号（只算真正可见、且有对应导航项的板块）。
-       hero / footerPeople 这类非导航板块不参与计数，否则序号从 02 起跳，
-       还会让最后一个板块与外链博客的静态编号撞号。 */
+       hero / footerPeople 这类非导航板块不参与计数，否则序号从 02 起跳。 */
     var seq = 0;
     var visibleSecs = sections.filter(function (s) {
       return !s.hidden && navLinks.some(function (a) { return a.getAttribute('data-sec') === s.id; });

@@ -15,6 +15,9 @@
   渲染空状态页，不再 `throw` 阻断 fork 后的全站构建。
 - `index.html`（旧链）works 板块默认 hidden、滚动布局计算后移到可见性判定之后，避免
   hidden 状态下量出 0 宽度。
+- **主页顶部导航移除博客索引**：`index.html` 与 `src/pages/index.astro` 删除第 11 项外链「博客」，
+  导航现为关于我 01 … 留言墙 10、无断档；同步更新 E2E 编号断言与 `main.js` 注释。
+  博客地址仍保留在 JSON-LD `sameAs` 和联系方式卡片中，仅不再占据顶部导航。
 
 ### 修复
 - **AI 指路小票文案重复**（BUG-01 / TODO T35）：`js/ai-stage-link.js` 前缀由「▶ 去看看」改为「▶ 指路」，
