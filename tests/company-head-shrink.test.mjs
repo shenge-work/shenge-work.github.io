@@ -38,8 +38,16 @@ test('CSS 仅在移动端抽屉内折叠头部大块，独立页不受影响', (
 });
 
 test('缓存版本已 bump，浏览器不会吃旧 CSS/JS', () => {
+  const seen = new Set();
   for (const f of ['index.html', 'resume.html', 'company.html', 'src/pages/index.astro', 'js/company-lazy.js']) {
     const s = read(f);
-    assert.ok(!/company-profile\.(css|js)\?v=2026(?!1128a)[0-9a-z]+/.test(s), `${f} 仍有旧版本引用`);
+    const vers = [...s.matchAll(/company-profile\.(?:css|js)\?v=(2026[0-9a-z]+)/g)].map((m) => m[1]);
+    for (const v of vers) {
+      /* 版本格式 YYYYMMDD + 后缀：只要求不早于本次改动日期，不写死具体后缀，
+         否则以后每次 bump 都要回来改测试（上一版就踩了这个坑）。 */
+      assert.ok(v.slice(0, 8) >= '20261128', `${f} 仍有历史旧版本 ${v}`);
+      seen.add(v);
+    }
   }
+  assert.equal(seen.size, 1, '所有入口应引用同一个缓存版本，避免新旧混用');
 });

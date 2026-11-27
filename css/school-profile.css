@@ -52,6 +52,35 @@
   font-family: var(--font-display, var(--font-cn)); font-size: clamp(27px, 4vw, 40px);
   font-weight: 900; line-height: 1.2; margin: 12px 0 6px; letter-spacing: .01em;
 }
+/* 顶部引导锚点：整篇档案很长，「学历核验」在页尾容易被漏看，
+   首屏就贴在校名旁给一个显式入口。纯 #hash 跳转，无 JS 依赖、可分享深链。 */
+.sp-jump {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-left: 10px; padding: 3px 9px;
+  vertical-align: middle; white-space: nowrap;
+  font-family: var(--font-mono, monospace); font-size: 11px; font-weight: 700;
+  letter-spacing: .03em; line-height: 1.5;
+  color: var(--orange); background: var(--card);
+  border: 2px solid var(--orange); border-radius: 2px;
+  box-shadow: 2px 2px 0 var(--orange);
+  text-decoration: none; cursor: pointer;
+  transition: transform .14s ease, box-shadow .14s ease, background .14s ease, color .14s ease;
+}
+.sp-jump::before { content: '↓'; font-size: 13px; font-weight: 900; }
+.sp-jump:hover, .sp-jump:focus-visible {
+  transform: translate(2px, 2px); box-shadow: 0 0 0 var(--orange);
+  background: var(--orange); color: #fff; outline: none;
+}
+/* 落点避开 sticky 顶栏，跳转后给一次高亮提示「就是这里」 */
+#sp-verify { scroll-margin-top: 72px; }
+#sp-verify:target { animation: sp-jump-flash 2.4s ease-out; }
+@keyframes sp-jump-flash {
+  0%, 30% { outline: 3px solid var(--orange); outline-offset: 6px; }
+  100% { outline: 3px solid transparent; outline-offset: 6px; }
+}
+@media (max-width: 640px) {
+  .sp-jump { margin: 8px 0 0; font-size: 10.5px; }
+}
 .sp-current { font-size: 13.5px; font-weight: 700; color: var(--orange); }
 .sp-current b { font-family: var(--font-mono, monospace); font-size: 11px; letter-spacing: .08em; margin-right: 6px; }
 .sp-sub { font-family: var(--font-mono, monospace); font-size: 11.5px; color: var(--ink-soft); margin-top: 6px; }
@@ -371,7 +400,7 @@ body.sp-modal-open { overflow: hidden; }
 @media print {
   html[data-theme] { --paper: #fff; --card: #fff; --ink: #000; --ink-soft: #333; --orange: #000; --blue: #000; --green: #000; }
   body { background: #fff; color: #000; }
-  .topbar, .sp-foot, .sp-fold-more, .sp-lightbox, .sp-modal-mask, .sp-apply-btn { display: none !important; }
+  .topbar, .sp-foot, .sp-fold-more, .sp-lightbox, .sp-modal-mask, .sp-apply-btn, .sp-jump { display: none !important; }
   .sp-page { padding: 0; max-width: none; }
   .sp-page-body { box-shadow: none; border-color: #000; padding: 0; }
   .sp-fold .sp-fold-clip { max-height: none !important; overflow: visible !important; }

@@ -6,6 +6,16 @@
 ## 2026-11-28
 
 ### 变更
+- **中文字体本地化（T25，性能主优化项）**：不再向 `fonts.googleapis.com` / `fonts.gstatic.com`
+  取 Noto Sans SC。改为自托管 Google 的**可变字体分片**——101 个 woff2（4.3 MB，单文件 30–90 KB）
+  放 `fonts/noto-sans-sc/`，`css/noto-sans-sc.css` 保留原 `unicode-range`，按页面实际字符按需下载
+  （首屏实测 24–25 片、百 KB 级）。四处 Astro 页 + `SiteShell` + 五份旧链 HTML + 简历模板/邮件模板
+  全部改指本地 CSS；`pages-build.sh` 静态白名单与硬校验同步加 `fonts`。新增
+  `scripts/fetch_noto_fonts.py`（`--check` 只校验分片齐全）可重跑。验证：Playwright 390px 三页
+  字体全部命中、字体请求零 4xx、零 JS 报错、排版零变化。细节与取舍见
+  [docs/TODO.md §3.21](docs/TODO.md)。
+- **修复构建阻断（`pages-build.sh`）**：混排日志 `"… $src（替代旧产物）"` 中变量名紧跟全角「（」，
+  bash 视为变量名一部分，`set -u` 下报 `src…: unbound variable` 使整站构建失败；改为 `${src}`。
 - **空数据板块自动隐藏（fork 兼容）**：主页各板块改用统一判定 `src/lib/section-visibility.ts`——
   数组非空还不够，空对象数组也算无数据，整节连同导航一起收起、编号自动重排；构建期
   `index.astro` 与运行时 `main.js` 同口径。三个重点：个人作品 `works` 无数据隐藏整节；

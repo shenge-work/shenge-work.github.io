@@ -41,7 +41,7 @@ echo "   ${HTML_FILES[*]}"
 echo "=== ② 静态资源"
 # work/：作品案例页（生成器产物，React 迁移接管前由旧文件兜底）
 #   ⚠ 2026-11-25 M0 盘点发现：work/ 从未进 dist，线上 /work/portfolio.html 一直 404（仅 GitHub Pages 备份线路正常）
-for item in css js data images videos work favicon-64.png favicon.png robots.txt sitemap.xml manifest.json; do
+for item in css js fonts data images videos work favicon-64.png favicon.png robots.txt sitemap.xml manifest.json; do
   if [ ! -e "$item" ]; then
     echo "✗ 缺少 $item，先检查仓库是否完整"
     exit 1
@@ -123,6 +123,7 @@ for f in index.html resume.html jd.html company.html school.html 404.html \
          functions/lib/resume-inject.js functions/lib/resume-pdf.js functions/api/resume-pdf.js \
          css/secure-access.css js/secure-access.js functions/api/secure-asset.js \
          functions/lib/secure-access.js functions/lib/secure-assets.js \
+         css/noto-sans-sc.css fonts/noto-sans-sc/noto-sans-sc.4.woff2 \
                  'functions/data/[file].js' data/fallback/site-data.js data/fallback/people.js \
          functions/_middleware.js robots.txt manifest.json work/portfolio.html; do
   if [ ! -f "$OUT/$f" ]; then
@@ -175,12 +176,12 @@ if [ -n "$REACT_MIGRATED_PAGES" ] && [ "$REACT_MIGRATED_PAGES" != "none" ]; then
     fi
     mkdir -p "$OUT/$(dirname "$p")"
     cp "$src" "$OUT/$p"
-    echo "   · 混排 $p ← $src（替代旧产物）"
+    echo "   · 混排 $p ← ${src}（替代旧产物）"
     # login 双副本（旧构建即如此：/login 直接 200，/login/ 兜住带斜杠老链接）
     if [ "$p" = "login.html" ]; then
       mkdir -p "$OUT/login"
       cp "$src" "$OUT/login/index.html"
-      echo "   · 混排 login/index.html ← $src（二副本）"
+      echo "   · 混排 login/index.html ← ${src}（二副本）"
     fi
   done
   # React bundle（hash 产物）：页面引用 /_astro/**，整体拷入（与旧站 js/ css/ 目录互不冲突）

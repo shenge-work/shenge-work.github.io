@@ -66,7 +66,9 @@
     opts = opts || {};
     var key = opts.key || title;
     var expanded = isExpanded(key, !opts.folded);
-    return '<section class="sp-sec sp-fold' + (expanded ? '' : ' is-folded') + '" data-sp-fold="' + esc(key) + '">' +
+    return '<section class="sp-sec sp-fold' + (expanded ? '' : ' is-folded') + '"' +
+      (opts.id ? ' id="' + esc(opts.id) + '"' : '') +
+      ' data-sp-fold="' + esc(key) + '">' +
       '<div class="sp-sec-head"><h2>' + esc(title) + '</h2><span class="sp-sec-en">' + esc(en) + '</span><span class="sp-sec-line"></span></div>' +
       (opts.note ? '<p class="sp-sec-note">' + esc(opts.note) + '</p>' : '') +
       '<div class="sp-fold-clip">' + inner + '</div>' +
@@ -87,7 +89,10 @@
       '<div class="sp-head-top">' + stamp +
         '<div class="sp-head-main">' +
           '<span class="sp-kicker">SCHOOL FILE · 学校档案</span>' +
-          '<h1 class="sp-title">' + esc(s.name) + '</h1>' +
+          '<h1 class="sp-title">' + esc(s.name) +
+            /* 引导锚点：档案整篇很长，学历核验在页尾容易被漏看；有核验数据才挂入口 */
+            (s.verify ? '<a class="sp-jump" href="#sp-verify" title="跳到本页末尾的学历核验板块 · 可申请在线查验">学历核验</a>' : '') +
+          '</h1>' +
           (s.currentName ? '<p class="sp-current"><b>现校名</b>' + esc(s.currentName) + '</p>' : '') +
           '<p class="sp-sub">' + esc(s.industry || '') + ' · ' + esc(s.period || '') + ' · ' + esc(s.degree || '') + '</p>' +
           '<p class="sp-oneline">' + esc(s.oneLine || '') + '</p>' +
@@ -367,7 +372,7 @@
       fold('获奖证书', 'AWARDS', awardsBlock(s), { key: 'awards' }) +
       fold('校园相册', 'ALBUM', albumBlock(s), { key: 'album', folded: true }) +
       fold('从课程到工程', 'GROWTH', growthBlock(s), { key: 'growth', note: gr.note }) +
-      fold('学历核验', 'VERIFY', verifyBlock(s), { key: 'verify' }) +
+      fold('学历核验', 'VERIFY', verifyBlock(s), { key: 'verify', id: 'sp-verify' }) +
       fold('数据说明与资料来源', 'SOURCES', sourcesBlock(s), { key: 'sources', folded: true }) +
       foot();
     return html;

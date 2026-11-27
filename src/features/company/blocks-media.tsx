@@ -299,6 +299,7 @@ export function SecureMaterialsBlock({ c }: { c: Company }) {
   return (
     <div ref={hostRef}>
       <FoldableSection
+        id="cp-proof"
         cls="cp-sec cp-secure-materials"
         stateKey={`${c.id}:secure-materials`}
         noFold

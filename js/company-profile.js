@@ -351,17 +351,18 @@
     var count = o.count || 0;
     var countText = o.countText || (count ? '共 ' + count + ' 项' : '内容较多');
     var threshold = o.threshold == null ? 4 : o.threshold;
+    var idAttr = o.id ? ' id="' + esc(o.id) + '"' : '';
     var needFold = o.fold === true ||
       (o.fold !== false && (!!o.heavy || count >= threshold || inner.length >= FOLD_TEXT_LIMIT));
 
     if (!needFold) {
-      return '<' + tag + ' class="' + cls + '"><' + headTag + ' class="' + headCls + '">' +
+      return '<' + tag + ' class="' + cls + '"' + idAttr + '><' + headTag + ' class="' + headCls + '">' +
         o.titleHtml + '</' + headTag + '>' + inner + '</' + tag + '>';
     }
     var stateKey = (o.cid || 'x') + ':' + (o.key || 'block');
     var expanded = !!foldState[stateKey];
     var panelId = 'cpfold-' + String(stateKey).replace(/[^a-zA-Z0-9_-]/g, '-');
-    return '<' + tag + ' class="' + cls + ' cp-foldable' + (expanded ? '' : ' is-folded') + '"' +
+    return '<' + tag + ' class="' + cls + ' cp-foldable' + (expanded ? '' : ' is-folded') + '"' + idAttr +
       ' data-cp-fold data-cp-fold-key="' + esc(stateKey) + '"' +
       ' data-cp-fold-count="' + esc(countText) + '" style="--fold-h:' + (o.foldH || 132) + 'px">' +
       '<' + headTag + ' class="' + headCls + ' cp-fold-head">' +
@@ -862,7 +863,7 @@
     return foldBlock({
       tag: 'section', cls: 'cp-sec cp-secure-materials',
       titleHtml: '任职佐证材料 <span class="cp-sec-en">EMPLOYMENT PROOF · LOCKED</span>',
-      inner: inner, cid: c.id, key: 'secure-materials',
+      inner: inner, cid: c.id, key: 'secure-materials', id: 'cp-proof',
       fold: false, threshold: 999
     });
   }
@@ -894,6 +895,12 @@
       '" target="_blank" rel="noopener noreferrer">' + esc(c.website.text) + ' ↗</a>' : '';
     var founded = reg.founded ? '<span class="cp-founded">成立于 ' + esc(reg.founded) + '</span>' : '';
     var pred = c.predecessor || null;
+    /* 顶部引导锚点文案：材料名按数据动态取（本站各家都是「离职证明」）。
+       没配 secureMaterials 的档案整个板块不渲染，锚点也一并隐藏。 */
+    var proof = c.secureMaterials;
+    var proofLabel = proof && proof.resource
+      ? (((proof.items || [])[0] || {}).label || '任职佐证材料')
+      : '';
     var predLine = pred && pred.name
       ? '<p class="cp-entity cp-pred-entity">前身主体：' + esc(pred.name) +
         (pred.shortName ? '（' + esc(pred.shortName) + '）' : '') +
@@ -910,7 +917,9 @@
       '  <div class="cp-head-top">' +
       '    ' + stamp +
       '    <div class="cp-head-main">' +
-      '      <h3 class="cp-title" id="cpTitle">' + esc(c.name) + '</h3>' +
+      '      <h3 class="cp-title" id="cpTitle">' + esc(c.name) +
+        (proofLabel ? '<a class="cp-jump" href="#cp-proof" title="跳到本页末尾的任职佐证材料 · 可申请查看">' + esc(proofLabel) + '</a>' : '') +
+      '</h3>' +
       '      <p class="cp-sub">' + esc(c.industry || '') + (site ? ' · ' + site : '') +
                 (founded ? ' · ' + founded : '') + '</p>' +
       '      <p class="cp-entity">' + esc(c.entity || c.name) + sup(reg.source || '') + '</p>' +

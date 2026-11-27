@@ -53,11 +53,7 @@ const showPeople = peopleVisible(people);
   <link rel="icon" type="image/png" sizes="512x512" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
   <meta name="description" content={d.meta?.description} />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- 中文用 Noto Sans SC，异步加载：境外网络被墙时不阻塞渲染，直接落到系统字体栈 -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" media="print" onload="this.media='all'" />
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" /></noscript>
+  <link rel="stylesheet" href="/css/noto-sans-sc.css" />
   <!-- 等宽英文字体本地自托管，不依赖境外 CDN -->
   <link rel="stylesheet" href="css/fonts.css?v=20261111a" />
   <link rel="stylesheet" href="css/style.css?v=20261125g" />
@@ -68,7 +64,7 @@ const showPeople = peopleVisible(people);
   <!-- 角色 ↔ 面板语义联动：说话音波 / 指路小票 / 落点描边 -->
   <link rel="stylesheet" href="css/ai-stage-link.css?v=20261121b" />
   <!-- 公司档案（SEC.03 徽章 + 抽屉）：与 resume.html 共用，数据源 data/company-profiles.js -->
-  <link rel="stylesheet" href="css/company-profile.css?v=20261128a" />
+  <link rel="stylesheet" href="css/company-profile.css?v=20261128b" />
   <link rel="stylesheet" href="css/secure-access.css?v=20261125s1" />
   <meta name="theme-color" content="#F3EEE2" />
   <link rel="canonical" href="https://chenpeisheng.cn/" />

@@ -27,7 +27,7 @@
     'js/cp-panorama.js?v=20261125g',
     'js/company-social.js?v=20261125g',
     'js/secure-access.js?v=20261125s1',
-    'js/company-profile.js?v=20261128a'
+    'js/company-profile.js?v=20261128b'
   ];
   var state = 'idle'; /* idle | loading | ready */
   var pendingCid = null;

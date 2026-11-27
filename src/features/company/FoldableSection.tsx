@@ -50,12 +50,14 @@ export interface FoldProps {
   /** 强制折叠 / 强制不折叠（旧版 fold === true / false） */
   forceFold?: boolean;
   noFold?: boolean;
+  /** 稳定锚点 id（首屏引导锚点跳转用，纯 #hash，无 JS 依赖） */
+  id?: string;
 }
 
 export default function FoldableSection({
   as = 'section', cls = 'cp-sec', headAs = 'h4', headCls = 'cp-sec-title',
   title, children, stateKey, count = 0, countText, threshold = 4, foldH = 132,
-  heavy = false, forceFold = false, noFold = false,
+  heavy = false, forceFold = false, noFold = false, id,
 }: FoldProps) {
   const Tag = as;
   const HeadTag = headAs;
@@ -87,7 +89,7 @@ export default function FoldableSection({
 
   if (!needFold) {
     return (
-      <Tag className={cls}>
+      <Tag id={id} className={cls}>
         <HeadTag className={headCls}>{title}</HeadTag>
         <div ref={clipRef}>{children}</div>
       </Tag>
@@ -104,6 +106,7 @@ export default function FoldableSection({
 
   return (
     <Tag
+      id={id}
       className={`${cls} cp-foldable${expanded ? '' : ' is-folded'}`}
       data-cp-fold=""
       data-cp-fold-key={stateKey}

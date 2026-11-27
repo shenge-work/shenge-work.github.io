@@ -38,17 +38,17 @@ function saveFold(key: string, expanded: boolean) {
 }
 
 function SpFold({
-  title, en, note, foldKey, folded, children,
+  title, en, note, foldKey, folded, id, children,
 }: {
   title: string; en: string; note?: string; foldKey: string; folded?: boolean;
-  children?: React.ReactNode;
+  id?: string; children?: React.ReactNode;
 }) {
   const [expanded, setExpanded] = useState(() => {
     const s = readFold();
     return Object.prototype.hasOwnProperty.call(s, foldKey) ? !!s[foldKey] : !folded;
   });
   return (
-    <section className={'sp-sec sp-fold' + (expanded ? '' : ' is-folded')} data-sp-fold={foldKey}>
+    <section id={id} className={'sp-sec sp-fold' + (expanded ? '' : ' is-folded')} data-sp-fold={foldKey}>
       <div className="sp-sec-head">
         <h2>{title}</h2><span className="sp-sec-en">{en}</span><span className="sp-sec-line"></span>
       </div>
@@ -177,7 +177,7 @@ export default function SchoolPanel({ raw, schoolId }: { raw: School; schoolId: 
           </div>
         ))}
       </SpFold>
-      <SpFold title="学历核验" en="VERIFY" foldKey="verify">
+      <SpFold title="学历核验" en="VERIFY" foldKey="verify" id="sp-verify">
         <VerifyBlock s={s} state={state} onApply={() => setModalOpen(true)} onZoom={onZoom} />
       </SpFold>
       <SpFold title="数据说明与资料来源" en="SOURCES" foldKey="sources" folded>
@@ -388,7 +388,13 @@ function HeadBlock({ s }: { s: School }) {
         )}
         <div className="sp-head-main">
           <span className="sp-kicker">SCHOOL FILE · 学校档案</span>
-          <h1 className="sp-title">{s.name}</h1>
+          <h1 className="sp-title">
+            {s.name}
+            {/* 引导锚点：整篇档案很长，学历核验在页尾容易被漏看；有核验数据才挂入口 */}
+            {s.verify ? (
+              <a className="sp-jump" href="#sp-verify" title="跳到本页末尾的学历核验板块 · 可申请在线查验">学历核验</a>
+            ) : null}
+          </h1>
           {s.currentName ? <p className="sp-current"><b>现校名</b>{s.currentName}</p> : null}
           <p className="sp-sub">{s.industry || ''} · {s.period || ''} · {s.degree || ''}</p>
           <p className="sp-oneline">{s.oneLine || ''}</p>

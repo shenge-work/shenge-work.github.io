@@ -51,6 +51,11 @@ export default function CompanyProfilePanel({ c }: { c: Company }) {
 
   const pills = [c.stage, c.scale, reg.hq].filter(Boolean);
   const pred = c.predecessor || null;
+  /* 顶部引导锚点：材料名按数据动态取；没配 secureMaterials 的档案不挂入口 */
+  const proof = c.secureMaterials;
+  const proofLabel = proof?.resource
+    ? (proof.items?.[0]?.label || '任职佐证材料')
+    : '';
 
   return (
     <div ref={rootRef}>
@@ -64,7 +69,12 @@ export default function CompanyProfilePanel({ c }: { c: Company }) {
             <span className="cp-stamp" aria-hidden="true">{c.code || ''}</span>
           )}
           <div className="cp-head-main">
-            <h3 className="cp-title" id="cpTitle">{c.name}</h3>
+            <h3 className="cp-title" id="cpTitle">
+              {c.name}
+              {proofLabel ? (
+                <a className="cp-jump" href="#cp-proof" title="跳到本页末尾的任职佐证材料 · 可申请查看">{proofLabel}</a>
+              ) : null}
+            </h3>
             <p className="cp-sub">
               {c.industry || ''}
               {c.website ? <> · <a className="cp-site" href={c.website.href} target="_blank" rel="noopener noreferrer">{c.website.text} ↗</a></> : null}
