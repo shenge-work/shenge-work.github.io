@@ -36,6 +36,13 @@
   CLS 0.001），对比 pre-react 基线 55 分（FCP 22.2s / LCP 25.3s）。  观测数据记入 `tests/e2e/baseline/lighthouse/summary.json` 的 `observations` 数组，
   诊断与口径见 [docs/rendering-performance.md](docs/rendering-performance.md)。
 - README 标题由「陈培胜 · AI Agent 工程师求职作品集」改为「求职作品集」。
+- **公司档案抽屉头部滚动收缩**（移动端）：抽屉里 `.cp-head` 是 sticky，390px 宽下完整态约 648px，
+  滚动时冻结近九成视口、正文只剩约 92px 可见。`js/company-profile.js` 在 `.cp-panel-scroll`
+  上挂 passive + rAF 节流的滚动监听，滚过阈值给头部加 `is-condensed`：折叠高管轮播 / 一句话 /
+  标签 / 附属信息行，只留 logo + 公司名 + 行业，头部回落到约 140px、正文可见区升到约 81%。
+  用**滞回**（进入 130px / 退出 24px）避免「收缩→内容变短→scrollTop 被夹回→展开」的抖动；
+  `open()` 重开时重置状态。CSS 规则限定 `.cp-drawer` 祖先 + `max-width:720px`，
+  独立档案页与桌面档不受影响。新增 `tests/company-head-shrink.test.mjs` 5 项。
 
 ### 修复
 - **AI 指路小票文案重复**（BUG-01 / TODO T35）：`js/ai-stage-link.js` 前缀由「▶ 去看看」改为「▶ 指路」，

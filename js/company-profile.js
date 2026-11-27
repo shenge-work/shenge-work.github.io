@@ -164,6 +164,8 @@
   /* ══════════════ 抽屉 ══════════════ */
   var drawer = null;    /* .cp-drawer 根节点（单例） */
   var lastFocus = null;
+  /* 抽屉头部收缩的滞回状态（模块级：buildDrawer 的滚动监听与 open() 都要读写） */
+  var headTicking = false, condensed = false;
 
   function buildDrawer() {
     if (drawer) return drawer;
@@ -181,6 +183,30 @@
       '  <div class="cp-panel-scroll" id="cpScroll"></div>' +
       '</aside>';
     document.body.appendChild(drawer);
+
+    /* 抽屉头部滚动收缩（移动端为主）：`.cp-head` 是 sticky，完整态在 390px 宽下约 648px
+       高，滚动时会把正文可见区压到不足 100px。滚过阈值后给头部加 `is-condensed`，
+       CSS 折叠高管轮播 / 一句话 / 标签 / 附属信息行，只留 logo + 公司名 + 行业，
+       正文可见区回到 ~630px。监听器只挂一次（drawer 单例），rAF 节流，passive。 */
+    var scrollBox = drawer.querySelector('.cp-panel-scroll');
+    /* 滞回：收缩会缩短内容、浏览器把 scrollTop 夹小；若进入/退出共用一个阈值，
+       会在阈值附近反复「收缩→夹回→展开」抖动。进入慢、退出快，留一段滞回带。 */
+    var ENTER_AT = 130, EXIT_AT = 24;
+    function syncHeadCondensed() {
+      headTicking = false;
+      var head = scrollBox.querySelector('.cp-head');
+      if (!head) return;
+      var top = scrollBox.scrollTop;
+      if (!condensed && top > ENTER_AT) condensed = true;
+      else if (condensed && top < EXIT_AT) condensed = false;
+      head.classList.toggle('is-condensed', condensed);
+    }
+    scrollBox.addEventListener('scroll', function () {
+      if (headTicking) return;
+      headTicking = true;
+      (window.requestAnimationFrame || function (f) { setTimeout(f, 16); })(syncHeadCondensed);
+    }, { passive: true });
+
     drawer.addEventListener('click', function (ev) {
       var t = ev.target.closest ? ev.target.closest('[data-cp-close]') : null;
       if (t) { ev.preventDefault(); close(); return; }
@@ -944,6 +970,9 @@
     drawer.hidden = false;
     document.body.classList.add('cp-lock');
     drawer.querySelector('.cp-panel-scroll').scrollTop = 0;
+    /* 换公司 / 重开时头部回到完整态（condensed 是 buildDrawer 闭包里的滞回状态） */
+    condensed = false;
+    headTicking = false;
     lastFocus = document.activeElement;
     var btn = drawer.querySelector('.cp-close');
     if (btn) btn.focus();

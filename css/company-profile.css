@@ -1096,6 +1096,28 @@ body.cp-pano-open { overflow: hidden; }
   .cp-quick { font-size: 10px; }
 }
 
+/* 抽屉头部「滚动收缩」：移动端 sticky 头完整态约 648px，会吃掉近九成视口，
+   正文只剩一条缝。js/company-profile.js 在滚过阈值后加 .is-condensed，
+   把高管轮播 / 一句话 / 标签 / 附属信息行折叠，只留 logo + 公司名 + 行业，
+   头部回落到 ~76px，正文可见区回到 ~660px。桌面档头部本就不高，不参与收缩。
+   用 max-height + opacity 折叠（而非 display:none），保证过渡平滑与无障碍树稳定。 */
+@media (max-width: 720px) {
+  .cp-drawer .cp-head { transition: padding .22s ease; }
+  .cp-drawer .cp-head.is-condensed { padding: 10px 16px 9px; }
+  .cp-drawer .cp-head.is-condensed .cp-head-exec,
+  .cp-drawer .cp-head.is-condensed .cp-oneline,
+  .cp-drawer .cp-head.is-condensed .cp-pills,
+  .cp-drawer .cp-head.is-condensed .cp-entity {
+    max-height: 0; opacity: 0; margin: 0; padding: 0;
+    overflow: hidden; pointer-events: none; border: 0;
+    transition: max-height .2s ease, opacity .16s ease, margin .2s ease, padding .2s ease;
+  }
+  .cp-drawer .cp-head.is-condensed .cp-title { font-size: 15px; margin: 0 0 2px; }
+  .cp-drawer .cp-head.is-condensed .cp-sub { font-size: 11px; }
+  .cp-drawer .cp-head.is-condensed .cp-stamp { width: 32px; height: 32px; font-size: 11px; box-shadow: 2px 2px 0 var(--ink); }
+  .cp-drawer .cp-head.is-condensed .cp-head-top { align-items: center; }
+}
+
 @media (max-width: 380px) {
   .cp-office { grid-template-columns: 1fr; }
   .cp-chart-tabs { width: 100%; }
