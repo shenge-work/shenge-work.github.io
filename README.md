@@ -1,4 +1,4 @@
-# 陈培胜 · AI Agent 工程师求职作品集
+# 求职作品集
 
 ![在线站点](https://img.shields.io/badge/在线-chenpeisheng.cn-FF5A1E?style=flat-square)
 ![前端](https://img.shields.io/badge/前端-Astro%206%20%2B%20React%2019-BC52EE?style=flat-square&logo=astro)

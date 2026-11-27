@@ -27,6 +27,27 @@
       });
   }
 
+  /* 视口预取：把屏外板块的远程请求推迟到用户快滚到时才发，
+     用 rootMargin 提前量保证「滚到时数据已就绪」，与 company-lazy.js 同思路。
+     - 不支持 IntersectionObserver / 元素不存在 → 立即执行（降级不丢功能）
+     - 一开始就可见（首屏板块）→ 立即执行，不额外引入延迟
+     - 只触发一次，随后 disconnect，避免滚动反复判断 */
+  function whenNearViewport(el, run, margin) {
+    if (!el || !('IntersectionObserver' in window)) { run(); return; }
+    var box = el.getBoundingClientRect();
+    if (box.top < window.innerHeight + (margin || 0)) { run(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          io.disconnect();
+          run();
+          return;
+        }
+      }
+    }, { rootMargin: (margin || 0) + 'px 0px' });
+    io.observe(el);
+  }
+
   /* ══════════════ 渲染层 ══════════════ */
 
   function $(id) { return document.getElementById(id); }
@@ -446,22 +467,26 @@
   function initContributions() {
     var box = $('ghActivity');
     if (!box) return;
-    /* 云端数据优先：data/contributions.json 才是真相源；total=0 或无数据时整块隐藏，
-       不展示别人的蛇图 / 旧快照。 */
-    fetch('data/contributions.json?v=' + Date.now(), { cache: 'no-cache', credentials: 'same-origin' })
-      .then(function (res) {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json();
-      })
-      .then(function (data) {
-        /* 无提交 / 无日期 / 无 GitHub 账号 → 整块不展示（含地址），不摆空架子 */
-        if (!contribVisible(data)) { box.hidden = true; box.innerHTML = ''; return; }
-        renderGhSkeleton(box, data.username);
-        renderGhStats(box, data);
-      })
-      .catch(function () {
-        box.hidden = true; box.innerHTML = '';
-      });
+    /* 视口预取：贡献图在页面底部，首屏就发请求纯属浪费；滚到联系板块前 600px 再取。
+       骨架由 renderGhSkeleton 负责，取数期间盒子保持 hidden，不会露出空架子。 */
+    whenNearViewport($('contact'), function () {
+      /* 云端数据优先：data/contributions.json 才是真相源；total=0 或无数据时整块隐藏，
+         不展示别人的蛇图 / 旧快照。 */
+      fetch('data/contributions.json?v=' + Date.now(), { cache: 'no-cache', credentials: 'same-origin' })
+        .then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          /* 无提交 / 无日期 / 无 GitHub 账号 → 整块不展示（含地址），不摆空架子 */
+          if (!contribVisible(data)) { box.hidden = true; box.innerHTML = ''; return; }
+          renderGhSkeleton(box, data.username);
+          renderGhStats(box, data);
+        })
+        .catch(function () {
+          box.hidden = true; box.innerHTML = '';
+        });
+    }, 600);
   }
 
   /* ══════════════ 板块可见性 & 索引自适应 ══════════════
@@ -1936,7 +1961,10 @@
       return;
     }
 
-    loadFirst(false);
+    /* 视口预取：留言墙在页面最底部，首屏就查 D1 是浪费；滚到前 600px 再拉。
+       先渲染一次 loading 骨架态，避免锚点直跳 / 页内查找定位到此时看到空白。 */
+    if (state.mode === 'loading') render();
+    whenNearViewport($('wall'), function () { loadFirst(false); }, 600);
 
     if (refreshBtn) refreshBtn.addEventListener('click', refresh);
     if (newBtn) newBtn.addEventListener('click', refresh);

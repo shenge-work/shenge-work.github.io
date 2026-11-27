@@ -28,6 +28,14 @@
   hover 徽章 / `#company=` 深链 / 点击兜底」触发，首屏本地脚本由 **551KB 降到 284KB（-48%）**；
   ③ 图片懒加载：LCP 形象照改 `fetchpriority=high`、其余视口外图片加 `loading=lazy` + `decoding=async`。
   新增 `tests/company-lazy.test.mjs` 7 项；`secure-access.test.mjs` 适配加载器接线方式。
+- **远程数据视口预取**：`js/main.js` 新增 `whenNearViewport()`，留言墙 `/api/wall`（D1 查询）与
+  贡献图 `data/contributions.json` 由首屏发起改为滚到前 600px 才请求；无 IO / 首屏可见降级立即执行，
+  留言墙先渲染 loading 骨架避免锚点直跳空白。新增 `tests/viewport-lazy.test.mjs` 4 项。
+  评估后**未做** `renderSite()` 按视口分批（SSG 已直出、TBT 仅 200ms、观察器/宽度测量/编号依赖全量渲染）。
+- **线上性能实测**：`shenge-work.pages.dev` 主页 Lighthouse mobile 实测 **62 分**（FCP 2.9s / LCP 6.9s /
+  CLS 0.001），对比 pre-react 基线 55 分（FCP 22.2s / LCP 25.3s）。  观测数据记入 `tests/e2e/baseline/lighthouse/summary.json` 的 `observations` 数组，
+  诊断与口径见 [docs/rendering-performance.md](docs/rendering-performance.md)。
+- README 标题由「陈培胜 · AI Agent 工程师求职作品集」改为「求职作品集」。
 
 ### 修复
 - **AI 指路小票文案重复**（BUG-01 / TODO T35）：`js/ai-stage-link.js` 前缀由「▶ 去看看」改为「▶ 指路」，

@@ -155,5 +155,34 @@
       },
       "sha1": "9d63908d3486"
     }
+  ],
+  "observations": [
+    {
+      "capturedAt": "2026-11-28T02:37:00+08:00",
+      "page": "index",
+      "variant": "mobile",
+      "url": "https://shenge-work.pages.dev/",
+      "note": "React 迁移 + 首屏三批优化后的线上观测点（非同环境 A/B）；旧 pages[] 为 pre-react 基线。",
+      "engine": "lighthouse@cli mobile 4G-throttle, browser UA",
+      "scores": {
+        "performance": 62
+      },
+      "metrics": {
+        "FCP": "2.9 s",
+        "LCP": "6.9 s",
+        "TBT": "200 ms",
+        "CLS": "0.001",
+        "SI": "6.5 s",
+        "TTI": "16.8 s"
+      },
+      "lcpElement": "#heroBio (SSG 直出文本)",
+      "diagnostics": {
+        "renderBlockingCss": "960 ms (style.css 725 + fonts.css 362)",
+        "unusedJs": "134 KiB",
+        "unusedCss": "178 KiB",
+        "nonModernImage": "168 KiB",
+        "domSize": 1110
+      }
+    }
   ]
 }
