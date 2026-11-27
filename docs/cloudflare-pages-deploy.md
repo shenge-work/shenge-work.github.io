@@ -90,6 +90,12 @@ ls dist/*.html
 ## 3. 首次搭建 / Fork 复刻
 
 1. **建 D1**：`bash scripts/db-init.sh remote`（会建库、跑 `db/schema.sql`、灌 RAG 与站点数据）。
+   脚本只自动写回顶层 `database_id`；**KV 与向量索引需手动建**：
+   `npx wrangler kv namespace create site-kv`（id 填 `wrangler.toml` 顶层）、
+   `npx wrangler vectorize create resume-kb --dimensions=1024 --metric=cosine`。
+   预览环境另建 `site-kv-preview` / `portfolio-db-preview`，id 填 `[env.preview]`；
+   `worker/kb/wrangler.toml` 的 D1 id 也要与顶层保持一致。
+   6 处必改 ID、复刻命令与数据统计边界见 [fork-cloud-parity.md](fork-cloud-parity.md)。
 2. **建 Pages 项目**：连接你的 GitHub 仓库，构建命令 `bash scripts/pages-build.sh`，输出 `dist`。
 3. **绑定资源**（Pages → Settings → Bindings，Production 环境）：`DB` → D1、`SITE_KV` → KV。
    `AI` / `VECTORIZE` 不在 Pages，而是在语义层 Worker `worker/kb/`（`resume-kb-api`）里，见下一步。

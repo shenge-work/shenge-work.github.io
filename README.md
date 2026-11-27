@@ -349,10 +349,11 @@ python3 scripts/sync_site_data.py --check
 1. **换内容**：把你的 7 份 JSON 按 `data/` 下同名文件准备好（结构见 `scripts/seed-site-content.mjs`）。
 2. **换身份**：全局搜索并替换 `chenpeisheng.cn`、`hi@chenpeisheng.cn`、`shenge-work`，以及 `index.html` / `resume.html` 里的 canonical、OG 与 JSON-LD。
 3. **建库**：`bash scripts/db-init.sh remote`（本地试跑去掉 `remote`），或 `npx wrangler d1 create` 后执行 `db/schema.sql`。
-4. **建 Pages 项目**：构建命令 `bash scripts/pages-build.sh`，输出目录 `dist`；绑定 `DB` / `SITE_KV`（`AI` / `VECTORIZE` 绑在下面的 KB Worker 上，Pages 不支持这两类绑定）。
+   > ⚠️ 脚本只自动写回顶层 `database_id`，**不会**创建 KV、不会创建 Vectorize 索引、也不会同步 KB Worker 的 D1 id。fork 必改的 6 处硬编码云端 ID 与完整命令见 [Fork 云端一致性与复刻清单](docs/fork-cloud-parity.md)。
+4. **建 Pages 项目**：先 `npx wrangler kv namespace create site-kv` 建 KV 并把 id 填进 `wrangler.toml`；构建命令 `bash scripts/pages-build.sh`，输出目录 `dist`；绑定 `DB` / `SITE_KV`（`AI` / `VECTORIZE` 绑在下面的 KB Worker 上，Pages 不支持这两类绑定）。
 5. **部署知识库 Worker**：`cd worker/kb && npx wrangler deploy`，再 `npx wrangler secret put KB_TOKEN`；回到 Pages 配 `KB_WORKER_URL`（Worker 的地址）和同一个 `KB_TOKEN`。
 6. **配环境变量**：照 [`.env.example`](.env.example)，至少填 `ADMIN_SESSION_SECRET`、`ADMIN_EMAILS`、`DEVICE_HASH_PEPPER`、`VERIFY_ACCESS_SECRET`、`DELIVER_CHALLENGE_SECRET`。
-7. **建索引**：后台进「站点数据」点一次「重建知识库」，切片的向量会自动灌进 Vectorize；之后每次保存站点数据都会自动重建，不需要 CI 令牌。
+7. **建索引**：先 `npx wrangler vectorize create resume-kb --dimensions=1024 --metric=cosine`（索引名须与 `worker/kb/wrangler.toml` 一致），再进后台「站点数据」点一次「重建知识库」，切片的向量会自动灌进 Vectorize；之后每次保存站点数据都会自动重建，不需要 CI 令牌。
 8. **换个人素材**：`images/`（形象照、证书）、`assets/skins/models/*.glb`（3D 形象）、`favicon*`、`assets/resume/*.pdf`。原作者的人像与证书**不可复用**。
 9. **按需关掉别人的服务**：不用的微信登录 / TTS / Worker 检索留空即可，代码均有降级；`KB_WORKER_URL` 不配时走 D1 词面 + 关键词兜底。
 10. **手机号与 PDF**：仓库里的简历页/PDF 只有占位号。`/resume` 由中间件从 D1 注入真号码；投递用的真实 PDF 用 `node scripts/make-cloud-pdf.mjs --put` 生成并上传 KV（键 `resume:pdf`），`/api/resume-pdf` 下发、`/api/deliver` 发信时优先用它。
@@ -366,6 +367,8 @@ python3 scripts/sync_site_data.py --check
 判定逻辑集中在 `src/lib/section-visibility.ts`（构建期与运行时 `js/main.js` 同口径），`work/portfolio.html` 案例页在缺数据时渲染空状态页而非构建报错。
 
 完整步骤与表结构说明见 [docs/cloudflare-rag-admin-plan.md](docs/cloudflare-rag-admin-plan.md)。
+
+**云函数代码备份 / 一致性 / 数据统计边界**：见 [docs/fork-cloud-parity.md](docs/fork-cloud-parity.md)——列出本地全部云函数与 Worker 代码（均有 git 备份）、线上必须手配的资源与密钥、6 处必改云端 ID、17 张统计表的初始状态，以及"功能可复刻、历史运营数据不可复制"的边界。仓库有 CI 生成物漂移检查，但**没有**线上部署代码 hash 的自动断言。
 
 ### 预览环境（可选但建议）
 

@@ -18,6 +18,9 @@
 - **主页顶部导航移除博客索引**：`index.html` 与 `src/pages/index.astro` 删除第 11 项外链「博客」，
   导航现为关于我 01 … 留言墙 10、无断档；同步更新 E2E 编号断言与 `main.js` 注释。
   博客地址仍保留在 JSON-LD `sameAs` 和联系方式卡片中，仅不再占据顶部导航。
+- **Fork 复刻补齐**：新增 [docs/fork-cloud-parity.md](docs/fork-cloud-parity.md)，明确本地云函数代码
+  备份范围、6 处必改云端资源 ID、KV/Vectorize 创建命令、数据统计边界与自检清单；
+  `.env.example` 补 `DELIVER_FROM` 与四类发件身份说明，README Fork 指南同步补齐。
 
 ### 修复
 - **AI 指路小票文案重复**（BUG-01 / TODO T35）：`js/ai-stage-link.js` 前缀由「▶ 去看看」改为「▶ 指路」，

@@ -35,6 +35,7 @@
 | 文档 | 内容 | 状态 | 最近核对 | 主要对应代码 |
 |---|---|---|---|---|
 | [cloudflare-pages-deploy.md](cloudflare-pages-deploy.md) | 主站托管：构建、部署、绑定、迁移、历史故障复盘 | 现行（2026-11-25 重写） | 2026-11-25 | `scripts/pages-build.sh`、`deploy-pages.sh`、`wrangler.toml` |
+| [fork-cloud-parity.md](fork-cloud-parity.md) | Fork 云端一致性：云函数代码备份范围、必改的 6 处资源 ID、复刻命令、数据统计边界与自检清单 | 现行（2026-11-28 新增） | 2026-11-28 | `functions/**`、`worker/**`、`wrangler.toml`、`db/schema.sql` |
 | [cloudflare-free-resources.md](cloudflare-free-resources.md) | 免费额度盘点、KV→D1 迁移与回滚 | 现行 | 2026-11-25 | `functions/api/visits.js`、`wall.js` |
 | [resume-delivery.md](resume-delivery.md) | 留言板 + 简历投递：接口语义、限流、配置、排障 | 现行（2026-11-25 校正 D1/设备隔离） | 2026-11-25 | `functions/api/wall.js`、`deliver.js`、`lib/wall-notify.js` |
 | [observability-and-cms.md](observability-and-cms.md) | 教程：Umami / Clarity / Pages CMS 接入；私密佐证材料加密申请—审批—签名取流链路 | 通用教程（站点现状以 README 为准） | 2026-11-25 | `js/analytics.js`、`functions/api/secure-asset.js`、`functions/lib/secure-access.js`、`js/secure-access.js` |
