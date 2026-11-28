@@ -28,7 +28,7 @@ export function LeadsTab() {
   return (
     <section className="panel" id="panelLeads" role="tabpanel">
       <div className="stats stats-leads">
-        <article className="stat"><p className="stat-num">{s?.strong ?? '—'}</p><p className="stat-label">待跟进的意向</p></article>
+        <article className="stat"><p className="stat-num">{leads.data?.total_leads ?? '—'}</p><p className="stat-label">待跟进的人</p></article>
         <article className="stat"><p className="stat-num">{s?.hire ?? '—'}</p><p className="stat-label">招聘类</p></article>
         <article className="stat"><p className="stat-num">{s?.collab ?? '—'}</p><p className="stat-label">合作 / 外包</p></article>
         <article className="stat"><p className="stat-num">{s?.jobseek ?? '—'}</p><p className="stat-label">求职询问</p></article>
