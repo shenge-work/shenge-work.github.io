@@ -99,7 +99,7 @@ Lighthouse N5 通过：index.mobile 中位数 61 ≥ 基线 55）；`REACT_MIGRA
 | T25 | Google Fonts 本地化（自托管 Noto Sans SC 分片），根治移动档 LCP ~20s | `已完成（2026-11-28）` | 高（性能主优化项） | 全站移动档 LCP | 本文 §3.21 |
 | T26 | React 迁移收尾观察：真机电池、一周线上无回归观察、到期后备份线切 React + 旧文件物理删除 | `待办（观察期）` | 中 | 全站 | [react-refactor-plan.md M5](react-refactor-plan.md) |
 | T27 | 问答生成链路故障：线上 Pages 缺 `KB_WORKER_URL`/`KB_TOKEN`，且 KB Worker 未部署最新代码；变量已补、Worker 已重部署并线上验证 | `已完成（2026-11-27）` | 高 | `/api/chat` 数字分身问答 | 本文 §3.23 / [线上站点测试报告-2026-11-26.md](线上站点测试报告-2026-11-26.md) P1-1 |
-| T28 | Turnstile 报 110200：widget 未渲染，留言墙人机校验实际未生效（CF 后台站点域名匹配） | `待办（配置侧）` | 高 | 留言墙 POST 校验 | 本文 §3.23 / 测试报告 P1-2 |
+| T28 | Turnstile 报 110200：widget 未渲染，留言墙人机校验实际未生效（CF 后台站点域名匹配） | `已完成（2026-11-28）` | 高 | 留言墙 POST 校验 | 本文 §3.23 / 测试报告 P1-2 |
 | T29 | Cloudflare Web Analytics beacon 被 CSP 拦截，CF 这一路统计未生效（仓库代码未下发该 script-src，疑面板规则） | `待复核` | 中 | 访问统计 | 本文 §3.23 / 测试报告 P2-1 |
 | T30 | 头像 PNG 体积治理：avatar-male 疑似死资源；female 1536×1536 用于 ≤420px 展示位 | `待办（并入性能专项）` | 低 | 首屏 / 助手头像 | 测试报告 P3-2 |
 | T31 | W-01 卡片「RAG 接入中 / GitHub Pages 部署」过时文案修正；仓库源已改，线上 D1 仍旧文案 | `待后台同步 D1 副本` | 低 | 首页 SEC.05 | 测试报告 P3-1 |
@@ -870,16 +870,25 @@ M0–M5 已全部完成并生产切换（线上 React 版运行中，`REACT_MIGR
   - `GET /api/admin/kb`：200、`worker_ready:true`（修复前为 false），与 chat 侧互证 Worker 链路在线。
 - 注：`*.workers.dev` 在境内本地 DNS 被污染，直连超时不代表 Worker 离线；以 Pages 边缘调用与线上响应为准。
 
-**T28 · Turnstile 110200，留言墙校验未生效（高，配置侧）**
+**T28 · Turnstile 110200，留言墙校验未生效（高，配置侧）—— 已完成（2026-11-28）**
 
 - 现象：控制台反复 `[Cloudflare Turnstile] Error: 110200` + postMessage origin 不匹配；`.wall-turnstile`
   容器无 challenge iframe，widget 走 error-callback 隐藏；challenge-platform 持续 failure_retry。
 - 代码侧核对结论：sitekey `0x4AAAAAAGHnx0m992aGGpUJ`（`js/main.js`）与服务端
   `TURNSTILE_SECRET`（`functions/api/wall.js`）配对逻辑正常；110200 是前端站点校验阶段错误，
   根因在 Cloudflare 后台，代码改不了。
-- 待办：CF 控制台 → Turnstile → 该 sitekey，确认托管域名包含 `chenpeisheng.cn`、
-  `shenge-work.pages.dev` 及预览子域；核对 widget 类型与前端 `size:'normal'` 一致。
-- 验收：留言墙渲染出 checkbox / challenge，提交时 `cf-turnstile-response` 非空；无 110200 报错。
+- **根因（2026-11-28 查实）**：该 widget 的主机名列表只有 `localhost`、`shenge-work.github.io`、
+  `shenge-work.pages.dev`，**没有 `chenpeisheng.cn`** —— 主域名上线后一直没加进 Turnstile 白名单，
+  所以前端渲染阶段直接 110200。同时线上 `/api/wall?peek=1` 返回 `"turnstile": false`，
+  说明 Pages 侧 `TURNSTILE_SECRET` 虽在变量列表里，但 Functions 实际读不到（密钥值一直没真正注入）。
+- 修复：① 后台补主机名 `chenpeisheng.cn`（现 4/10）；② 用 `wrangler pages secret put
+  TURNSTILE_SECRET --project-name shenge-work` 重写生产密钥（覆盖同名旧条目）；
+  ③ 重试部署注入环境变量。Turnstile 的 secret 只能在后台整体重写、不能就地编辑，
+  这也是之前"列表里有、运行时读不到"的由来。
+- 验收：真实浏览器（内置浏览器非 headless）首页滚到留言墙，渲染出「请验证你是什么人」勾选框与
+  Cloudflare 标识；`curl /api/wall?peek=1` 返回 `"turnstile": true`；无 110200。
+  注：`/api/wall` 对未通过校验的提交并非硬拒，而是切到严格额度（`IP_STRICT_LIMIT` /
+  `DAY_STRICT_LIMIT`），校验失败仍能挡住刷屏但保留可用性。
 
 **T29 · CF Web Analytics beacon 被 CSP 拦截（中，待复核）**
 

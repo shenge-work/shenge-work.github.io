@@ -5,6 +5,15 @@
 
 ## 2026-11-28
 
+### 修复
+- **留言墙 Turnstile 恢复（T28）**：CF 后台该 widget 的主机名只有 `localhost` /
+  `shenge-work.github.io` / `shenge-work.pages.dev`，主域名 `chenpeisheng.cn` 从未加进去，
+  前端渲染阶段一直报 `110200`、容器被 error-callback 隐藏。补上 `chenpeisheng.cn` 后 widget
+  正常渲染出勾选框；同时发现 Pages 侧 `TURNSTILE_SECRET` 在变量列表里存在、Functions 却读不到
+  （`/api/wall?peek=1` 返回 `"turnstile": false`），用
+  `wrangler pages secret put TURNSTILE_SECRET --project-name shenge-work` 重写生产密钥并重试部署，
+  现在 peek 返回 `"turnstile": true`。Turnstile 的 secret 只能整体重写、不能就地编辑。
+
 ### 变更
 - **LCP 收尾：首屏头像不再被 CDN 改写**（`js/asset-cdn.js`）。`rewriteDOM()` 会用
   `setAttribute` 把页面静态 `img[src]` 逐个换成 COS 地址，绕过 `main.js` 里 `artKey()` 的
