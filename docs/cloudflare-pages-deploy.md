@@ -168,8 +168,24 @@ https://chenpeisheng.cn,https://shenge-work.pages.dev,*.shenge-work.pages.dev
 | `/api/wall` 返回 `open:false` | `DB` 未绑定或迁移未执行 | 绑 `DB` → 重跑部署 → `./scripts/wall-check.sh` |
 | `/api/company-social` 500 `db_error` | 缺 `2026-11-24-company-social.sql` | 执行该迁移后重试 |
 | 后台 302 到 `/login` 循环 | `ADMIN_SESSION_SECRET` 变更或 Cookie 被拦 | 重设变量并重新部署；确认访问的是 https 主域 |
+| 登录页发验证码报 `后台发信异常：ADMIN_SESSION_SECRET / ADMIN_PASSWORD 未配置` | 变量**名还在、值为空**（控制台照样显示「值已加密」） | 见 §7.1：去控制台把值补上，**不要**加代码兜底 |
 | 预览子域 403 | `ALLOWED_ORIGINS` 被覆盖成精确列表 | 补 `*.shenge-work.pages.dev` 后重新部署 |
 | 线上还是旧内容 | 部署成功但 CDN 缓存 / 构建未触发 | 看 Deployments 的 commit hash；必要时 `?v=` 强刷 |
+
+### 7.1 「变量名在 ≠ 值在」：后台密钥故障的固定套路
+
+Pages 控制台的密钥单元格**值为空时也显示「值已加密」**，肉眼与已配置的行完全一样；变量名还留着，更会让人误判「早就配好了」。2026-11-28 后台登录整体不可用（`/admin/login` 点发码报红字）就是这一种：`ADMIN_SESSION_SECRET` 与 `ADMIN_PASSWORD` 的值都被清空，而所有登录路径都要它签会话/验证码。
+
+1. **判定**（不用登后台就能测）：
+   ```bash
+   curl -s -X POST https://chenpeisheng.cn/api/admin/auth/email/send \
+     -H 'Content-Type: application/json' -H 'X-Admin-Request: 1' \
+     -d '{"email":"hi@chenpeisheng.cn"}' -w '\nHTTP %{http_code}\n'
+   ```
+   返回 `500 mail_internal` 且 message 点名某个变量 → 就是那个变量值为空。`send.js` 已把这类异常翻成明确错误码，不要只看平台侧的 `1101`。
+2. **修复**：Pages → 设置 → 生产 → 变量和密钥 → 点该行「值已加密」→ 填入新值 → 保存。保存**只提交被改动的那几行**，实测不会连带覆盖其它密钥（同日验证：保存后发信、KB 检索均正常）。环境变量改动**立即生效，无需重新部署**；但换 `ADMIN_SESSION_SECRET` 会让旧会话全部失效，需重新收码登录。新值记得同步写回本地 `.secrets.local`（该文件已 gitignore）。
+3. **不要做的事**：不要为了「先让它能跑」在代码里加 `|| RESEND_API_KEY` 之类的兜底。11-27 曾用邮件密钥兜底掩盖同一个空值问题，`aa63029`（生产密钥 fail-closed）按安全原则移除兜底后，故障才第一次真正暴露——兜底只是把问题推迟到更难排查的时刻，并把「邮件密钥泄露」升级成「后台会话可伪造」。
+4. **恢复验证**：发码接口回到 `{"ok":true,...}`（同时证明 `RESEND_API_KEY` / `RESEND_FROM` 完好）；`GET /api/kb?q=测试` 返回 `semantic:true`（证明 `KB_WORKER_URL` / `KB_TOKEN` 完好）。若 `methods` 里 `wechat.qr/mp` 仍是 false，说明微信登录变量没配，此时后台只有邮箱验证码一条登录路径。
 
 ## 8. 相关文档
 
