@@ -75,8 +75,28 @@ export const qaSchema = z.object({
   }).passthrough()).default([]),
 }).passthrough();
 
-export const qaTrendSchema = z.object({
-  series: z.array(z.object({
+/* 线索：/api/admin/leads 把 qa_logs 里的意向提问按人聚合后的结果 */
+export const leadsSchema = z.object({
+  days: z.number().default(30),
+  total_leads: z.number().default(0),
+  stats: z.object({
+    total: num, hire: num, collab: num, jobseek: num, last7: num, scanned: num,
+  }).passthrough(),
+  leads: z.array(z.object({
+    ip: z.string(),
+    intentKey: z.string(),
+    intentLabel: z.string(),
+    priority: z.number(),
+    count: z.number().default(0),
+    firstTs: ts,
+    lastTs: ts,
+    queries: z.array(z.object({ ts, q: z.string(), intent: z.string() }).passthrough()).default([]),
+    signals: z.array(z.string()).default([]),
+    followUp: z.string().default(''),
+  }).passthrough()).default([]),
+}).passthrough();
+
+export const qaTrendSchema = z.object({  series: z.array(z.object({
     date: z.string(), label: z.string(), total: z.number().default(0), empty: z.number().default(0),
   }).passthrough()).default([]),
 }).passthrough();
@@ -191,6 +211,8 @@ export type Reply = z.infer<typeof replySchema>;
 export type QaRes = z.infer<typeof qaSchema>;
 export type QaTrendRes = z.infer<typeof qaTrendSchema>;
 export type QaTopicsRes = z.infer<typeof qaTopicsSchema>;
+export type LeadsRes = z.infer<typeof leadsSchema>;
+export type Lead = LeadsRes['leads'][number];
 export type ConfigRes = z.infer<typeof configSchema>;
 export type ConfigModule = ConfigRes['modules'][number];
 export type ThemeRes = z.infer<typeof themeSchema>;

@@ -7,7 +7,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   adminApi, adminGet,
-  statsSchema, devicesSchema, messagesSchema, qaSchema, qaTrendSchema, qaTopicsSchema,
+  statsSchema, devicesSchema, messagesSchema, qaSchema, qaTrendSchema, qaTopicsSchema, leadsSchema,
   configSchema, themeSchema, genderSchema, voiceSchema, greetingSchema,
   contentListSchema, contentOneSchema, kbSchema, variantSchema,
   type MessagesRes, type VariantRes,
@@ -20,6 +20,7 @@ export const qk = {
   qa: ['admin', 'qa'] as const,
   qaTrend: (days: number) => ['admin', 'qaTrend', days] as const,
   qaTopics: (limit: number) => ['admin', 'qaTopics', limit] as const,
+  leads: (days: number) => ['admin', 'leads', days] as const,
   config: ['admin', 'config'] as const,
   theme: ['admin', 'theme'] as const,
   gender: ['admin', 'gender'] as const,
@@ -113,6 +114,11 @@ export function useQaTrend(days = 14) {
 }
 export function useQaTopics(limit = 200) {
   return useQuery({ queryKey: qk.qaTopics(limit), queryFn: () => adminGet(`/api/admin/qa/topics?limit=${limit}`, qaTopicsSchema) });
+}
+
+/* ── 线索（提问记录里挑招聘方 / 合作方）── */
+export function useLeads(days = 30) {
+  return useQuery({ queryKey: qk.leads(days), queryFn: () => adminGet(`/api/admin/leads?days=${days}`, leadsSchema) });
 }
 
 /* ── 模型与提示词 / 主题 / 套装 ── */

@@ -12,16 +12,17 @@ import { ToastProvider, useToast } from './toast';
 import { DevicesTab } from './tabs/DevicesTab';
 import { MessagesTab } from './tabs/MessagesTab';
 import { QaTab } from './tabs/QaTab';
+import { LeadsTab } from './tabs/LeadsTab';
 import { ConfigTab } from './tabs/ConfigTab';
 import { VoiceTab } from './tabs/VoiceTab';
 import { ContentTab } from './tabs/ContentTab';
 import { VariantTab } from './tabs/VariantTab';
 import { AnimTab } from './tabs/AnimTab';
 
-type TabKey = 'devices' | 'messages' | 'qa' | 'config' | 'voice' | 'content' | 'variant' | 'anim';
+type TabKey = 'devices' | 'messages' | 'qa' | 'leads' | 'config' | 'voice' | 'content' | 'variant' | 'anim';
 
 const TABS: Array<[TabKey, string]> = [
-  ['devices', '设备台账'], ['messages', '留言审核'], ['qa', '问答看板'],
+  ['devices', '设备台账'], ['messages', '留言审核'], ['qa', '问答看板'], ['leads', '线索'],
   ['config', '模型与提示词'], ['voice', 'AI 语音'], ['content', '站点数据'],
   ['variant', '生成变体'], ['anim', '角色动画'],
 ];
@@ -95,6 +96,7 @@ function Dash() {
       {tab === 'devices' && <DevicesTab onViewMessages={(hash) => { setMsgDevice(hash); setMsgFocus(''); setTab('messages'); }} />}
       {tab === 'messages' && <MessagesTab device={msgDevice} focus={msgFocus} onExitFocus={() => { setMsgDevice(''); setMsgFocus(''); }} />}
       {tab === 'qa' && <QaTab />}
+      {tab === 'leads' && <LeadsTab />}
       {tab === 'config' && <ConfigTab />}
       {tab === 'voice' && <VoiceTab />}
       {tab === 'content' && <ContentTab />}

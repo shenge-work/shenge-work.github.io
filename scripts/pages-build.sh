@@ -118,6 +118,7 @@ for f in index.html resume.html jd.html company.html school.html 404.html \
          functions/lib/tts.js functions/lib/greeting.js functions/api/voice.js \
          functions/api/greeting.js functions/api/admin/greeting.js \
          functions/api/admin/voice.js functions/api/admin/voice/preview.js \
+         functions/lib/leads.js functions/api/admin/leads.js \
          functions/lib/site-content.js functions/api/admin/site-content.js \
          functions/lib/contributions.js functions/api/contributions.js \
          functions/lib/kb-sync.js functions/api/admin/kb.js \
