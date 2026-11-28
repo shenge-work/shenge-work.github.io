@@ -27,6 +27,19 @@ test('贡献图请求被视口预取包裹，观察联系板块', () => {
   assert.match(main, /root\.querySelector\('rect\.s'\)/);
 });
 
+test('实时网格重绘保留贪吃蛇吃块动画', () => {
+  const seg = main.slice(main.indexOf('function applyLiveGrid'), main.indexOf('function initContributions'));
+  // 旧实现删掉全部 rect.c 后只写 class="c"，cN 吃块钩子随之丢失
+  assert.match(seg, /var eatSteps = Object\.create\(null\)/);
+  assert.match(seg, /0-9a-z/); // c0…c9 / ca…cs 都是有效步骤名
+  assert.match(seg, /eatSteps\[pos\] = stepMatch\[1\]/);
+  assert.match(seg, /rect\.setAttribute\('class', step \? 'c c' \+ step : 'c'\)/);
+  // 实时色必须进 keyframes，否则会从烘焙旧色慢慢插值到新色
+  assert.match(seg, /@keyframes c' \+ eatSteps\[pos\]/);
+  assert.match(seg, /--eat-fill/);
+  assert.match(seg, /eatTiming\[kf\[1\]\]/);
+});
+
 test('留言墙首次请求被视口预取包裹，观察 wall 板块', () => {
   assert.match(main, /whenNearViewport\(\$\('wall'\), function \(\) \{ loadFirst\(false\); \}, 600\)/);
   // delay 前先渲染骨架，避免锚点直跳看到空白

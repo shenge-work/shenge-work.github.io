@@ -477,7 +477,8 @@
     stats.hidden = false;
   }
 
-  /* 把蛇图 SVG 里烘焙的旧格子换成实时格子；蛇身 rect.s 保留在最上层继续动。 */
+  /* 把蛇图 SVG 里烘焙的旧格子换成实时格子；蛇身 rect.s 与 cN 吃块动画必须一起保留。
+     cN 是 Platane/snk 给「蛇头走到这格时把颜色吃掉」的钩子，丢掉它就只剩蛇滑过静止色块。 */
   function applyLiveGrid(box, data) {
     if (!data || !Array.isArray(data.weeks) || !data.weeks.length ||
         typeof DOMParser === 'undefined' || typeof XMLSerializer === 'undefined') return;
@@ -492,22 +493,62 @@
           var doc = new DOMParser().parseFromString(text, 'image/svg+xml');
           if (doc.querySelector('parsererror') || !doc.documentElement) return;
           var root = doc.documentElement;
+          var ns = 'http://www.w3.org/2000/svg';
+          var styleEl = root.querySelector('style');
+          var styleText = styleEl && styleEl.textContent ? styleEl.textContent : '';
+
+          /* 原 SVG 的吃块时序烘焙在 @keyframes cN 里：N% 保持原色，N+ε 变回空格。
+             实时数据换色后要保持时序、又不能让颜色从旧色慢慢插值到新色，所以用
+             每格自己的 --eat-fill 重定义同名 keyframes。 */
+          var eatTiming = Object.create(null);
+          var kfRe = /@keyframes\s+c([0-9a-z]+)\s*\{\s*([\d.]+)%\s*\{\s*fill:\s*var\(--c\d+\)\s*\}\s*([\d.]+)%\s*,\s*100%\s*\{\s*fill:\s*var\(--ce\)\s*\}\s*\}/g;
+          var kf;
+          while ((kf = kfRe.exec(styleText)) !== null) {
+            eatTiming[kf[1]] = { eat: kf[2], gone: kf[3] };
+          }
+
+          /* 按坐标记住哪些格子有 cN 动画钩子（c0…c9 / ca…cs），再删旧格子。 */
+          var eatSteps = Object.create(null);
           var stale = root.querySelectorAll('rect.c');
           for (var i = 0; i < stale.length; i += 1) {
+            var oldCls = stale[i].getAttribute('class') || '';
+            var stepMatch = /(?:^|\s)c([0-9a-z]+)(?=\s|$)/.exec(oldCls);
+            if (stepMatch) {
+              var pos = stale[i].getAttribute('x') + '|' + stale[i].getAttribute('y');
+              eatSteps[pos] = stepMatch[1];
+            }
             stale[i].parentNode.removeChild(stale[i]);
           }
-          var ns = 'http://www.w3.org/2000/svg';
+
+          var liveCss = '';
+          Object.keys(eatSteps).forEach(function (pos) {
+            var t = eatTiming[eatSteps[pos]];
+            if (t) {
+              liveCss += '@keyframes c' + eatSteps[pos] + '{0%,' + t.eat +
+                '%{fill:var(--eat-fill)}' + t.gone + '%,100%{fill:var(--ce)}}';
+            }
+          });
+          if (liveCss) {
+            var override = doc.createElementNS(ns, 'style');
+            override.textContent = liveCss;
+            root.appendChild(override);
+          }
+
           var anchor = root.querySelector('rect.s');
           data.weeks.forEach(function (week, col) {
             (week || []).forEach(function (cell, row) {
               if (!cell) return;
+              var x = 2 + 16 * col;
+              var y = 2 + 16 * row;
+              var step = eatSteps[x + '|' + y];
+              var fill = 'var(--c' + (Number(cell.level) || 0) + ')';
               var rect = doc.createElementNS(ns, 'rect');
-              rect.setAttribute('class', 'c');
-              rect.setAttribute('x', String(2 + 16 * col));
-              rect.setAttribute('y', String(2 + 16 * row));
+              rect.setAttribute('class', step ? 'c c' + step : 'c');
+              rect.setAttribute('x', String(x));
+              rect.setAttribute('y', String(y));
               rect.setAttribute('rx', '2');
               rect.setAttribute('ry', '2');
-              rect.setAttribute('style', 'fill:var(--c' + (Number(cell.level) || 0) + ')');
+              rect.setAttribute('style', step ? '--eat-fill:' + fill + ';fill:' + fill : 'fill:' + fill);
               if (anchor) root.insertBefore(rect, anchor);
               else root.appendChild(rect);
             });
