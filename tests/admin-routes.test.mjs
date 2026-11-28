@@ -129,7 +129,35 @@ test('伪造 / 过期会话一律视为未登录', async () => {
   assert.equal(res.status, 302);
 });
 
+function parseCsp(csp) {
+  const out = {};
+  for (const part of String(csp || '').split(';')) {
+    const bits = part.trim().split(/\s+/).filter(Boolean);
+    if (bits.length) out[bits[0].toLowerCase()] = bits.slice(1);
+  }
+  return out;
+}
+
 /* ── 已登录 ─────────────────────────────────────────────────────── */
+
+test('后台 CSP 放行 data: 音频：AI 语音试听的 base64 mp3 不会被拦', async () => {
+  const env = envOf(fakeDb());
+  const res = await onRequest(ctx('/admin', { Cookie: await cookieOf(env) }, env));
+  const live = parseCsp(res.headers.get('Content-Security-Policy'));
+  assert.ok(live['media-src'], '后台 CSP 必须显式声明 media-src');
+  assert.ok(live['media-src'].includes("'self'"));
+  assert.ok(live['media-src'].includes('data:'), '试听音频是 data: URL，必须放行');
+
+  /* 静态兜底（Pages 读 admin/public/_headers）不能与中间件漂掉 */
+  const raw = readFileSync(new URL('../admin/public/_headers', import.meta.url), 'utf8');
+  const line = raw.split('\n').map((s) => s.trim())
+    .find((s) => /^Content-Security-Policy:/i.test(s));
+  assert.ok(line, '_headers 缺少 Content-Security-Policy');
+  const staticDirs = parseCsp(line.replace(/^Content-Security-Policy:\s*/i, ''));
+  assert.ok(staticDirs['media-src'] && staticDirs['media-src'].includes('data:'));
+  assert.deepEqual(Object.keys(staticDirs).sort(), Object.keys(live).sort(),
+    '_headers 与中间件 ADMIN_CSP 的指令集必须一致');
+});
 
 test('已登录访问 /admin → 放行，并补上后台专用安全头', async () => {
   const env = envOf(fakeDb());

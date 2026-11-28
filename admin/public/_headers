@@ -1,14 +1,17 @@
 # 后台站安全响应头（Cloudflare Pages 会读取 public/_headers）
 #   · 后台是高价值目标：禁止被 iframe 嵌套，防点击劫持（诱导已登录站长点「拉黑 / 隐藏」）
-#   · CSP 的例外只有两处，都是 3D 渲染器必需的：
+#   · CSP 的例外有两组：3D 渲染器必需的解码器/blob worker，以及 AI 语音试听的 data: 音频
 #       - https://www.gstatic.com：model-viewer 的 Draco / Basis 解码器
 #       - blob: / 'wasm-unsafe-eval'：解码器以 blob worker + wasm 运行
 #       - connect-src 还必须含 blob:：GLB 内嵌贴图会被解成 blob URL 再 fetch
+#   · media-src 必须含 data:：试听接口返回 base64 mp3，前端用 data: URL 播放；
+#     不显式放行会继承 default-src 'self'，音频被拦，界面只显示「播放失败」
 #   · 这些头只作用于静态资源；/api/* 由 Functions 自己控制响应头
+#   · 改这里必须同步 functions/_middleware.js 的 ADMIN_CSP（线上文档走中间件，静态兜底走这里）
 
 /*
   X-Frame-Options: DENY
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://www.gstatic.com; worker-src 'self' blob:; connect-src 'self' blob: https://www.gstatic.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://www.gstatic.com; worker-src 'self' blob:; connect-src 'self' blob: https://www.gstatic.com; img-src 'self' data: blob:; media-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Robots-Tag: noindex, nofollow

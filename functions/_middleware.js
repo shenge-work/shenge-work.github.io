@@ -174,8 +174,10 @@ function isPrivatePath(pathname) {
 }
 
 /* 后台页面的 CSP 比公开站更严：不许被嵌套，也不许外链任何脚本；
-   唯一例外是 3D 渲染器需要的 gstatic 解码器与 blob worker（跟旧后台 _headers 一致） */
-const ADMIN_CSP = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://www.gstatic.com; worker-src 'self' blob:; connect-src 'self' blob: https://www.gstatic.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'";
+   例外有两组：3D 渲染器需要的 gstatic 解码器与 blob worker（跟旧后台 _headers 一致），
+   以及 AI 语音试听：接口返回 base64 mp3，前端用 data: URL 播 <audio>，
+   必须显式放行 media-src data:，否则继承 default-src 'self' 会直接拦掉（表现为「播放失败」）。 */
+const ADMIN_CSP = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://www.gstatic.com; worker-src 'self' blob:; connect-src 'self' blob: https://www.gstatic.com; img-src 'self' data: blob:; media-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'";
 const LOGIN_CSP = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'";
 
 function withHeaders(res, pathname) {
