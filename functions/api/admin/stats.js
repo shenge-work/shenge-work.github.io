@@ -20,6 +20,13 @@ export async function onRequestGet({ request, env }) {
         (SELECT COUNT(*) FROM wall_messages WHERE created_at >= ?) AS week`
     ).bind(now - 86400000, day, now - 7 * 86400000).first();
 
+    /* 历史脏数据兜底：早期计数曾留下 visitors = total + 1，
+       后台概览不能跟着显示「访客 > 浏览」。写路径会在下次计数时真正修正。 */
+    const stats = Object.assign({}, row || {});
+    if (Number(stats.pv) > 0 && Number(stats.uv) > Number(stats.pv)) {
+      stats.uv = Number(stats.pv);
+    }
+
     /* 回复相关统计单独查：wall_replies 未迁移时不影响概览其它卡片 */
     let extra = { pending_replies: 0, replies: 0 };
     try {
@@ -35,7 +42,7 @@ export async function onRequestGet({ request, env }) {
       if (er) extra = er;
     } catch (e) { /* 表未迁移：保持 0 */ }
 
-    return json({ ok: true, stats: Object.assign({}, row || {}, extra), dayStart: day });
+    return json({ ok: true, stats: Object.assign(stats, extra), dayStart: day });
   } catch (e) {
     return json({ ok: false, error: 'db_error' }, 500);
   }

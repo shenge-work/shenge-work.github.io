@@ -113,6 +113,9 @@ async function readCounters(db) {
     if (r && r.name === 'total') out.total = Number(r.value) || 0;
     if (r && r.name === 'visitors') out.visitors = Number(r.value) || 0;
   }
+  /* 历史脏数据（2026-11-19 上线初期曾留下 visitors = total + 1）先在读路径兜住，
+     展示上不能出现「第 306 位访客 / 累计访问 305 次」；写路径会在下次计数时落库修正。 */
+  if (out.visitors > out.total) out.visitors = out.total;
   return out;
 }
 
@@ -207,6 +210,15 @@ export async function onRequestPost({ request, env }) {
     ).bind(id, now, now).run();
 
     const isNew = !!(ins.meta && ins.meta.changes > 0);
+
+    /* 先加 total 再加 visitors。旧顺序反过来时，total 更新中途失败会留下
+       visitors > total 的脏数据（线上从 11-19 起一直是 +1，11-28 才发现）。
+       调换顺序后，最坏情况是 visitors 少 1，绝不会让访客数反超访问数。 */
+    const totalRow = await db.prepare(
+      `UPDATE counters SET value = value + 1 WHERE name = 'total' RETURNING value`
+    ).first();
+    const total = totalRow ? Number(totalRow.value) : 0;
+
     if (isNew) {
       await db.prepare(
         `UPDATE counters SET value = value + 1 WHERE name = 'visitors'`
@@ -216,20 +228,24 @@ export async function onRequestPost({ request, env }) {
       await db.prepare('UPDATE visitors SET last_seen = ? WHERE id = ?').bind(now, id).run();
     }
 
-    const totalRow = await db.prepare(
-      `UPDATE counters SET value = value + 1 WHERE name = 'total' RETURNING value`
-    ).first();
-
     const visitorsRow = await db.prepare(
       `SELECT value FROM counters WHERE name = 'visitors'`
     ).first();
+    let visitors = visitorsRow ? Number(visitorsRow.value) : 0;
+
+    /* 存量脏数据自愈：把多出来的访客数拉回 total，后台概览与主页里程表随即一致。 */
+    if (visitors > total) {
+      await db.prepare("UPDATE counters SET value = ? WHERE name = 'visitors'")
+        .bind(total).run();
+      visitors = total;
+    }
 
     return json({
       ok: true,
       counted: true,
       isNew: isNew,
-      total: totalRow ? Number(totalRow.value) : 0,
-      visitors: visitorsRow ? Number(visitorsRow.value) : 0,
+      total: total,
+      visitors: visitors,
     }, cors);
   } catch (e) {
     return json({ ok: false, error: 'db_error' }, cors, 500);

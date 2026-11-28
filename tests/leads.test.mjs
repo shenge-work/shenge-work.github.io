@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import { signSession, COOKIE, TTL } from '../functions/lib/admin-auth.js';
-import { classify, buildLeads, followUp, toText } from '../functions/lib/leads.js';
+import { classify, buildLeads, followUp, toText, isPreset } from '../functions/lib/leads.js';
 import { onRequestGet } from '../functions/api/admin/leads.js';
 
 const ORIGIN = 'https://chenpeisheng.cn';
@@ -94,8 +94,35 @@ test('classify：带否定的句子不算线索', () => {
 });
 
 test('classify：纯技术好奇不算线索', () => {
-  assert.equal(classify('他用过 Kubernetes 吗'), null);
   assert.equal(classify('这个多智能体系统的沙箱是怎么做的'), null);
+  assert.equal(classify('你会做饭吗'), null);
+  assert.equal(classify('你好'), null);
+});
+
+test('classify：第三人称打听算外部在评估，归招聘', () => {
+  /* 线上真实记录里就有「他会 Kubernetes 吗」「他现在的联系方式」——本人不会这么说自己 */
+  const r = classify('他会 Kubernetes 吗');
+  assert.equal(r.key, 'hire');
+  assert.equal(r.priority, 1);
+  assert.ok(r.signals.includes('第三人称提问'));
+  /* 「其他」里的他、带「你」的对话式反问都不算 */
+  assert.equal(classify('其他项目还有吗'), null);
+  const chat = classify('你怎么看他的架构');
+  assert.equal(chat, null);
+});
+
+test('classify：只要联系方式算弱线索，事由不明', () => {
+  const r = classify('联系方式？');
+  assert.equal(r.key, 'contact');
+  assert.equal(r.weak, true);
+  assert.equal(r.priority, 4);
+});
+
+test('isPreset：分身那排快捷问题原文不当作意向', () => {
+  assert.equal(isPreset('怎么联系你？'), true);
+  assert.equal(isPreset(' 技术栈 与 方向。'), true);   // 空白与标点抹掉后仍判得出
+  assert.equal(isPreset('你主导过哪些 0→1 系统？'), true);
+  assert.equal(isPreset('他现在的联系方式'), false);
 });
 
 test('classify：一句里同时有合作与到岗，按更紧急的招聘算', () => {
@@ -110,19 +137,36 @@ test('buildLeads：同 IP 的多条意向问合成一个人，priority 取最紧
   const rows = [
     { ts: 1000, query: '帮我们做个小程序，报价多少', ip_hash: 'aaa' },
     { ts: 2000, query: '你什么时候能到岗', ip_hash: 'aaa' },
-    { ts: 1500, query: '他会 Kubernetes 吗', ip_hash: 'aaa' },
+    { ts: 1500, query: '他做过哪些 0→1 系统', ip_hash: 'aaa' },
+    { ts: 1800, query: '怎么联系你？', ip_hash: 'aaa' },          // 点的快捷问题，不算线索
+    { ts: 1900, query: '这个多智能体系统怎么搭的', ip_hash: 'aaa' }, // 纯技术好奇，也不算
   ];
   const { leads, stats } = buildLeads(rows);
   assert.equal(leads.length, 1);
-  assert.equal(leads[0].count, 2);            // 技术好奇那条不进线索
+  assert.equal(leads[0].count, 3);
+  assert.equal(leads[0].presetClicks, 1);
   assert.equal(leads[0].priority, 1);         // 后来问到岗，整条线索提到招聘
   assert.equal(leads[0].intentKey, 'hire');
   assert.ok(leads[0].signals.includes('到岗'));
   assert.ok(leads[0].signals.includes('报价'));
-  assert.equal(stats.hire, 1);
+  assert.equal(stats.hire, 2);
   assert.equal(stats.collab, 1);
-  assert.equal(stats.total, 2);
-  assert.equal(stats.scanned, 3);
+  assert.equal(stats.total, 3);
+  assert.equal(stats.presets, 1);
+  assert.equal(stats.scanned, 5);
+  assert.equal(stats.presetOnly, 0);          // 这个人留下了意向，不算「只点按钮」
+});
+
+test('buildLeads：只点快捷问题的人不进线索，记成「在翻但没表态」', () => {
+  const rows = [
+    { ts: 100, query: '怎么联系你？', ip_hash: 'ip-p' },
+    { ts: 200, query: '技术栈与方向？', ip_hash: 'ip-p' },
+    { ts: 300, query: '你主导过哪些 0→1 系统？', ip_hash: 'ip-q' },
+  ];
+  const { leads, stats } = buildLeads(rows);
+  assert.equal(leads.length, 0);
+  assert.equal(stats.presets, 3);
+  assert.equal(stats.presetOnly, 2);
 });
 
 test('buildLeads：不同 IP 各自成条，按优先级再按最近活跃排序', () => {

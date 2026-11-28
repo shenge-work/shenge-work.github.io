@@ -1,7 +1,8 @@
 /* ──────────────────────────────────────────────────────────────────────
    全站访客计数器 · 前端接入层（复古里程表 · 顶栏分享按钮左侧）
    ──────────────────────────────────────────────────────────────────────
-   只接远程接口，显示全站真实访问量；本机 localStorage 累计已移除。
+   只接远程接口，显示全站累计访问次数（total）；本机 localStorage 累计已移除。
+   访客数（visitors）只放进悬浮提示，不冒充「全站访问」数字。
    里程表组件为静态标记（见 index.html 顶栏），本脚本只负责填充数字：
 
      · 本地环境（file:// / localhost / 127.0.0.1 / 192.168.x）：
@@ -140,7 +141,8 @@
         var visitors = Number(data.visitors) || 0;
         var total = Number(data.total) || 0;
         var tip = '你是第 ' + visitors + ' 位访客 · 全站累计访问 ' + total + ' 次';
-        reveal(widget, visitors || total, tip);
+        /* 顶栏写的是「全站访问」，就该显示 total（PV），不是访客数（UV）。 */
+        reveal(widget, total || visitors, tip);
       })
       .catch(function (err) {
         /* 写入失败（限流/网络抖动）时降级为只读，仍把真实数字显示出来；
@@ -193,7 +195,7 @@
         var visitors = Number(data.visitors) || 0;
         var total = Number(data.total) || 0;
         var tip = '你是第 ' + visitors + ' 位访客 · 全站累计访问 ' + total + ' 次';
-        reveal(widget, visitors || total, tip);
+        reveal(widget, total || visitors, tip);
       })
       .catch(function () { renderFallback(widget, 'Worker 不可用'); });
   }

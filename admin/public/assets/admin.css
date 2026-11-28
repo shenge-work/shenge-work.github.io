@@ -475,7 +475,7 @@ td.act { text-align: right; white-space: nowrap; }
 .voice-gender .btn.is-on { background: var(--ink); color: var(--paper); }
 
 /* ── 线索页 ────────────────────────────────────────────── */
-.stats-leads { grid-template-columns: repeat(5, 1fr); }
+.stats-leads { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
 /* .qa-list li 默认是 flex 行，线索卡片要竖排，这里单独覆盖 */
 .lead-list li { display: block; padding: 12px 0; }
 .lead-head { display: flex; align-items: baseline; gap: 10px; }
@@ -483,6 +483,7 @@ td.act { text-align: right; white-space: nowrap; }
 .pill.lead-p1 { border-color: var(--accent); color: var(--accent); }
 .pill.lead-p2 { border-color: #7B8F6B; color: #4B5A3F; }
 .pill.lead-p3 { border-color: var(--line); color: var(--ink-2); }
+.pill.lead-p4 { border-color: var(--line); color: var(--ink-2); opacity: .75; }
 .lead-qs { list-style: none; margin: 8px 0 0; padding: 0 0 0 2px; }
 .lead-qs li { display: flex; gap: 10px; font-size: 12px; padding: 3px 0; border: 0; }
 .lead-signals { margin: 6px 0 0; font-size: 11px; color: var(--ink-2); font-family: var(--mono); }

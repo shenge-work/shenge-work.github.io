@@ -80,14 +80,17 @@ export const leadsSchema = z.object({
   days: z.number().default(30),
   total_leads: z.number().default(0),
   stats: z.object({
-    total: num, hire: num, collab: num, jobseek: num, last7: num, scanned: num,
+    total: num, hire: num, collab: num, jobseek: num, contact: num,
+    strong: num, weak: num, last7: num, presets: num, presetOnly: num, scanned: num,
   }).passthrough(),
   leads: z.array(z.object({
     ip: z.string(),
     intentKey: z.string(),
     intentLabel: z.string(),
     priority: z.number(),
+    weak: z.boolean().default(false),
     count: z.number().default(0),
+    presetClicks: z.number().default(0),
     firstTs: ts,
     lastTs: ts,
     queries: z.array(z.object({ ts, q: z.string(), intent: z.string() }).passthrough()).default([]),
