@@ -145,6 +145,14 @@ test('移动端与 reduced-motion 有专门样式，不遮挡输入框', () => {
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
+test('内置兜底配置保证 D1 旧快照下导览仍能激活', () => {
+  const src = read('js/guide-tour.js');
+  assert.match(src, /var FALLBACK_CONFIG = \{/);
+  assert.match(src, /\|\|\s*FALLBACK_CONFIG;/);
+  for (const id of ['G03', 'G06', 'G08']) assert.ok(src.includes(`id: '${id}'`), `兜底缺 ${id}`);
+  assert.match(src, /source: configSource/);
+});
+
 test('数据快照已同步 guide 节点', () => {
   const js = read('data/site-data.js');
   assert.match(js, /"guide"/);

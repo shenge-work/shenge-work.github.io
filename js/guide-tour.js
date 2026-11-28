@@ -18,6 +18,52 @@
   var Core = window.GuideCore;
   if (!Core) return;
 
+  /* P0 兜底配置：线上 /data/site-data.js 由 D1 site_content 提供，
+     那份快照更新前读不到 guide 节点。这里内置三条脚本保证功能可用；
+     一旦数据层带上 guide（后台同步后），下面的 init() 会优先用数据层。 */
+  var FALLBACK_CONFIG = {
+    enabled: true,
+    mode: 'caption',
+    maxPerSession: 4,
+    globalCooldownMs: 25000,
+    sectionCooldownMs: 60000,
+    dwellMs: 1800,
+    settleMs: 350,
+    holdMs: 9000,
+    scripts: [
+      {
+        id: 'G03',
+        section: 'experience',
+        trigger: { type: 'section-dwell', dwellMs: 1800 },
+        priority: 50,
+        title: '工作经历 · 四家公司',
+        speech: '工作经历一共四段，从周生生到进门财经。每段公司名都能点开公司档案，里面有业务、融资和团队背景。任职佐证材料，包括离职证明，也归档在对应档案里，需要申请解锁后查看。',
+        caption: '四家公司档案可点开；离职证明归档在对应档案，需申请解锁。',
+        cta: { label: '看进门财经档案', action: 'company:comein' }
+      },
+      {
+        id: 'G06',
+        section: 'education',
+        trigger: { type: 'section-dwell', dwellMs: 1800 },
+        priority: 50,
+        title: '教育经历 · 学校档案',
+        speech: '教育是中山大学新华学院，软件工程，2021 届全日制统招。点学校名能进学校档案，课程表、在校经历和获奖都在那里。学历验证码默认加锁，提交申请、我批准后才对当前设备开放。',
+        caption: '学校档案含课程表、在校经历与获奖；学历验证码需申请、批准后解锁。',
+        cta: { label: '打开学校档案', action: 'school:xinhua' }
+      },
+      {
+        id: 'G08',
+        section: 'contact',
+        trigger: { type: 'section-dwell', dwellMs: 1800 },
+        priority: 50,
+        title: '联系方式 · 直接聊',
+        speech: '看到这里，如果觉得岗位匹配，最省事的是点邮箱发一封简短意向，附上 JD 我会更快回复。拿不准也可以先做一次 JD 匹配，带着结果来聊。',
+        caption: '附上 JD 发一封简短意向，我会更快回复。',
+        cta: { label: '发邮件', action: 'mailto' }
+      }
+    ]
+  };
+
   var SS_KEY = 'cpGuideSessionV1';
   var LS_KEY = 'cpGuidePrefsV1';
   var FIRST_8S = 8000;
@@ -25,6 +71,7 @@
   var FAST_FREEZE = 5000;
 
   var config = null;
+  var configSource = null;
   var scripts = [];
   var bootAt = Date.now();
   var started = false;
@@ -445,10 +492,14 @@
   }
 
   function init() {
+    var fromData = !!(window.SITE_DATA && window.SITE_DATA.guide) ||
+      !!(window.__SITE_DATA__ && window.__SITE_DATA__.guide);
     var raw = (window.SITE_DATA && window.SITE_DATA.guide) ||
-      (window.__SITE_DATA__ && window.__SITE_DATA__.guide) || null;
+      (window.__SITE_DATA__ && window.__SITE_DATA__.guide) ||
+      FALLBACK_CONFIG;
     if (!raw || raw.enabled === false) return;
     config = raw;
+    configSource = fromData ? 'site-data' : 'builtin';
     scripts = Array.isArray(raw.scripts) ? raw.scripts : [];
     if (!scripts.length) return;
     loadState();
@@ -464,6 +515,7 @@
       return {
         started: started,
         enabled: !!(config && config.enabled),
+        source: configSource,
         quiet: isQuiet(),
         current: current ? current.id : null,
         shown: session.shownIds.slice(),
