@@ -549,11 +549,13 @@ Cloudflare 里那个 `RESEND_FROM=hi@...` 可以保留不再使用，也可以�
 实测确认根因就是 `ADMIN_SESSION_SECRET` / `ADMIN_PASSWORD` 的**值被清空**
 （变量名还在、控制台仍显示「值已加密」，与 11.3 的 Pages 密钥事故同一类）。
 
-修法没有再去动 Cloudflare 那批密钥行——编辑它们有抹掉其它密钥的前科——
-而是在 `admin-auth.js` / `admin-login.js` 里把优先级扩为
-`ADMIN_SESSION_SECRET → ADMIN_PASSWORD → RESEND_API_KEY`。
-`RESEND_API_KEY` 本身是高熵随机串、与后台同处一个服务端环境，用它派生 HMAC 密钥
-不降低安全性；这样即使 `ADMIN_*` 值为空，验证码也能立即工作，且不必冒重填的风险。
-代价：重填密钥后旧会话会失效，需重新登录一次。
+当时的临时修法是在 `admin-auth.js` / `admin-login.js` 里把优先级扩为
+`ADMIN_SESSION_SECRET → ADMIN_PASSWORD → RESEND_API_KEY`，让验证码先恢复工作。
+
+2026-11-28 已改为 **fail-closed**：`RESEND_API_KEY` 不再参与后台会话/验证码签名；
+`ADMIN_SESSION_SECRET`、`ADMIN_PASSWORD`、`DEVICE_HASH_PEPPER`、`VERIFY_ACCESS_SECRET`
+任一缺失时，相关接口返回明确的 503 / 拒绝，而不是退回公开仓库里的 dev 串。
+生产密钥已用 `wrangler pages secret put` 逐项恢复（不要整体 PATCH `deployment_configs`）。
+代价：重填密钥后旧会话失效，需重新登录一次；设备哈希会变化，旧设备需要重新申请解锁。
 
 > AI生成
