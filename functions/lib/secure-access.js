@@ -18,6 +18,7 @@
    ────────────────────────────────────────────────────────────────────── */
 
 import { hmacHex } from './guard.js';
+import { secretValue } from './secret.js';
 import { availableMaterials, listMaterials } from './secure-assets.js';
 
 export const APPROVAL_TTL_MS = 24 * 3600 * 1000;   // 批准后 24 小时
@@ -97,7 +98,8 @@ export function assetSecret(env) {
   if (explicit) return explicit;
   const verify = String((env && env.VERIFY_ACCESS_SECRET) || '').trim();
   if (verify) return verify + ':secure-asset';
-  return String((env && env.DEVICE_HASH_PEPPER) || 'dev-only-pepper-change-me') + ':secure-asset';
+  const pepper = secretValue(env, ['DEVICE_HASH_PEPPER'], 'dev-only-pepper-change-me');
+  return pepper ? pepper + ':secure-asset' : '';
 }
 
 function tokenText(o) {
@@ -105,10 +107,14 @@ function tokenText(o) {
 }
 
 export async function signAssetToken(o, env) {
-  return hmacHex(assetSecret(env), tokenText(o));
+  const secret = assetSecret(env);
+  if (!secret) throw new Error('SECURE_ASSET_SECRET 未配置');
+  return hmacHex(secret, tokenText(o));
 }
 
 export async function verifyAssetToken(o, env, now = Date.now()) {
+  const secret = assetSecret(env);
+  if (!secret) return false;
   const exp = Number(o.exp);
   if (!Number.isFinite(exp) || exp <= Math.floor(now / 1000)) return false;
   /* 服务端自己只会签 5 分钟的链接；防止有人拿旧密钥签出超长有效期 */

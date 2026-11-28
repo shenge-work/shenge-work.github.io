@@ -37,6 +37,11 @@ export async function onRequestGet({ request, env }) {
     return json({ ok: false, error: 'rate_limited', message: '请求过于频繁，请稍后再试' }, cors, 429);
   }
 
-  const proof = await issueProof(env, request, 'deliver');
+  let proof;
+  try {
+    proof = await issueProof(env, request, 'deliver');
+  } catch (e) {
+    return json({ ok: false, error: 'server_misconfigured', message: '签名密钥未配置，已拒绝签发凭证' }, cors, 503);
+  }
   return json({ ok: true, token: proof.token, difficulty: proof.difficulty, expiresAt: proof.expiresAt }, cors, 200);
 }

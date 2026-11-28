@@ -13,11 +13,14 @@
         优先走 D1（rate_limits 表，单语句原子自增），无 D1 时退 KV。
 
    环境变量：
-     DELIVER_CHALLENGE_SECRET  可选，签名密钥；留空依次退
-                               VERIFY_ACCESS_SECRET → DEVICE_HASH_PEPPER
+     DELIVER_CHALLENGE_SECRET  签名密钥；留空依次退
+                               VERIFY_ACCESS_SECRET → DEVICE_HASH_PEPPER。
+                               全部缺失时 fail-closed，不再用仓库里的 dev 串。
      DELIVER_POW_DIFFICULTY    可选，PoW 难度（前导 0 的十六进制位数），
                                默认 3，范围 0–5；0 表示只要凭证不算力
    ────────────────────────────────────────────────────────────────────── */
+
+import { secretValue } from './secret.js';
 
 export const JSON_HEADERS = {
   'Content-Type': 'application/json; charset=utf-8',
@@ -118,7 +121,12 @@ export async function sha256Hex(text) {
 /* IP → 带 pepper 的 HMAC 前缀：既做限流键，也可进邮件，绝不落明文 */
 export async function ipTag(request, env, len) {
   try {
-    const pepper = String((env && (env.DEVICE_HASH_PEPPER || env.VERIFY_ACCESS_SECRET)) || DEV_SECRET);
+    const pepper = secretValue(
+      env,
+      ['DEVICE_HASH_PEPPER', 'VERIFY_ACCESS_SECRET', 'DELIVER_CHALLENGE_SECRET'],
+      DEV_SECRET,
+    );
+    if (!pepper) return 'unknown';   // 没密钥就坍缩到同一个桶，绝不静默放行
     return (await hmacHex(pepper, clientIp(request))).slice(0, len || 16);
   } catch (e) {
     return 'unknown';
@@ -128,8 +136,11 @@ export async function ipTag(request, env, len) {
 /* ── 签名凭证 ──────────────────────────────────────────────────────── */
 
 export function proofSecret(env) {
-  const s = env && (env.DELIVER_CHALLENGE_SECRET || env.VERIFY_ACCESS_SECRET || env.DEVICE_HASH_PEPPER);
-  return String(s || DEV_SECRET);
+  return secretValue(
+    env,
+    ['DELIVER_CHALLENGE_SECRET', 'VERIFY_ACCESS_SECRET', 'DEVICE_HASH_PEPPER'],
+    DEV_SECRET,
+  );
 }
 
 export function powDifficulty(env) {
@@ -143,11 +154,13 @@ export function powDifficulty(env) {
 /* 凭证格式：<用途>.<过期秒>.<IP 标签>.<随机串>.<HMAC>
    绑定用途与 IP，服务端无需存储即可校验；过期时间取服务端时间。 */
 export async function issueProof(env, request, purpose) {
+  const secret = proofSecret(env);
+  if (!secret) throw new Error('签名密钥未配置（DELIVER_CHALLENGE_SECRET / VERIFY_ACCESS_SECRET / DEVICE_HASH_PEPPER）');
   const exp = Math.floor(Date.now() / 1000) + PROOF_TTL_SEC;
   const tag = await ipTag(request, env, 12);
   const rand = bytesToB64url(crypto.getRandomValues(new Uint8Array(9)));
   const payload = [purpose, exp, tag, rand].join('.');
-  const sig = (await hmacHex(proofSecret(env), payload)).slice(0, 32);
+  const sig = (await hmacHex(secret, payload)).slice(0, 32);
   return {
     token: payload + '.' + sig,
     difficulty: powDifficulty(env),
@@ -171,12 +184,15 @@ export async function verifyProof(env, request, proof, purpose) {
   const nonce = (proof && typeof proof === 'object' && proof.nonce != null) ? String(proof.nonce) : '';
   if (!token) return { ok: false, error: 'verification_required' };
 
+  const secret = proofSecret(env);
+  if (!secret) return { ok: false, error: 'server_misconfigured' };
+
   const parts = String(token).split('.');
   if (parts.length !== 5) return { ok: false, error: 'verification_failed' };
   const [gotPurpose, expRaw, tag, rand, sig] = parts;
   const payload = [gotPurpose, expRaw, tag, rand].join('.');
 
-  const expect = (await hmacHex(proofSecret(env), payload)).slice(0, 32);
+  const expect = (await hmacHex(secret, payload)).slice(0, 32);
   if (!safeEqual(expect, sig)) return { ok: false, error: 'verification_failed' };
   if (gotPurpose !== purpose) return { ok: false, error: 'verification_failed' };
 
@@ -279,7 +295,9 @@ export function tooLarge(request) {
    中间件据此拒绝任何直接访问。两边用同一密钥，配置缺失时同为开发密钥。 */
 export async function certToken(env, pathname) {
   try {
-    return (await hmacHex(proofSecret(env), 'cert:' + pathname)).slice(0, 32);
+    const secret = proofSecret(env);
+    if (!secret) return '';   // 中间件看到空 token 会 404，宁可挡住也不裸奔
+    return (await hmacHex(secret, 'cert:' + pathname)).slice(0, 32);
   } catch (e) {
     return '';
   }

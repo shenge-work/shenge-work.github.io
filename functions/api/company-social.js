@@ -34,6 +34,8 @@
      · 不接 Turnstile：留言墙已有该能力，本接口仅做长度/限流/去重的基础防护。
    ────────────────────────────────────────────────────────────────────── */
 
+import { secretValue } from '../lib/secret.js';
+
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' };
 
 const DEFAULT_ORIGINS = [
@@ -139,7 +141,8 @@ async function visitorHashOf(request, env) {
   if (!DEVICE_RE.test(did)) return '';
   const fp = clean(request.headers.get('X-Device-Fp'), 300);
   const ua = clean(request.headers.get('User-Agent'), 300);
-  const pepper = String(env.DEVICE_HASH_PEPPER || 'dev-only-pepper-change-me');
+  const pepper = secretValue(env, ['DEVICE_HASH_PEPPER'], 'dev-only-pepper-change-me');
+  if (!pepper) return '';
   const raw = did + '|' + fp + '|' + ua;
   try {
     const key = await crypto.subtle.importKey(

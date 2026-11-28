@@ -47,6 +47,7 @@
    ────────────────────────────────────────────────────────────────────── */
 
 import { notifyWallMessage, notifyWallReply } from '../lib/wall-notify.js';
+import { secretValue } from '../lib/secret.js';
 
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' };
 
@@ -171,7 +172,8 @@ async function ipHash(request) {
 /* 设备 ID → 不可逆哈希。只存哈希的好处：库被拖走也还原不出某台设备的 ID，
    也就没法拿它去伪造别人的留言本。pepper 换了等于所有设备重新分区。 */
 async function deviceHashOf(id, env) {
-  const pepper = String(env.DEVICE_HASH_PEPPER || 'dev-only-pepper-change-me');
+  const pepper = secretValue(env, ['DEVICE_HASH_PEPPER'], 'dev-only-pepper-change-me');
+  if (!pepper) throw new Error('DEVICE_HASH_PEPPER 未配置');
   const key = await crypto.subtle.importKey(
     'raw', new TextEncoder().encode(pepper), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
   );

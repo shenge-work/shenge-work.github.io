@@ -17,6 +17,7 @@ const PDF_BYTES = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37
 
 function envOf(extra = {}) {
   return Object.assign({
+    DELIVER_CHALLENGE_SECRET: 'test-deliver-secret',
     RESEND_API_KEY: 're_test_key',
     RESEND_FROM: 'Portfolio Resume <onboarding@resend.dev>',
     ALLOWED_ORIGINS: ORIGIN,

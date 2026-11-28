@@ -31,6 +31,7 @@
    ────────────────────────────────────────────────────────────────────── */
 
 import { notifyAccessRequest } from '../lib/verify-access-notify.js';
+import { secretValue } from '../lib/secret.js';
 import { newRequestId, signApproval } from '../lib/verify-access-token.js';
 import {
   approvalState, isValidResource, issueAssets, parseResource,
@@ -140,7 +141,8 @@ function ipOf(request) {
 /* IP → 带 pepper 的 HMAC 哈希前 16 位：既做限流键，也进邮件，绝不落明文 */
 async function ipHash(request, env) {
   try {
-    const pepper = String(env.DEVICE_HASH_PEPPER || 'dev-only-pepper-change-me');
+    const pepper = secretValue(env, ['DEVICE_HASH_PEPPER'], 'dev-only-pepper-change-me');
+    if (!pepper) return 'unknown';
     const key = await crypto.subtle.importKey(
       'raw', new TextEncoder().encode(pepper), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
     );

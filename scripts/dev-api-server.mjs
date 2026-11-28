@@ -190,6 +190,8 @@ const ENV = {
   DELIVER_BCC: process.env.DELIVER_BCC || '',
   /* 本地默认给一个测试令牌，方便验收 DELETE；不设就等于线上「未配置」形态 */
   WALL_ADMIN_TOKEN: process.env.WALL_ADMIN_TOKEN || 'local-admin-token',
+  /* 允许本地使用内置的 dev-only 兜底密钥；生产绝不能设这一项。 */
+  ALLOW_DEV_SECRETS: '1',
   /* 设备哈希盐：本地与线上必须各自配置；这里给的默认值只够本地联调 */
   DEVICE_HASH_PEPPER: PEPPER,
   VERIFY_ACCESS_SECRET: process.env.VERIFY_ACCESS_SECRET || '',

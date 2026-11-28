@@ -293,6 +293,9 @@ export async function onRequestPost({ request, env }) {
   /* 凭证校验：必须是本站在 15 分钟内签发、绑定当前 IP 且解出 PoW 的凭证 */
   const proof = await verifyProof(env, request, body.verify, 'deliver');
   if (!proof.ok) {
+    if (proof.error === 'server_misconfigured') {
+      return json({ ok: false, error: proof.error, message: '服务端签名密钥未配置，已拒绝投递' }, cors, 503);
+    }
     return json({
       ok: false,
       error: proof.error,

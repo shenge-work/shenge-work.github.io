@@ -55,15 +55,11 @@ async function hmacKey(secret) {
   return crypto.subtle.importKey('raw', enc.encode(String(secret)), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
 }
 
-/* 会话密钥：优先 ADMIN_SESSION_SECRET → ADMIN_PASSWORD → RESEND_API_KEY。
-   最后一级是兜底：2026-11-27 的 Pages 密钥编辑事故把 ADMIN_* 两个值抹成空串
-   （变量名仍在、控制台仍显示「值已加密」），导致后台验证码 500 / 1101。
-   RESEND_API_KEY 本身就是高熵随机串，且与后台同处一个服务端环境，
-   拿它派生会话密钥不降低安全性，也避免再动那批脆弱的密钥行。 */
+/* 会话密钥：ADMIN_SESSION_SECRET → ADMIN_PASSWORD（历史兼容）。
+   绝不再退到 RESEND_API_KEY：邮件发送密钥泄露过一次就等于后台会话可伪造。
+   两个都没配就 fail-closed，后台一律不认会话。 */
 function sessionSecret(env) {
-  return String((env && (
-    env.ADMIN_SESSION_SECRET || env.ADMIN_PASSWORD || env.RESEND_API_KEY
-  )) || '');
+  return String((env && (env.ADMIN_SESSION_SECRET || env.ADMIN_PASSWORD)) || '');
 }
 
 export async function signSession(env, exp) {

@@ -107,6 +107,7 @@ for f in index.html resume.html jd.html company.html school.html 404.html \
          assets/print-preview/bw-2.png          assets/resume/chen-peisheng-resume-2026.pdf \
          functions/api/deliver.js functions/api/deliver-preview.js functions/api/challenge.js \
          functions/lib/deliver-content.js functions/lib/zip.js functions/lib/guard.js \
+         functions/lib/secret.js \
          functions/lib/admin-auth.js functions/lib/admin-login.js \
          functions/api/admin/auth/login.js functions/api/admin/auth/methods.js \
          functions/api/admin/auth/email/send.js functions/api/admin/auth/email/verify.js \

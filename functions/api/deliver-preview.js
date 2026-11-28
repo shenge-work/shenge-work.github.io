@@ -50,6 +50,9 @@ export async function onRequestPost({ request, env }) {
 
   const proof = await verifyProof(env, request, body.verify, 'deliver');
   if (!proof.ok) {
+    if (proof.error === 'server_misconfigured') {
+      return json({ ok: false, error: proof.error, message: '服务端签名密钥未配置，已拒绝预览' }, cors, 503);
+    }
     return json({
       ok: false,
       error: proof.error,
